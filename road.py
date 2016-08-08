@@ -14,6 +14,7 @@ def request_directions(start, end, mode, departure):
     # departure = pendulum.parse(departure)
     # print departure
 
+    #FIXME: actually handle time based on user input rather than doing this:
     departure = pendulum.now()
 
     directions_result = gmaps.directions(origin=start,

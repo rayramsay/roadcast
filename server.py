@@ -2,7 +2,7 @@ import os
 
 from jinja2 import StrictUndefined
 
-from flask import Flask, render_template, redirect, request, flash, session, url_for
+from flask import Flask, render_template, redirect, request, flash, session, url_for, jsonify
 from flask_debugtoolbar import DebugToolbarExtension
 
 from road import request_directions
@@ -31,6 +31,8 @@ def index():
 def handle_form():
     """Handles input from user."""
 
+    jskey = os.environ['GOOGLE_API_JAVASCRIPT_KEY']
+
     # Get the values needed to create a directions request.
     start = request.form.get("start")
     end = request.form.get("end")
@@ -39,9 +41,9 @@ def handle_form():
 
     directions_result = request_directions(start, end, mode, departure)
 
-    print directions_result
+    print "overall duration", directions_result[0]['legs'][0]['duration_in_traffic']
 
-    return redirect('/')
+    return jsonify(directions_result)
 
 
 if __name__ == "__main__":

@@ -8,7 +8,6 @@
 
     <!-- load Google Map -->
     <script src="https://maps.googleapis.com/maps/api/js?key={{jskey}}&v=3"></script>
-    <script src="/static/map.js"></script>
 
     <!-- CSS -->
     <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/pure-min.css">
@@ -29,9 +28,9 @@
     attribute of the related element to bind them together. -->
 
     <form action="/request" method="POST" id="directions-request">
-        <label for="start">Starting location:</label> <input type="text" name="start" id="start"><br>
-        <label for="end">Destination:</label> <input type="text" name="end" id="end"><br>
-        <label for="departure">Time of departure:</label> <input type="time" name="departure" id="departure"><br>
+        <label for="start">Starting location:</label> <input type="text" name="start" id="start" value="Oakland, CA"><br>
+        <label for="end">Destination:</label> <input type="text" name="end" id="end" value="San Francisco, CA"><br>
+        <label for="departure">Time of departure:</label> <input type="time" name="departure" id="departure" value="12:12"><br>
         <label for="mode">Mode of transportation:</label> <select name="mode" id="mode">
             <option value="driving">Driving</option>
         </select><br>
@@ -40,25 +39,7 @@
 
     <div id="map"></div>
 
-    <script>
-    function submitReuqest(evt) {
-        evt.preventDefault();
-
-        var formInputs = {
-            "start": $("#start").val(),
-            "end": $("#end").val(),
-            "departure": $("#departure").val(),
-            "mode": $("#mode"),val()
-        };
-
-        #post("/request",
-              formInputs,
-              displayDirections
-              );
-    }
-
-    $("#directions-request").on("submit", submitRequest);
-    </script>
+    <script src="/static/map.js"></script>
 
 </body>
 </html>
