@@ -1,0 +1,30 @@
+<!doctype html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/pure-min.css">
+    <style>
+        body {
+            margin: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <p>Please provide your:</p>
+
+    <!-- The for attribute of the <label> tag should be equal to the id attribute
+    of the related element to bind them together. -->
+
+    <form action="/request" method="POST">
+        <label for="start">Starting location:</label> <input type="text" name="start" id="start"><br>
+        <label for="end">Destination:</label> <input type="text" name="end" id="end"><br>
+        <label for="departure">Time of departure:</label> <input type="time" id="departure"><br>
+        <label for="mode">Mode of transportation:</label> <select name="mode" id="mode">
+            <option value="DRIVING">Driving</option>
+        </select><br>
+        <input type="submit" value="Submit">
+    </form>
+
+</body>
+</html>
