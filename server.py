@@ -1,7 +1,11 @@
 import os
+
+from jinja2 import StrictUndefined
+
 from flask import Flask, render_template, redirect, request, flash, session, url_for
 from flask_debugtoolbar import DebugToolbarExtension
-from jinja2 import StrictUndefined
+
+from road import request_directions
 
 app = Flask(__name__)
 
@@ -15,9 +19,29 @@ app.jinja_env.undefined = StrictUndefined
 
 @app.route('/')
 def index():
-    """Homepage."""
+    """Display index."""
 
-    return render_template("index.html")
+    jskey = os.environ['GOOGLE_API_JAVASCRIPT_KEY']
+
+    return render_template("index.html",
+                           jskey=jskey)
+
+
+@app.route('/request', methods=['POST'])
+def handle_form():
+    """Handles input from user."""
+
+    # Get the values needed to create a directions request.
+    start = request.form.get("start")
+    end = request.form.get("end")
+    mode = request.form.get("mode")
+    departure = request.form.get("departure")
+
+    directions_result = request_directions(start, end, mode, departure)
+
+    print directions_result
+
+    return redirect('/')
 
 
 if __name__ == "__main__":

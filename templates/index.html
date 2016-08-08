@@ -2,10 +2,22 @@
 <html>
 <head>
     <title></title>
+
+    <!-- load jQuery -->
+    <script src="https://code.jquery.com/jquery.js"></script>
+
+    <!-- load Google Map -->
+    <script src="https://maps.googleapis.com/maps/api/js?key={{jskey}}&v=3"></script>
+    <script src="/static/map.js"></script>
+
+    <!-- CSS -->
     <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/pure-min.css">
     <style>
         body {
             margin: 10px;
+        }
+        #map {
+            height: 600px;
         }
     </style>
 </head>
@@ -13,18 +25,40 @@
 
     <p>Please provide your:</p>
 
-    <!-- The for attribute of the <label> tag should be equal to the id attribute
-    of the related element to bind them together. -->
+    <!-- The "for" attribute of the <label> tag should be equal to the "id"
+    attribute of the related element to bind them together. -->
 
-    <form action="/request" method="POST">
+    <form action="/request" method="POST" id="directions-request">
         <label for="start">Starting location:</label> <input type="text" name="start" id="start"><br>
         <label for="end">Destination:</label> <input type="text" name="end" id="end"><br>
-        <label for="departure">Time of departure:</label> <input type="time" id="departure"><br>
+        <label for="departure">Time of departure:</label> <input type="time" name="departure" id="departure"><br>
         <label for="mode">Mode of transportation:</label> <select name="mode" id="mode">
-            <option value="DRIVING">Driving</option>
+            <option value="driving">Driving</option>
         </select><br>
         <input type="submit" value="Submit">
     </form>
+
+    <div id="map"></div>
+
+    <script>
+    function submitReuqest(evt) {
+        evt.preventDefault();
+
+        var formInputs = {
+            "start": $("#start").val(),
+            "end": $("#end").val(),
+            "departure": $("#departure").val(),
+            "mode": $("#mode"),val()
+        };
+
+        #post("/request",
+              formInputs,
+              displayDirections
+              );
+    }
+
+    $("#directions-request").on("submit", submitRequest);
+    </script>
 
 </body>
 </html>
