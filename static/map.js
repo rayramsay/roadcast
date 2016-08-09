@@ -45,13 +45,14 @@ function calculateAndDisplayRoute(directionsService, directionsDisplay) {
         var formInputs = {
             "start": start,
             "end": end,
-            "departure": $("#departure").val(),
             "mode": mode,
+            "departure-day": $("#departure-day").val(),
+            "departure-time": $("#departure-time").val()
         };
 
         $.post("/request",
                formInputs,
-               function (response) { alert("Hi"); }
+               function (response) { console.log("I'm back!"); }
               );
       } else {
         window.alert('Directions request failed due to ' + status);
