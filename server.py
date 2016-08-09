@@ -30,23 +30,22 @@ def index():
 def handle_form():
     """Handles input from user."""
 
-    # Get the values needed to create a directions request.
+    # Get values needed to create a directions request.
     start = request.form.get("start")
     end = request.form.get("end")
     mode = request.form.get("mode")
     departure = request.form.get("departure")
 
-    directions_result = request_directions(start, end, mode)
+    directions_result = request_directions(start, end, mode, departure)
 
     print start
     print end
     print mode
     print departure
 
-    print type(directions_result)
+    print "overall duration", directions_result[0]['legs'][0]['duration_in_traffic']
 
-    return render_template("index.html",
-                           jskey=jskey)
+    return redirect("/")
 
 if __name__ == "__main__":
 
