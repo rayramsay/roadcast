@@ -47,7 +47,8 @@ function calculateAndDisplayRoute(directionsService, directionsDisplay) {
             "end": end,
             "mode": mode,
             "departure-day": $("#departure-day").val(),
-            "departure-time": $("#departure-time").val()
+            "departure-time": $("#departure-time").val(),
+            "data": JSON.stringify(response)
         };
 
         $.post("/request",

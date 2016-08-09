@@ -5,7 +5,7 @@ from jinja2 import StrictUndefined
 from flask import Flask, render_template, redirect, request, flash, session, url_for, jsonify
 from flask_debugtoolbar import DebugToolbarExtension
 
-from road import request_directions
+from road import jsonify_result
 
 app = Flask(__name__)
 
@@ -29,6 +29,8 @@ def index():
                            jskey=jskey)
 
 
+#FIXME: Why am I a post request? I'm not writing to a database. What about using
+# AJAX to send a get req?
 @app.route('/request', methods=['POST'])
 def handle_form():
     """Handles input from user."""
@@ -39,16 +41,21 @@ def handle_form():
     mode = request.form.get("mode")
     departure_day = request.form.get("departure-day")
     departure_time = request.form.get("departure-time")
+    directions_result = request.form.get("data")
 
-    # directions_result = request_directions(start, end, mode, departure)
-
+    directions_result = jsonify_result(directions_result)
+    # print directions_result
+    print "\n"
+    print "overall duration: " + str(directions_result["routes"][0]["legs"][0]["duration"])
+    print "start lat/lng" + str(directions_result["routes"][0]["legs"][0]["start_location"])
+    print "end lat/lng" + str(directions_result["routes"][0]["legs"][0]["end_location"])
+    print "zeroth step" + str(directions_result["routes"][0]["legs"][0]["steps"][0])
+    print "\n"
     print start
     print end
     print mode
     print departure_day
     print departure_time
-
-    # print "overall duration", directions_result[0]['legs'][0]['duration_in_traffic']
 
     return redirect("/")
 
