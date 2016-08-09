@@ -24,19 +24,6 @@ function initMap(){
     
     var onSubmitHandler = function(evt) {
         evt.preventDefault();
-
-        var formInputs = {
-            "start": $("#start").val(),
-            "end": $("#end").val(),
-            "departure": $("#departure").val(),
-            "mode": $("#mode").val()
-        };
-
-        $.post("/request",
-              formInputs,
-              testAlert
-              );
-
         calculateAndDisplayRoute(directionsService, directionsDisplay);
     };
 
@@ -54,14 +41,24 @@ function calculateAndDisplayRoute(directionsService, directionsDisplay) {
     }, function(response, status) {
       if (status === 'OK') {
         directionsDisplay.setDirections(response);
+
+        var formInputs = {
+            "start": start,
+            "end": end,
+            "departure": $("#departure").val(),
+            "mode": mode,
+        };
+
+        $.post("/request",
+               formInputs,
+               function (response) { alert("Hi"); }
+              );
       } else {
         window.alert('Directions request failed due to ' + status);
       }
     });
 }
 
-function testAlert() {
-    alert("Hi");
-}
+
 
 google.maps.event.addDomListener(window, 'load', initMap);

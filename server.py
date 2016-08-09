@@ -34,11 +34,16 @@ def handle_form():
     start = request.form.get("start")
     end = request.form.get("end")
     mode = request.form.get("mode")
-    # departure = request.form.get("departure")
+    departure = request.form.get("departure")
 
     directions_result = request_directions(start, end, mode)
 
-    print "zero index step duration", directions_result[0]['legs'][0]['steps'][0]['duration']
+    print start
+    print end
+    print mode
+    print departure
+
+    print type(directions_result)
 
     return render_template("index.html",
                            jskey=jskey)
