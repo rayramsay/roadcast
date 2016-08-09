@@ -16,12 +16,11 @@ app.secret_key = os.environ['FLASK_SECRET_KEY']
 # If you use an undefined variable in Jinja2, it will raise an error.
 app.jinja_env.undefined = StrictUndefined
 
+jskey = os.environ['GOOGLE_API_JAVASCRIPT_KEY']
 
 @app.route('/')
 def index():
     """Display index."""
-
-    jskey = os.environ['GOOGLE_API_JAVASCRIPT_KEY']
 
     return render_template("index.html",
                            jskey=jskey)
@@ -31,20 +30,18 @@ def index():
 def handle_form():
     """Handles input from user."""
 
-    jskey = os.environ['GOOGLE_API_JAVASCRIPT_KEY']
-
     # Get the values needed to create a directions request.
     start = request.form.get("start")
     end = request.form.get("end")
     mode = request.form.get("mode")
-    departure = request.form.get("departure")
+    # departure = request.form.get("departure")
 
-    directions_result = request_directions(start, end, mode, departure)
+    directions_result = request_directions(start, end, mode)
 
-    print "overall duration", directions_result[0]['legs'][0]['duration_in_traffic']
+    print "zero index step duration", directions_result[0]['legs'][0]['steps'][0]['duration']
 
-    return jsonify(directions_result)
-
+    return render_template("index.html",
+                           jskey=jskey)
 
 if __name__ == "__main__":
 

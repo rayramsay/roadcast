@@ -1,26 +1,20 @@
 import os
 import googlemaps
-import pendulum
 
 # Remember to ``source secrets.sh``!
 
 gmaps = googlemaps.Client(key=os.environ['GOOGLE_API_SERVER_KEY'])
 
 
-def request_directions(start, end, mode, departure):
+def request_directions(start, end, mode):
     """Given starting point, destination, mode of transportation, and time of
     departure, requests directions from Google Maps."""
 
-    # departure = pendulum.parse(departure)
-    # print departure
-
-    #FIXME: actually handle time based on user input rather than doing this:
-    departure = pendulum.now()
+    mode = mode.lower()
 
     directions_result = gmaps.directions(origin=start,
                                          destination=end,
-                                         mode=mode,
-                                         departure_time=departure)
+                                         mode=mode)
 
     return directions_result
 

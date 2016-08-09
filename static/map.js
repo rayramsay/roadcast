@@ -25,16 +25,17 @@ function initMap(){
     var onSubmitHandler = function(evt) {
         evt.preventDefault();
 
-        // var formInputs = {
-        //     "start": $("#start").val(),
-        //     "end": $("#end").val(),
-        //     "departure": $("#departure").val(),
-        //     "mode": $("#mode").val()
-        // };
+        var formInputs = {
+            "start": $("#start").val(),
+            "end": $("#end").val(),
+            "departure": $("#departure").val(),
+            "mode": $("#mode").val()
+        };
 
-        // $.post("/request",
-        //       formInputs
-        //       );
+        $.post("/request",
+              formInputs,
+              testAlert
+              );
 
         calculateAndDisplayRoute(directionsService, directionsDisplay);
     };
@@ -57,6 +58,10 @@ function calculateAndDisplayRoute(directionsService, directionsDisplay) {
         window.alert('Directions request failed due to ' + status);
       }
     });
-    }
+}
+
+function testAlert() {
+    alert("Hi");
+}
 
 google.maps.event.addDomListener(window, 'load', initMap);
