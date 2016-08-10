@@ -30,6 +30,18 @@ function initMap(){
     $("#directions-request").on("submit", onSubmitHandler);
 }
 
+function makeAndSetMarker(response) {
+    var markerLatLng = new google.maps.LatLng(response.lat, response.lng);
+
+    var marker = new google.maps.Marker({
+        position: markerLatLng,
+        title: response.fsummary
+    });
+
+    // To add the marker to the map, call setMap();
+    marker.setMap(map);
+}
+
 function calculateAndDisplayRoute(directionsService, directionsDisplay) {
     var start = document.getElementById('start').value;
     var end = document.getElementById('end').value;
@@ -53,14 +65,11 @@ function calculateAndDisplayRoute(directionsService, directionsDisplay) {
 
         $.post("/request",
                formInputs,
-               function (response) { console.log("I'm back!"); }
-              );
+               makeAndSetMarker);
       } else {
         window.alert('Directions request failed due to ' + status);
       }
     });
 }
-
-
 
 google.maps.event.addDomListener(window, 'load', initMap);

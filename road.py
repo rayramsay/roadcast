@@ -38,7 +38,8 @@ def format_time(coords, time):
 
     return time
 
-def jsonify_result(directions_result):
+
+def dictify(directions_result):
     """Given a directions_result as a string, make it into a dictionary."""
     return json.loads(directions_result)
 
@@ -65,7 +66,7 @@ def convert_time(time):
     return pendulum.instance(time)
 
 
-def loop_the_loop(directions_result, departure_time, departure_day):
+def marker_info(directions_result, departure_time, departure_day):
     """Given a directions_result dictionary, departure time as a string, and
     departure day, return the weather forecast at the first step's starting
     location."""
@@ -91,4 +92,4 @@ def loop_the_loop(directions_result, departure_time, departure_day):
         precipType = forecast.precipType
         precipIntensity = forecast.precipIntensity
 
-    return [summary, icon, temp, precipProb]
+    return [coords, summary, temp]
