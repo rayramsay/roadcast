@@ -9,26 +9,30 @@ import json
 gmaps = googlemaps.Client(key=os.environ['GOOGLE_API_SERVER_KEY'])
 fio_key = os.environ['FORECAST_API_KEY']
 
-def format_time(start, departure_day, departure_time):
-    """Given a starting location, departure day, and departure time, return a
-    timezone-aware datetime object."""
 
-    # FIXME: Break me into separate functions, one to get co-ords and one to
-    # create a timezone-aware datetime object.
+def get_lat_lng(loc_string):
+    """Given location as a human-readable string, return its latitude and
+    longitude as a tuple of floats."""
 
-    geocode_result = gmaps.geocode(start)
-    lat = geocode_result[0]["geometry"]["location"]["lat"]
-    lng = geocode_result[0]["geometry"]["location"]["lng"]
+    geocode_result = gmaps.geocode(loc_string)
+    lat = float(geocode_result[0]["geometry"]["location"]["lat"])
+    lng = float(geocode_result[0]["geometry"]["location"]["lng"])
     tup = (lat, lng)
 
-    timezone_result = gmaps.timezone(tup)
+    return tup
+
+
+def format_time(time, coords):
+    """Given time as a string and a lat/lng tuple, return a timezone-aware
+    datetime object."""
+
+    timezone_result = gmaps.timezone(coords)
     timezone_id = timezone_result["timeZoneId"]
 
-    departure_time = pendulum.parse(departure_time, timezone_id)
-    if departure_day == "tomorrow":
-        departure_time = departure_time.add(days=1)
+    # Note that the time's date will be the current date in that timezone.
+    time = pendulum.parse(time, timezone_id)
 
-    return departure_time
+    return time
 
 
 def jsonify_result(directions_result):
@@ -36,8 +40,11 @@ def jsonify_result(directions_result):
     return json.loads(directions_result)
 
 
-def get_forecast(lat, lng):
-    """Given a lat and lng as integers, return forecast."""
+def get_forecast(coords):
+    """Given lat/lng tuple, return forecast."""
+
+    lat = coords[0]
+    lng = coords[1]
 
     # FIXME: Add time parameter.
 
