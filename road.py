@@ -1,31 +1,44 @@
 import os
 import googlemaps
+import forecastio
 import pendulum
 import json
 
 # Remember to ``source secrets.sh``!
 
 gmaps = googlemaps.Client(key=os.environ['GOOGLE_API_SERVER_KEY'])
-
+fio_key = os.environ['FORECAST_API_KEY']
 
 def format_time(start, departure_day, departure_time):
-    pass
+    """Given a starting location, departure day, and departure time, return a
+    timezone-aware datetime object."""
 
-    #FIXME: intelligently handle departure time based on starting location.
+    # FIXME: Break me into separate functions, one to get co-ords and one to
+    # create a timezone-aware datetime object.
 
-    geocode_result = gmaps.geocode('1600 Amphitheatre Parkway, Mountain View, CA')
+    geocode_result = gmaps.geocode(start)
+    lat = geocode_result[0]["geometry"]["location"]["lat"]
+    lng = geocode_result[0]["geometry"]["location"]["lng"]
+    tup = (lat, lng)
 
+    timezone_result = gmaps.timezone(tup)
+    timezone_id = timezone_result["timeZoneId"]
 
-    # You can specify the time as an integer in seconds since midnight,
-    # January 1, 1970 UTC. Alternatively, you can specify a value of now,
-    # which sets the departure time to the current time (correct to the
-    # nearest second).
+    departure_time = pendulum.parse(departure_time, timezone_id)
+    if departure_day == "tomorrow":
+        departure_time = departure_time.add(days=1)
 
-
-# Although I cannot pass departure time to the Maps JavaScript API, departure
-# time is an acceptable parameter for the Web Services Directions API.
+    return departure_time
 
 
 def jsonify_result(directions_result):
     """Given a directions_result as a string, make it into a dictionary."""
     return json.loads(directions_result)
+
+
+def get_forecast(lat, lng):
+    """Given a lat and lng as integers, return forecast."""
+
+    # FIXME: Add time parameter.
+
+    return forecastio.load_forecast(fio_key, lat, lng)

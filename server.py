@@ -5,7 +5,7 @@ from jinja2 import StrictUndefined
 from flask import Flask, render_template, redirect, request, flash, session, url_for, jsonify
 from flask_debugtoolbar import DebugToolbarExtension
 
-from road import jsonify_result
+from road import jsonify_result, get_forecast
 
 app = Flask(__name__)
 
@@ -46,16 +46,28 @@ def handle_form():
     directions_result = jsonify_result(directions_result)
     # print directions_result
     print "\n"
-    print "overall duration: " + str(directions_result["routes"][0]["legs"][0]["duration"])
+    # print "overall duration: " + str(directions_result["routes"][0]["legs"][0]["duration"])
     print "start lat/lng" + str(directions_result["routes"][0]["legs"][0]["start_location"])
-    print "end lat/lng" + str(directions_result["routes"][0]["legs"][0]["end_location"])
-    print "zeroth step" + str(directions_result["routes"][0]["legs"][0]["steps"][0])
-    print "\n"
-    print start
-    print end
-    print mode
-    print departure_day
-    print departure_time
+    # print "end lat/lng" + str(directions_result["routes"][0]["legs"][0]["end_location"])
+    # print "zeroth step" + str(directions_result["routes"][0]["legs"][0]["steps"][0])
+    # print "\n"
+    # print start
+    # print end
+    # print mode
+    # print departure_day
+    # print departure_time
+
+    start_lat = int(directions_result["routes"][0]["legs"][0]["start_location"]["lat"])
+    start_lng = int(directions_result["routes"][0]["legs"][0]["start_location"]["lng"])
+
+    forecast = get_forecast(start_lat, start_lng)
+
+    # Check response status.
+    print forecast.response.reason == "OK"
+    
+    # hourly = get_forecast(start_lat, start_lng).hourly()
+    # for hour in hourly.data:
+    #     print hour.temperature
 
     return redirect("/")
 
