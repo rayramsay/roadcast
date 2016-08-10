@@ -27,8 +27,8 @@ def get_lat_lng(loc_string):
 
 
 def format_time(coords, time):
-    """Given time as a string and a lat/lng tuple, return a UTC
-    datetime object."""
+    """Given a lat/lng tuple and time as a string, return a timezone-aware
+    Pendulum datetime object."""
 
     timezone_result = gmaps.timezone(coords)
     timezone_id = timezone_result["timeZoneId"]
@@ -38,14 +38,13 @@ def format_time(coords, time):
 
     return time
 
-
 def jsonify_result(directions_result):
     """Given a directions_result as a string, make it into a dictionary."""
     return json.loads(directions_result)
 
 
 def get_forecast(coords, time):
-    """Given lat/lng tuple and datetime object, return forecast."""
+    """Given lat/lng tuple and Pendulum datetime object, return forecast."""
 
     lat = coords[0]
     lng = coords[1]
@@ -59,25 +58,37 @@ def get_forecast(coords, time):
     return forecastio.manual(url)
 
 
-def time_checker(coords, time):
+def convert_time(time):
+    """Given a datetime object from Forecast.io, (e.g., forecast.time), convert
+    to a timezone-aware Pendulum datetime object."""
 
-    lat = coords[0]
-    lng = coords[1]
+    return pendulum.instance(time)
 
-    time = format_time(coords, time)
 
-    # Convert to ISO 8601 string.
-    stime = time.to_iso8601_string()
+def loop_the_loop(directions_result, departure_time, departure_day):
+    """Given a directions_result dictionary, departure time as a string, and
+    departure day, return the weather forecast at the first step's starting
+    location."""
 
-    url = 'https://api.forecast.io/forecast/%s/%s,%s,%s' \
-        % (fio_key, lat, lng, stime)
+    lat = directions_result["routes"][0]["legs"][0]["steps"][0]["start_location"]["lat"]
+    lng = directions_result["routes"][0]["legs"][0]["steps"][0]["start_location"]["lng"]
+    coords = (lat, lng)
 
-    forecast = forecastio.manual(url).currently()
+    time = format_time(coords, departure_time)
 
-    print time
-    print forecast.time
-    print pendulum.instance(forecast.time)
+    if departure_day == "tomorrow":
+        time = time.add(days=1)
 
-    print time == pendulum.instance(forecast.time)
+    forecast = get_forecast(coords, time).currently()
 
-    return pendulum.instance(forecast.time)
+    summary = forecast.summary
+    icon = forecast.icon
+
+    temp = forecast.temperature
+    precipProb = forecast.precipProbability
+
+    if precipProb > 0:
+        precipType = forecast.precipType
+        precipIntensity = forecast.precipIntensity
+
+    return [summary, icon, temp, precipProb]
