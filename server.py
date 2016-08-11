@@ -6,6 +6,8 @@ from flask_debugtoolbar import DebugToolbarExtension
 
 from road import dictify, marker_info
 
+import math
+
 app = Flask(__name__)
 
 
@@ -44,7 +46,7 @@ def handle_form():
 
     coords, summary, temp = marker_info(directions_result, departure_time, departure_day)
 
-    result = {"lat": coords[0], "lng": coords[1], "fsummary": summary, "temp": temp}
+    result = {"lat": coords[0], "lng": coords[1], "fsummary": summary, "temp": math.floor(temp)}
 
     return jsonify(result)
 

@@ -1,5 +1,10 @@
 "use strict";
 
+// global variables
+
+// var markersArray = [];
+var map;
+
 // This code is based on the demo for the Google Maps lecture, an example
 // from the Google Maps JavaScript API docs, and an example from the AJAX
 // lecture.
@@ -15,7 +20,7 @@ function initMap(){
     var directionsService = new google.maps.DirectionsService;
 
     // Create a map object and specify the DOM element for display.
-    var map = new google.maps.Map(document.getElementById('map'), {
+    map = new google.maps.Map(document.getElementById('map'), {
         center: myLatLng,
         zoom: 10,
     });
@@ -35,11 +40,15 @@ function makeAndSetMarker(response) {
 
     var marker = new google.maps.Marker({
         position: markerLatLng,
-        title: response.fsummary
+        title: response.fsummary + "\n" + response.temp + "℉"
+        // map: map
     });
 
     // To add the marker to the map, call setMap();
     marker.setMap(map);
+
+    // Add marker to global array.
+    // markersArray.push(marker);
 }
 
 function calculateAndDisplayRoute(directionsService, directionsDisplay) {
