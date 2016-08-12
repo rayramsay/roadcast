@@ -63,15 +63,9 @@ def convert_time(time):
     return pendulum.instance(time)
 
 
-# Globals
-coords_time = []
-time_in_bucket = 0
-abs_time = None
-
-
 def slice_step(step, fraction_needed):
     """Cuts off part of step."""
-    index = fraction_needed * len(step["path"])
+    index = int(fraction_needed * len(step["path"]))  # Indices must be ints.
     sliced_step = {
         u'duration': {u'value': int(step["duration"]["value"]) * (1 - fraction_needed)},
         u'path': step["path"][index + 1:],
@@ -79,8 +73,8 @@ def slice_step(step, fraction_needed):
     return sliced_step
 
 
-def bucket_filler(step):
-    """Given a step, fills buckets."""
+def fill_buckets(step, time_in_bucket, size_of_bucket, abs_time, coords_time):
+    """Given a step, fills buckets to get middle coords."""
     step_duration = int(step["duration"]["value"])
     if (time_in_bucket + step_duration) < size_of_bucket:
         time_in_bucket += step_duration
@@ -95,23 +89,31 @@ def bucket_filler(step):
         time_in_bucket = 0
         return
     else:
+        print "size_of_bucket:", size_of_bucket
+        print "time_in_bucket:", time_in_bucket
         needed_time = size_of_bucket - time_in_bucket
-        fraction_needed = needed_time / step_duration
-        index = fraction_needed * len(step["path"])
+        print "needed_time:", needed_time
+        print "step_duration:", step_duration
+        fraction_needed = needed_time / float(step_duration)  # Don't floor this fraction.
+        print "fraction_needed:", fraction_needed
+        index = int(fraction_needed * len(step["path"]))  # Indices must be ints.
+        print "len path:", len(step["path"])
+        print "index:", index
         lat = step["path"][index]["lat"]
         lng = step["path"][index]["lng"]
         location = (lat, lng)
         abs_time = abs_time.add(seconds=needed_time)
         coords_time.append((location, abs_time))
         sliced_step = slice_step(step, fraction_needed)
-        bucket_filler(sliced_step)
+        fill_buckets(sliced_step, time_in_bucket, size_of_bucket, abs_time, coords_time)
 
 
 def make_coords_time(directions_result, departure_time, departure_day):
     """Given a directions_result dictionary, departure time as a string, and
     departure day, make a list of tuples containing coords and datetimes."""
 
-    size_of_bucket = 900  # Get coords every fifteen minutes (900 seconds).
+    coords_time = []
+    size_of_bucket = 120  # Get coords every fifteen minutes (900 seconds).
     steps = directions_result["routes"][0]["legs"][0]["steps"]
 
     # Make coords for the starting location of the first step.
@@ -163,11 +165,10 @@ def make_coords_time(directions_result, departure_time, departure_day):
             else:
                 current_duration += step_duration
 
-    # Else: I face God and walk backwards into hell.
     else:
-        # time_in_bucket = 0
+        time_in_bucket = 0
         for step in steps:
-            bucket_filler(step)
+            fill_buckets(step, time_in_bucket, size_of_bucket, abs_time, coords_time)
 
     # Make coords for the ending location of the last step.
     lat = steps[-1]["end_location"]["lat"]
@@ -181,14 +182,13 @@ def make_coords_time(directions_result, departure_time, departure_day):
     return coords_time
 
 
-def marker_info(coord_time):
-    """Given a coord, time tuple, return the weather forecast at that coord and time."""
+def marker_info(coords_time):
+    """Given a list of (coords, time) tuples, return the weather forecasts at those coords and times."""
 
-    coords = coord_time[0]
-
-    time = coord_time[1]
-
-    forecast = get_forecast(coords, time).currently()
+    for tup in coords_time:
+        coords = coords_time[0]
+        time = coords_time[1]
+        forecast = get_forecast(coords, time).currently()
 
     time = time.to_iso8601_string()
 
