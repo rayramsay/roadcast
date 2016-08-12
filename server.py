@@ -44,25 +44,19 @@ def handle_form():
     departure_time = request.form.get("departure-time")
     directions_result = dictify(request.form.get("data"))
 
-    steps = directions_result["routes"][0]["legs"][0]["steps"]
+    print make_coords_time(directions_result, departure_time, departure_day)
 
-    for step in steps:
-        print "\n"
-        print step["instructions"]
-        print step["path"]
-
-    print "\n*********\n"
-    print len(steps)
-
-    coords_time = make_coords_time(directions_result, departure_time, departure_day)
-    print coords_time
+    # coords_time = make_coords_time(directions_result, departure_time, departure_day)
+    # print coords_time
 
     # Get marker info for middle coord.
-    coords, summary, temp, time = marker_info(coords_time[1])
+    # coords, summary, temp, time = marker_info(coords_time[1])
 
-    result = {"lat": coords[0], "lng": coords[1], "fsummary": summary, "temp": math.floor(temp), "ftime": time}
+    # result = {"lat": coords[0], "lng": coords[1], "fsummary": summary, "temp": math.floor(temp), "ftime": time}
 
-    return jsonify(result)
+    # return jsonify(result)
+
+    return redirect("/")
 
 
 if __name__ == "__main__":
