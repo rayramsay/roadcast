@@ -40,7 +40,7 @@ function makeAndSetMarker(response) {
 
     var marker = new google.maps.Marker({
         position: markerLatLng,
-        title: response.fsummary + "\n" + response.temp + "℉"
+        title: response.ftime + "\n" + response.fsummary + "\n" + response.temp + "℉"
         // map: map
     });
 

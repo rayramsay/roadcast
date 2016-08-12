@@ -4,7 +4,7 @@ from jinja2 import StrictUndefined
 from flask import Flask, render_template, redirect, request, flash, session, url_for, jsonify
 from flask_debugtoolbar import DebugToolbarExtension
 
-from road import dictify, marker_info
+from road import dictify, marker_info, make_coords_time
 
 import math
 
@@ -44,9 +44,23 @@ def handle_form():
     departure_time = request.form.get("departure-time")
     directions_result = dictify(request.form.get("data"))
 
-    coords, summary, temp = marker_info(directions_result, departure_time, departure_day)
+    steps = directions_result["routes"][0]["legs"][0]["steps"]
 
-    result = {"lat": coords[0], "lng": coords[1], "fsummary": summary, "temp": math.floor(temp)}
+    for step in steps:
+        print "\n"
+        print step["instructions"]
+        print step["path"]
+
+    print "\n*********\n"
+    print len(steps)
+
+    coords_time = make_coords_time(directions_result, departure_time, departure_day)
+    print coords_time
+
+    # Get marker info for middle coord.
+    coords, summary, temp, time = marker_info(coords_time[1])
+
+    result = {"lat": coords[0], "lng": coords[1], "fsummary": summary, "temp": math.floor(temp), "ftime": time}
 
     return jsonify(result)
 
