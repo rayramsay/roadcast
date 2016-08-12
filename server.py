@@ -45,6 +45,9 @@ def handle_form():
     directions_result = dictify(request.form.get("data"))
 
     coords_time = make_coords_time(directions_result, departure_time, departure_day)
+
+    print coords_time
+
     markers_infos = marker_info(coords_time)
 
     # coords, summary, temp, time = marker_info(coords_time[1])
