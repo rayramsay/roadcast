@@ -4,7 +4,7 @@ from jinja2 import StrictUndefined
 from flask import Flask, render_template, redirect, request, flash, session, url_for, jsonify
 from flask_debugtoolbar import DebugToolbarExtension
 
-from road import dictify, marker_info, make_coords_time
+from road import dictify, marker_info, Route
 
 import math
 
@@ -44,7 +44,8 @@ def handle_form():
     departure_time = request.form.get("departure-time")
     directions_result = dictify(request.form.get("data"))
 
-    coords_time = make_coords_time(directions_result, departure_time, departure_day)
+    lil_route = Route(directions_result, departure_time, departure_day)
+    coords_time = lil_route.make_coords_time()
 
     print coords_time
 

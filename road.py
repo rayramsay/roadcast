@@ -75,117 +75,284 @@ def slice_step(step, fraction_needed):
     return sliced_step
 
 
-def fill_buckets(step, time_in_bucket, size_of_bucket, abs_time, coords_time):
-    """Given a step, fills buckets to get middle coords."""
-    # FIXME: How is abs_time getting messed up?
-    # FIXME: Maybe have a separate time_elapsed variable like in the middle picker?
-    step_duration = int(step["duration"]["value"])
-    if (time_in_bucket + step_duration) < size_of_bucket:
-        print "I fit in the bucket"
-        time_in_bucket += step_duration
-        abs_time = abs_time.add(seconds=step_duration)
-        print abs_time
-        return
-    elif (time_in_bucket + step_duration) == size_of_bucket:
-        print "I exactly fill the bucket"
-        lat = step["end_location"]["lat"]
-        lng = step["end_location"]["lng"]
+# def fill_buckets(step, size_of_bucket, time_in_bucket, time_elapsed, start_time, coords_time):
+#     """Given a step, fills buckets to get middle coords."""
+
+#     step_duration = int(step["duration"]["value"])
+
+#     if (time_in_bucket + step_duration) < size_of_bucket:
+#         print "I fit in the bucket!"
+
+#         time_in_bucket = time_in_bucket + step_duration
+#         time_elapsed = time_elapsed + step_duration
+
+#         print "step duration", step_duration
+#         print "time in bucket", time_in_bucket
+#         print "time elapsed", time_elapsed
+
+#         return 
+
+#     elif (time_in_bucket + step_duration) == size_of_bucket:
+#         print "I exactly fill the bucket!"
+
+#         time_in_bucket += step_duration
+#         time_elapsed += step_duration
+
+#         lat = step["end_location"]["lat"]
+#         lng = step["end_location"]["lng"]
+#         end_location = (lat, lng)
+
+#         time = start_time.add(seconds=time_elapsed)
+#         coords_time.append((end_location, time))
+
+#         print "step duration", step_duration
+#         print "time in bucket", time_in_bucket
+#         print "time elapsed", time_elapsed
+
+#         time_in_bucket = 0  # Empty the bucket.
+
+#         return
+
+#     else:
+#         print "I'm too big!"
+
+#         needed_time = size_of_bucket - time_in_bucket
+#         time_elapsed += needed_time
+
+#         fraction_needed = needed_time / float(step_duration)  # Don't floor this fraction.
+
+#         index = int(fraction_needed * len(step["path"]))  # Indices must be ints.
+#         lat = step["path"][index]["lat"]
+#         lng = step["path"][index]["lng"]
+#         location = (lat, lng)
+
+#         time = start_time.add(seconds=time_elapsed)
+#         coords_time.append((location, time))
+
+#         print "step duration", step_duration
+#         print "time in bucket", time_in_bucket
+#         print "time elapsed", time_elapsed
+
+#         time_in_bucket = 0  # Empty the bucket.
+
+#         sliced_step = slice_step(step, fraction_needed)
+#         fill_buckets(sliced_step, size_of_bucket, time_in_bucket, time_elapsed, start_time, coords_time)
+
+
+# def make_coords_time(directions_result, departure_time, departure_day):
+#     """Given a directions_result dictionary, departure time as a string, and
+#     departure day, make a list of tuples containing coords and datetimes."""
+
+#     coords_time = []
+#     # FIXME: Bucket small for testing; reset to 900.
+#     size_of_bucket = 120  # Get coords every fifteen minutes (900 seconds).
+#     steps = directions_result["routes"][0]["legs"][0]["steps"]
+
+#     # Make coords for the starting location of the first step.
+#     lat = steps[0]["start_location"]["lat"]
+#     lng = steps[0]["start_location"]["lng"]
+#     start_location = (lat, lng)
+
+#     start_time = format_time(start_location, departure_time)
+#     if departure_day == "tomorrow":
+#         start_time = start_time.add(days=1)
+
+#     # Add starting location coordinates and formatted departure time to list of
+#     # (coord, datetime) tuples.
+#     coords_time.append((start_location, start_time))
+
+#     # Get trip duration in seconds.
+#     overall_duration = int(directions_result["routes"][0]["legs"][0]["duration"]["value"])
+
+#     # If trip is shorter than 15 minutes, just pick middle coord.
+#     if overall_duration < size_of_bucket:
+#         for step in steps:
+#             step_duration = int(step["duration"]["value"])
+
+#             # If taking this step would put you over the halfway point:
+#             if (time_elapsed + step_duration) > overall_duration/2:
+
+#                 # Pick middle (or if len(paths) is even, one past) path coord.
+#                 index = len(step["path"])/2
+
+#                 # Make coords.
+#                 lat = step["path"][index]["lat"]
+#                 lng = step["path"][index]["lng"]
+#                 coords = (lat, lng)
+
+#                 # Divide step's duration by intervals in path.
+#                 seconds_per_interval = step_duration / len(step["path"])-1
+
+#                 # Add seconds up to selected coord.
+#                 time_elapsed += (seconds_per_interval * index)
+#                 time = start_time.add(seconds=time_elapsed)
+
+#                 # Append coords, time to list.
+#                 coords_time.append((coords, time))
+
+#                 # Add time for rest of step.
+#                 time_elapsed += seconds_per_interval * ((len(step["path"])-1 - index))
+#                 break
+#             else:
+#                 time_elapsed += step_duration
+
+#     else:
+#         time_elapsed = 0
+#         time_in_bucket = 0
+#         for step in steps:
+#             print "\nI'm starting on a step!"
+#             fill_buckets(step, size_of_bucket, time_in_bucket, time_elapsed, start_time, coords_time)
+
+#     # Make coords for the ending location of the last step.
+#     lat = steps[-1]["end_location"]["lat"]
+#     lng = steps[-1]["end_location"]["lng"]
+#     end_location = (lat, lng)
+
+#     end_time = start_time.add(seconds=overall_duration)
+#     coords_time.append((end_location, end_time))
+
+#     return coords_time
+
+
+SIZE_OF_BUCKET = 120
+
+
+class Route(object):
+
+    def __init__(self, directions_result, departure_time, departure_day):
+        self.directions_result = directions_result
+        self.steps = directions_result["routes"][0]["legs"][0]["steps"]
+        self.departure_time = departure_time
+        self.departure_day = departure_day
+        self.time_in_bucket = 0
+        self.time_elapsed = 0
+        self.size_of_bucket = SIZE_OF_BUCKET
+        self.overall_duration = int(directions_result["routes"][0]["legs"][0]["duration"]["value"])
+
+        # Make coords for the starting location of the first step.
+        lat = self.steps[0]["start_location"]["lat"]
+        lng = self.steps[0]["start_location"]["lng"]
+        start_location = (lat, lng)
+
+        self.start_time = format_time(start_location, self.departure_time)
+        if self.departure_day == "tomorrow":
+            self.start_time = self.start_time.add(days=1)
+
+        # Add starting location coordinates and formatted departure time to list of
+        # (coord, datetime) tuples.
+        self.coords_time = [(start_location, self.start_time)]
+
+    def make_coords_time(self):
+
+        # If trip is shorter than 15 minutes, just pick middle coord.
+        if self.overall_duration < self.size_of_bucket:
+            for step in self.steps:
+                step_duration = int(step["duration"]["value"])
+
+                # If taking this step would put you over the halfway point:
+                if (self.time_elapsed + self.step_duration) > self.overall_duration/2:
+
+                    # Pick middle (or if len(paths) is even, one past) path coord.
+                    index = len(step["path"])/2
+
+                    # Make coords.
+                    lat = step["path"][index]["lat"]
+                    lng = step["path"][index]["lng"]
+                    coords = (lat, lng)
+
+                    # Divide step's duration by intervals in path.
+                    seconds_per_interval = step_duration / len(step["path"])-1
+
+                    # Add seconds up to selected coord.
+                    self.time_elapsed += (seconds_per_interval * index)
+                    time = start_time.add(seconds=self.time_elapsed)
+
+                    # Append coords, time to list.
+                    self.coords_time.append((coords, time))
+
+                    # Add time for rest of step.
+                    self.time_elapsed += seconds_per_interval * ((len(step["path"])-1 - index))
+                    break
+                else:
+                    self.time_elapsed += step_duration
+
+        else:
+            for step in self.steps:
+                print "\nI'm starting on a step!"
+                self.fill_buckets(step)
+
+        # Make coords for the ending location of the last step.
+        lat = self.steps[-1]["end_location"]["lat"]
+        lng = self.steps[-1]["end_location"]["lng"]
         end_location = (lat, lng)
-        abs_time.add(seconds=step_duration)
-        print abs_time
-        coords_time.append((end_location, abs_time))
-        time_in_bucket = 0  # Empty the bucket.
-        return
-    else:
-        print "I'm too big!"
-        needed_time = size_of_bucket - time_in_bucket
-        fraction_needed = needed_time / float(step_duration)  # Don't floor this fraction.
-        index = int(fraction_needed * len(step["path"]))  # Indices must be ints.
-        lat = step["path"][index]["lat"]
-        lng = step["path"][index]["lng"]
-        location = (lat, lng)
-        abs_time = abs_time.add(seconds=needed_time)
-        print abs_time
-        coords_time.append((location, abs_time))
-        sliced_step = slice_step(step, fraction_needed)
-        fill_buckets(sliced_step, time_in_bucket, size_of_bucket, abs_time, coords_time)
 
+        end_time = self.start_time.add(seconds=self.overall_duration)
+        self.coords_time.append((end_location, end_time))
 
-def make_coords_time(directions_result, departure_time, departure_day):
-    """Given a directions_result dictionary, departure time as a string, and
-    departure day, make a list of tuples containing coords and datetimes."""
+        return self.coords_time
 
-    coords_time = []
-    # FIXME: Bucket small for testing; reset to 900.
-    size_of_bucket = 120  # Get coords every fifteen minutes (900 seconds).
-    steps = directions_result["routes"][0]["legs"][0]["steps"]
+    def fill_buckets(self, step):
+        """Given a step, fills buckets to get middle coords."""
 
-    # Make coords for the starting location of the first step.
-    lat = steps[0]["start_location"]["lat"]
-    lng = steps[0]["start_location"]["lng"]
-    start_location = (lat, lng)
+        step_duration = int(step["duration"]["value"])
 
-    start_time = format_time(start_location, departure_time)
-    if departure_day == "tomorrow":
-        start_time = start_time.add(days=1)
+        if (self.time_in_bucket + step_duration) < self.size_of_bucket:
+            print "I fit in the bucket!"
 
-    # Add starting location coordinates and formatted departure time to list of
-    # (coord, datetime) tuples.
-    coords_time.append((start_location, start_time))
+            self.time_in_bucket = self.time_in_bucket + step_duration
+            self.time_elapsed = self.time_elapsed + step_duration
 
-    # Get trip duration in seconds.
-    overall_duration = int(directions_result["routes"][0]["legs"][0]["duration"]["value"])
+            print "step duration", step_duration
+            print "time in bucket", self.time_in_bucket
+            print "time elapsed", self.time_elapsed
 
-    # If trip is shorter than 15 minutes, just pick middle coord.
-    if overall_duration < size_of_bucket:
-        time_elapsed = 0
-        for step in steps:
-            step_duration = int(step["duration"]["value"])
+            return
 
-            # If taking this step would put you over the halfway point:
-            if (time_elapsed + step_duration) > overall_duration/2:
+        elif (self.time_in_bucket + step_duration) == self.size_of_bucket:
+            print "I exactly fill the bucket!"
 
-                # Pick middle (or if len(paths) is even, one past) path coord.
-                index = len(step["path"])/2
+            self.time_in_bucket += step_duration
+            self.time_elapsed += step_duration
 
-                # Make coords.
-                lat = step["path"][index]["lat"]
-                lng = step["path"][index]["lng"]
-                coords = (lat, lng)
+            lat = step["end_location"]["lat"]
+            lng = step["end_location"]["lng"]
+            end_location = (lat, lng)
 
-                # Divide step's duration by intervals in path.
-                seconds_per_interval = step_duration / len(step["path"])-1
+            time = self.start_time.add(seconds=self.time_elapsed)
+            self.coords_time.append((end_location, time))
 
-                # Add seconds up to selected coord.
-                time_elapsed += (seconds_per_interval * index)
-                time = start_time.add(seconds=time_elapsed)
+            print "step duration", step_duration
+            print "time in bucket", self.time_in_bucket
+            print "time elapsed", self.time_elapsed
 
-                # Append coords, time to list.
-                coords_time.append((coords, time))
+            self.time_in_bucket = 0  # Empty the bucket.
 
-                # Add time for rest of step.
-                time_elapsed += seconds_per_interval * ((len(step["path"])-1 - index))
-                break
-            else:
-                time_elapsed += step_duration
+            return
 
-    else:
-        time_in_bucket = 0
-        abs_time = start_time
-        for step in steps:
-            print "I'm starting on a step!"
-            print abs_time
-            fill_buckets(step, time_in_bucket, size_of_bucket, abs_time, coords_time)
+        else:
+            print "I'm too big!"
 
-    # Make coords for the ending location of the last step.
-    lat = steps[-1]["end_location"]["lat"]
-    lng = steps[-1]["end_location"]["lng"]
-    end_location = (lat, lng)
+            needed_time = self.size_of_bucket - self.time_in_bucket
+            self.time_elapsed += needed_time
 
-    end_time = start_time.add(seconds=overall_duration)
-    coords_time.append((end_location, end_time))
+            fraction_needed = needed_time / float(step_duration)  # Don't floor this fraction.
 
-    return coords_time
+            index = int(fraction_needed * len(step["path"]))  # Indices must be ints.
+            lat = step["path"][index]["lat"]
+            lng = step["path"][index]["lng"]
+            location = (lat, lng)
+
+            time = self.start_time.add(seconds=self.time_elapsed)
+            self.coords_time.append((location, time))
+
+            print "step duration", step_duration
+            print "time in bucket", self.time_in_bucket
+            print "time elapsed", self.time_elapsed
+
+            self.time_in_bucket = 0  # Empty the bucket.
+
+            sliced_step = slice_step(step, fraction_needed)
+            self.fill_buckets(sliced_step)
 
 
 def marker_info(coords_time):
