@@ -236,8 +236,9 @@ def marker_info(coords_time):
             lat = coords[0]
             lng = coords[1]
 
-            timezone_result = GMAPS.timezone(coords)
-            time = time.in_timezone(timezone_result["timeZoneId"])
+            # Check timezone at coordinates.
+            # timezone_result = GMAPS.timezone(coords)
+            # time = time.in_timezone(timezone_result["timeZoneId"])
             time = time.format('%-I:%M %p %Z')
 
             results.append({"lat": lat,
