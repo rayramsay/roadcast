@@ -11,8 +11,6 @@ import json
 GMAPS = googlemaps.Client(key=os.environ['GOOGLE_API_SERVER_KEY'])
 FIO_KEY = os.environ['FORECAST_API_KEY']
 
-SIZE_OF_BUCKET = 1800  # Get coords every thirty minutes (1800 seconds).
-
 ####################################
 
 
@@ -69,10 +67,21 @@ class Route(object):
 
         self.time_in_bucket = 0
         self.time_elapsed = 0
-        self.size_of_bucket = SIZE_OF_BUCKET
 
         # Get trip duration in seconds.
         self.overall_duration = int(directions_result["routes"][0]["legs"][0]["duration"]["value"])
+
+        if self.overall_duration < 7200:  # If trip duration less than 2 hrs (7200 sec):
+            self.size_of_bucket = 900  # Get coords every fifteen minutes (900 sec).
+            print "Trip is shorter than two hours; getting coords every 15 minutes."
+
+        elif self.overall_duration < 28800:  # If trip duration less than 8 hrs (28800 sec):
+            self.size_of_bucket = 1800  # Get coords every thirty minutes (1800 sec).
+            print "Trip is longer than two but less than eight hours; getting coords every 30 minutes."
+
+        else:
+            self.size_of_bucket = 3600  # Get coords every hour (3600 sec).
+            print "Trip is longer than eight hours; getting coords every hour."
 
         # Make coords for the starting location of the first step.
         lat = self.steps[0]["start_location"]["lat"]
@@ -90,9 +99,9 @@ class Route(object):
     def make_coords_time(self):
         """Add middle and ending coords, datetime tuples to route object."""
 
-        # If trip is shorter than 15 minutes, just pick middle coord.
-        if self.overall_duration < self.size_of_bucket:
-            print "I'm only getting the middle coords!"
+        # If trip is shorter than fifteen minutes, just pick middle coord.
+        if self.overall_duration < 900:
+            print "Trip is shorter than fifteen minutes; only getting the middle coords."
             for step in self.steps:
                 step_duration = int(step["duration"]["value"])
 
