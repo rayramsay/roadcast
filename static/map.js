@@ -42,17 +42,10 @@ function makeAndSetMarkers(response) {
     for (var i = 0; i < response.length; i++) {
 
         var markerLatLng = new google.maps.LatLng(response[i].lat, response[i].lng);
-        
-        var title;
-        if (response[i].fStatus === "OK") {
-            title = response[i].fTime + "\n" + response[i].fSummary + "\n" + response[i].fTemp + "℉";
-        } else {
-            title = response[i].fTime + "\n" + response[i].fStatus;
-        }
 
         var marker = new google.maps.Marker({
                 position: markerLatLng,
-                title: title,
+                map: map,
             });
 
         // To add the marker to the map, call setMap();
@@ -60,6 +53,20 @@ function makeAndSetMarkers(response) {
 
         // Add marker to global array.
         markersArray.push(marker);
+
+        // Make an empty infoWindow.
+        var infoWindow = new google.maps.InfoWindow();
+        
+        // Write contentString for infoWindow depending on forecast status.
+        var contentString;
+        if (response[i].fStatus === "OK") {
+            contentString = response[i].fTime + "<br>" + response[i].fSummary + "<br>" + response[i].fTemp + "℉";
+        } else {
+            contentString = response[i].fTime + "<br>" + response[i].fStatus;
+        }
+
+        infoWindow.setContent(contentString);
+        infoWindow.open(map, marker);
     }
 }
 
