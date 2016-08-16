@@ -39,12 +39,7 @@ function initMap(){
 
 function makeAndSetMarkers(response) {
 
-    // Delete existing markers.
-    markersArray.length = 0;
-
     for (var i = 0; i < response.length; i++) {
-
-        // debugger;
 
         var markerLatLng = new google.maps.LatLng(response[i].lat, response[i].lng);
 
@@ -73,6 +68,12 @@ function calculateAndDisplayRoute(directionsService, directionsDisplay) {
     }, function(response, status) {
       if (status === 'OK') {
         directionsDisplay.setDirections(response);
+
+        // Delete existing markers.
+        for (var i = 0; i < markersArray.length; i++) {
+            markersArray[i].setMap(null);
+        }
+        markersArray.length = 0;
 
         var formInputs = {
             "start": start,
