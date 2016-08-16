@@ -51,9 +51,7 @@ def handle_form():
 
     markers_infos = marker_info(coords_time)
 
-    # coords, summary, temp, time = marker_info(coords_time[1])
-
-    # result = {"lat": coords[0], "lng": coords[1], "fsummary": summary, "temp": math.floor(temp), "ftime": time}
+    print markers_infos
 
     # return jsonify(result)
 

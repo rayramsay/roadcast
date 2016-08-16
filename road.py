@@ -4,14 +4,16 @@ import forecastio
 import pendulum
 import json
 
+############# GLOBALS ##############
+
 # Remember to ``source secrets.sh``!
 
-gmaps = googlemaps.Client(key=os.environ['GOOGLE_API_SERVER_KEY'])
-fio_key = os.environ['FORECAST_API_KEY']
-
-### GLOBALS ###
+GMAPS = googlemaps.Client(key=os.environ['GOOGLE_API_SERVER_KEY'])
+FIO_KEY = os.environ['FORECAST_API_KEY']
 
 SIZE_OF_BUCKET = 900  # Get coords every fifteen minutes (900 seconds).
+
+####################################
 
 
 def dictify(directions_result):
@@ -24,7 +26,7 @@ def dictify(directions_result):
 #     """Given location as a human-readable string, return its latitude and
 #     longitude as a tuple of floats."""
 
-#     geocode_result = gmaps.geocode(loc_string)
+#     geocode_result = GMAPS.geocode(loc_string)
 #     lat = float(geocode_result[0]["geometry"]["location"]["lat"])
 #     lng = float(geocode_result[0]["geometry"]["location"]["lng"])
 #     tup = (lat, lng)
@@ -36,7 +38,7 @@ def format_time(coords, time):
     """Given a lat/lng tuple and time as a string, return a timezone-aware
     Pendulum datetime object."""
 
-    timezone_result = gmaps.timezone(coords)
+    timezone_result = GMAPS.timezone(coords)
     timezone_id = timezone_result["timeZoneId"]
 
     # Note that the time's date will be the current date in that timezone.
@@ -55,7 +57,7 @@ def get_forecast(coords, time):
     time = time.to_iso8601_string()
 
     url = 'https://api.forecast.io/forecast/%s/%s,%s,%s' \
-        % (fio_key, lat, lng, time)
+        % (FIO_KEY, lat, lng, time)
 
     return forecastio.manual(url)
 
@@ -209,33 +211,41 @@ def marker_info(coords_time):
     counter = 0
 
     for tup in coords_time:
+
         coords = tup[0]
         time = tup[1]
-        counter += 1
+
         forecast = get_forecast(coords, time).currently()
 
-        print forecast.time
-        print forecast.summary, forecast.icon
-        print forecast.precipProbability
-        print forecast.precipIntensity
-
+        summary = forecast.summary
+        icon = forecast.icon
+        precip_prob = forecast.precipProbability
+        precip_intensity = forecast.precipIntensity
         if forecast.precipIntensity > 0:
-            print forecast.precipType  # This is only defined if intensity > 0.
+            precip_type = forecast.precipType  # This is only defined if intensity > 0.
+        else:
+            precip_type = None
+        temp = forecast.temperature
+        cloud_cover = forecast.cloudCover
 
-        print forecast.temperature
-        print forecast.cloudCover
+        lat = coords[0]
+        lng = coords[1]
 
-    # FIXME: Figure out what you want from the forecast. Also format time as a string?
+        timezone_result = GMAPS.timezone(coords)
+        time = time.in_timezone(timezone_result["timeZoneId"])
+        time = time.format('%-I:%M %p %Z')
 
-    #     summary = forecast.summary
-    #     icon = forecast.icon
-    #     temp = forecast.temperature
-    #     precipProb = forecast.precipProbability
+        results[counter] = {"lat": lat,
+                            "lng": lng,
+                            "time": time,
+                            "fSummary": summary,
+                            "fIcon": icon,
+                            "fPrecipProb": precip_prob,
+                            "fPrecipIntensity": precip_intensity,
+                            "fPrecipType": precip_type,
+                            "fTemp": temp,
+                            "fCloudCover": cloud_cover}
 
-    #     if precipProb > 0:
-    #         precipType = forecast.precipType
-    #         precipIntensity = forecast.precipIntensity
+        counter += 1
 
-    #     results[counter] = {"summary": summary, "icon": icon}
-
-    # return results
+    return results
