@@ -42,12 +42,18 @@ function makeAndSetMarkers(response) {
     for (var i = 0; i < response.length; i++) {
 
         var markerLatLng = new google.maps.LatLng(response[i].lat, response[i].lng);
+        
+        var title;
+        if (response[i].fStatus === "OK") {
+            title = response[i].fTime + "\n" + response[i].fSummary + "\n" + response[i].fTemp + "℉";
+        } else {
+            title = response[i].fTime + "\n" + response[i].fStatus;
+        }
 
         var marker = new google.maps.Marker({
-            position: markerLatLng,
-            title: response[i].fTime + "\n" + response[i].fSummary + "\n" + response[i].fTemp + "℉",
-            // map: map
-        });
+                position: markerLatLng,
+                title: title,
+            });
 
         // To add the marker to the map, call setMap();
         marker.setMap(map);

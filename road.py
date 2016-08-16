@@ -11,7 +11,7 @@ import json
 GMAPS = googlemaps.Client(key=os.environ['GOOGLE_API_SERVER_KEY'])
 FIO_KEY = os.environ['FORECAST_API_KEY']
 
-SIZE_OF_BUCKET = 900  # Get coords every fifteen minutes (900 seconds).
+SIZE_OF_BUCKET = 1800  # Get coords every thirty minutes (1800 seconds).
 
 ####################################
 
@@ -19,19 +19,6 @@ SIZE_OF_BUCKET = 900  # Get coords every fifteen minutes (900 seconds).
 def dictify(directions_result):
     """Given directions_result as a string, make it into a dictionary."""
     return json.loads(directions_result)
-
-
-#FIXME: Does this still get used anywhere?
-# def get_lat_lng(loc_string):
-#     """Given location as a human-readable string, return its latitude and
-#     longitude as a tuple of floats."""
-
-#     geocode_result = GMAPS.geocode(loc_string)
-#     lat = float(geocode_result[0]["geometry"]["location"]["lat"])
-#     lng = float(geocode_result[0]["geometry"]["location"]["lng"])
-#     tup = (lat, lng)
-
-#     return tup
 
 
 def format_time(coords, time):
@@ -60,13 +47,6 @@ def get_forecast(coords, time):
         % (FIO_KEY, lat, lng, time)
 
     return forecastio.manual(url)
-
-
-def convert_time(time):
-    """Given a datetime object from Forecast.io, (e.g., forecast.time), convert
-    to a timezone-aware Pendulum datetime object."""
-
-    return pendulum.instance(time)
 
 
 def slice_step(step, fraction_needed):
@@ -217,8 +197,17 @@ def marker_info(coords_time):
 
         forecast = get_forecast(coords, time)
 
+        lat = coords[0]
+        lng = coords[1]
+
+        # Check timezone at coordinates.
+        # timezone_result = GMAPS.timezone(coords)
+        # time = time.in_timezone(timezone_result["timeZoneId"])
+        time = time.format('%-I:%M %p %Z')
+
         # Check to see if forecast was returned.
         if forecast.response.reason == "OK":
+            status = "OK"
 
             forecast = forecast.currently()
 
@@ -233,15 +222,8 @@ def marker_info(coords_time):
             temp = round(forecast.temperature)
             cloud_cover = forecast.cloudCover
 
-            lat = coords[0]
-            lng = coords[1]
-
-            # Check timezone at coordinates.
-            # timezone_result = GMAPS.timezone(coords)
-            # time = time.in_timezone(timezone_result["timeZoneId"])
-            time = time.format('%-I:%M %p %Z')
-
-            results.append({"lat": lat,
+            results.append({"fStatus": status,
+                            "lat": lat,
                             "lng": lng,
                             "fTime": time,
                             "fSummary": summary,
@@ -253,6 +235,33 @@ def marker_info(coords_time):
                             "fCloudCover": cloud_cover})
 
         else:
-            results.append("Forecast not available.")
+            status = "Forecast not available."
+
+            results.append({"fStatus": status,
+                            "lat": lat,
+                            "lng": lng,
+                            "fTime": time})
 
     return results
+
+####################################
+
+#FIXME: Does this still get used anywhere?
+def convert_time(time):
+    """Given a datetime object from Forecast.io, (e.g., forecast.time), convert
+    to a timezone-aware Pendulum datetime object."""
+
+    return pendulum.instance(time)
+
+
+#FIXME: Does this still get used anywhere?
+def get_lat_lng(loc_string):
+    """Given location as a human-readable string, return its latitude and
+    longitude as a tuple of floats."""
+
+    geocode_result = GMAPS.geocode(loc_string)
+    lat = float(geocode_result[0]["geometry"]["location"]["lat"])
+    lng = float(geocode_result[0]["geometry"]["location"]["lng"])
+    tup = (lat, lng)
+
+    return tup
