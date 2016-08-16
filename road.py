@@ -205,7 +205,8 @@ class Route(object):
 
 
 def marker_info(coords_time):
-    """Given a list of (coords, time) tuples, return the weather forecasts at those coords and times."""
+    """Given a list of coords/time tuples, construct a dictionary of weather
+    forecasts at those coords and times."""
 
     results = {}
     counter = 0
@@ -217,35 +218,38 @@ def marker_info(coords_time):
 
         forecast = get_forecast(coords, time).currently()
 
-        summary = forecast.summary
-        icon = forecast.icon
-        precip_prob = forecast.precipProbability
-        precip_intensity = forecast.precipIntensity
-        if forecast.precipIntensity > 0:
-            precip_type = forecast.precipType  # This is only defined if intensity > 0.
-        else:
-            precip_type = None
-        temp = forecast.temperature
-        cloud_cover = forecast.cloudCover
+        # Check to see if forecast was returned.
+        if forecast.response.reason == "OK":
 
-        lat = coords[0]
-        lng = coords[1]
+            summary = forecast.summary
+            icon = forecast.icon
+            precip_prob = forecast.precipProbability
+            precip_intensity = forecast.precipIntensity
+            if forecast.precipIntensity > 0:
+                precip_type = forecast.precipType  # This is only defined if intensity > 0.
+            else:
+                precip_type = None
+            temp = round(forecast.temperature)
+            cloud_cover = forecast.cloudCover
 
-        timezone_result = GMAPS.timezone(coords)
-        time = time.in_timezone(timezone_result["timeZoneId"])
-        time = time.format('%-I:%M %p %Z')
+            lat = coords[0]
+            lng = coords[1]
 
-        results[counter] = {"lat": lat,
-                            "lng": lng,
-                            "time": time,
-                            "fSummary": summary,
-                            "fIcon": icon,
-                            "fPrecipProb": precip_prob,
-                            "fPrecipIntensity": precip_intensity,
-                            "fPrecipType": precip_type,
-                            "fTemp": temp,
-                            "fCloudCover": cloud_cover}
+            timezone_result = GMAPS.timezone(coords)
+            time = time.in_timezone(timezone_result["timeZoneId"])
+            time = time.format('%-I:%M %p %Z')
 
-        counter += 1
+            results[counter] = {"lat": lat,
+                                "lng": lng,
+                                "time": time,
+                                "fSummary": summary,
+                                "fIcon": icon,
+                                "fPrecipProb": precip_prob,
+                                "fPrecipIntensity": precip_intensity,
+                                "fPrecipType": precip_type,
+                                "fTemp": temp,
+                                "fCloudCover": cloud_cover}
+
+            counter += 1
 
     return results

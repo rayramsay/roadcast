@@ -6,8 +6,6 @@ from flask_debugtoolbar import DebugToolbarExtension
 
 from road import dictify, marker_info, Route
 
-import math
-
 app = Flask(__name__)
 
 
@@ -44,19 +42,20 @@ def handle_form():
     departure_time = request.form.get("departure-time")
     directions_result = dictify(request.form.get("data"))
 
-    lil_route = Route(directions_result, departure_time, departure_day)
-    coords_time = lil_route.make_coords_time()
+    # Instantiate route object.
+    route = Route(directions_result, departure_time, departure_day)
+
+    # Make list of coordinates and datetimes.
+    coords_time = route.make_coords_time()
 
     print coords_time
 
-    markers_infos = marker_info(coords_time)
+    # Get weather info for coords and times.
+    result = marker_info(coords_time)
 
-    print markers_infos
+    print result
 
-    # return jsonify(result)
-
-    return redirect("/")
-
+    return jsonify(result)
 
 if __name__ == "__main__":
 
