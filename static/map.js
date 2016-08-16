@@ -2,8 +2,8 @@
 
 // global variables
 
-// var markersArray = [];
 var map;
+var markersArray = [];
 
 // This code is based on the demo for the Google Maps lecture, an example
 // from the Google Maps JavaScript API docs, and an example from the AJAX
@@ -14,7 +14,7 @@ function initMap(){
     // Specify where the map is centered.
     // Defining this variable outside of the map options makes
     // it easier to dynamically change if you need to recenter.
-    var myLatLng = {lat: 37.788668, lng: -122.411499}; // Hackbright
+    var myLatLng = {lat: 37.788668, lng: -122.411499};  // Hackbright
 
     var directionsDisplay = new google.maps.DirectionsRenderer;
     var directionsService = new google.maps.DirectionsService;
@@ -27,6 +27,8 @@ function initMap(){
 
     directionsDisplay.setMap(map);
     
+    // This event handler is inside initMap so that it has access to
+    // directionsService and directionsDisplay.
     var onSubmitHandler = function(evt) {
         evt.preventDefault();
         calculateAndDisplayRoute(directionsService, directionsDisplay);
@@ -35,20 +37,29 @@ function initMap(){
     $("#directions-request").on("submit", onSubmitHandler);
 }
 
-function makeAndSetMarker(response) {
-    var markerLatLng = new google.maps.LatLng(response.lat, response.lng);
+function makeAndSetMarkers(response) {
 
-    var marker = new google.maps.Marker({
-        position: markerLatLng,
-        title: response.ftime + "\n" + response.fsummary + "\n" + response.temp + "℉"
-        // map: map
-    });
+    // Delete existing markers.
+    markersArray.length = 0;
 
-    // To add the marker to the map, call setMap();
-    marker.setMap(map);
+    for (var i = 0; i < response.length; i++) {
 
-    // Add marker to global array.
-    // markersArray.push(marker);
+        // debugger;
+
+        var markerLatLng = new google.maps.LatLng(response[i].lat, response[i].lng);
+
+        var marker = new google.maps.Marker({
+            position: markerLatLng,
+            title: response[i].fTime + "\n" + response[i].fSummary + "\n" + response[i].fTemp + "℉",
+            // map: map
+        });
+
+        // To add the marker to the map, call setMap();
+        marker.setMap(map);
+
+        // Add marker to global array.
+        markersArray.push(marker);
+    }
 }
 
 function calculateAndDisplayRoute(directionsService, directionsDisplay) {
@@ -72,9 +83,9 @@ function calculateAndDisplayRoute(directionsService, directionsDisplay) {
             "data": JSON.stringify(response)
         };
 
-        $.post("/request",
+        $.post("/request.json",
                formInputs,
-               makeAndSetMarker);
+               makeAndSetMarkers);
       } else {
         window.alert('Directions request failed due to ' + status);
       }

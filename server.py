@@ -8,7 +8,6 @@ from road import dictify, marker_info, Route
 
 app = Flask(__name__)
 
-
 # Remember to ``source secrets.sh``!
 # Required to use Flask sessions and the debug toolbar.
 app.secret_key = os.environ['FLASK_SECRET_KEY']
@@ -30,7 +29,7 @@ def index():
 
 
 # I am a POST request so that the long JSON string is not passed as an argument.
-@app.route('/request', methods=['POST'])
+@app.route('/request.json', methods=['POST'])
 def handle_form():
     """Handles input from user."""
 
@@ -43,10 +42,10 @@ def handle_form():
     directions_result = dictify(request.form.get("data"))
 
     # Instantiate route object.
-    route = Route(directions_result, departure_time, departure_day)
+    timed_route = Route(directions_result, departure_time, departure_day)
 
     # Make list of coordinates and datetimes.
-    coords_time = route.make_coords_time()
+    coords_time = timed_route.make_coords_time()
 
     print coords_time
 
@@ -56,6 +55,7 @@ def handle_form():
     print result
 
     return jsonify(result)
+
 
 if __name__ == "__main__":
 

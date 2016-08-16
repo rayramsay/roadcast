@@ -205,21 +205,22 @@ class Route(object):
 
 
 def marker_info(coords_time):
-    """Given a list of coords/time tuples, construct a dictionary of weather
+    """Given a list of coords/time tuples, construct a list of weather
     forecasts at those coords and times."""
 
-    results = {}
-    counter = 0
+    results = []
 
     for tup in coords_time:
 
         coords = tup[0]
         time = tup[1]
 
-        forecast = get_forecast(coords, time).currently()
+        forecast = get_forecast(coords, time)
 
         # Check to see if forecast was returned.
         if forecast.response.reason == "OK":
+
+            forecast = forecast.currently()
 
             summary = forecast.summary
             icon = forecast.icon
@@ -239,17 +240,18 @@ def marker_info(coords_time):
             time = time.in_timezone(timezone_result["timeZoneId"])
             time = time.format('%-I:%M %p %Z')
 
-            results[counter] = {"lat": lat,
-                                "lng": lng,
-                                "time": time,
-                                "fSummary": summary,
-                                "fIcon": icon,
-                                "fPrecipProb": precip_prob,
-                                "fPrecipIntensity": precip_intensity,
-                                "fPrecipType": precip_type,
-                                "fTemp": temp,
-                                "fCloudCover": cloud_cover}
+            results.append({"lat": lat,
+                            "lng": lng,
+                            "fTime": time,
+                            "fSummary": summary,
+                            "fIcon": icon,
+                            "fPrecipProb": precip_prob,
+                            "fPrecipIntensity": precip_intensity,
+                            "fPrecipType": precip_type,
+                            "fTemp": temp,
+                            "fCloudCover": cloud_cover})
 
-            counter += 1
+        else:
+            results.append("Forecast not available.")
 
     return results
