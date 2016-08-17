@@ -1,13 +1,15 @@
 "use strict";
 
-// global variables
+// This code is based on the demo for the Google Maps lecture (bears.js),
+// examples from the Google Maps JavaScript API docs, and an example from the
+// AJAX lecture.
 
+//////////////////////
+// global variables //
 var map;
 var markersArray = [];
-
-// This code is based on the demo for the Google Maps lecture, an example
-// from the Google Maps JavaScript API docs, and an example from the AJAX
-// lecture.
+var infoWindow = new google.maps.InfoWindow();
+//////////////////////
 
 function initMap(){
     
@@ -38,14 +40,13 @@ function initMap(){
 }
 
 function makeAndSetMarkers(response) {
-
     for (var i = 0; i < response.length; i++) {
 
         var markerLatLng = new google.maps.LatLng(response[i].lat, response[i].lng);
 
         var marker = new google.maps.Marker({
                 position: markerLatLng,
-                map: map,
+                // map: map,
             });
 
         // To add the marker to the map, call setMap();
@@ -54,20 +55,37 @@ function makeAndSetMarkers(response) {
         // Add marker to global array.
         markersArray.push(marker);
 
-        // Make an empty infoWindow.
-        var infoWindow = new google.maps.InfoWindow();
-        
-        // Write contentString for infoWindow depending on forecast status.
-        var contentString;
-        if (response[i].fStatus === "OK") {
-            contentString = response[i].fTime + "<br>" + response[i].fSummary + "<br>" + response[i].fTemp + "℉";
-        } else {
-            contentString = response[i].fTime + "<br>" + response[i].fStatus;
-        }
+        // Make infoWindow content.
+        var weatherData = response[i];
+        var contentString = makeContentString(weatherData);
 
-        infoWindow.setContent(contentString);
-        infoWindow.open(map, marker);
+        // Inside the loop, call bindInfoWindow, passing it the marker, map,
+        // infoWindow and contentString.
+        bindInfoWindow(marker, map, infoWindow, contentString);
     }
+}
+
+function bindInfoWindow(marker, map, infoWindow, contentString) {
+    // When a marker is clicked, set the content for the window with the content
+    // that's passed through, then open the window with the new content on the
+    // marker that's clicked.
+
+      google.maps.event.addListener(marker, 'click', function () {
+          infoWindow.setContent(contentString);
+          infoWindow.open(map, marker);
+      });
+}
+
+function makeContentString(weatherData) {
+    // Write contentString for infoWindow depending on forecast status.
+
+    var contentString;
+    if (weatherData.fStatus === "OK") {
+        contentString = weatherData.fTime + "<br>" + weatherData.fSummary + "<br>" + weatherData.fTemp + "℉";
+    } else { 
+        contentString = weatherData.fTime + "<br>" + weatherData.fStatus;
+    }
+    return contentString;
 }
 
 function calculateAndDisplayRoute(directionsService, directionsDisplay) {
