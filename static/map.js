@@ -24,12 +24,9 @@ function initMap(){
     // Create a map object and specify the DOM element for display.
     map = new google.maps.Map(document.getElementById('map'), {
         center: myLatLng,
-        zoom: 10,
-        scrollwheel: false,
-        zoomControl: true,
-        panControl: false,
-        streetViewControl: false,
-        mapTypeControl: false
+        zoom: 12,
+        mapTypeControl: false,
+        streetViewControl: false,        
     });
 
     directionsDisplay.setMap(map);
@@ -49,11 +46,14 @@ function makeAndSetMarkers(response) {
 
         var markerLatLng = new google.maps.LatLng(response[i].lat, response[i].lng);
         var datapoint = response[i];
+        var contentString = makeContentString(response[i]);
+        var titleString = makeTitleString(datapoint);
         var myImageURL = pickImage(datapoint);
 
         var marker = new google.maps.Marker({
             position: markerLatLng,
             icon: myImageURL,
+            title: titleString,
             map: map
         });
 
@@ -64,8 +64,7 @@ function makeAndSetMarkers(response) {
         // Add marker to global array.
         markersArray.push(marker);
 
-        // Make infoWindow content.
-        var contentString = makeContentString(datapoint);
+        // Make infoWindows.
         bindInfoWindow(marker, map, infoWindow, contentString);
     }
 }
@@ -83,10 +82,6 @@ function bindInfoWindow(marker, map, infoWindow, contentString) {
 }
 
 function pickImage(datapoint) {
-    // debugger;
-
-    console.log(datapoint);
-    console.log(datapoint.fIcon);
     var URLBase = "/static/img/";
     var myImage;
 
@@ -111,21 +106,32 @@ function pickImage(datapoint) {
     }
     
     var myImageURL = URLBase + myImage;
-    console.log(myImageURL);
     return myImageURL;
 }
 
 function makeContentString(datapoint) {
     // Write contentString for infoWindow depending on forecast status.
 
-    var contentString;
     if (datapoint.fStatus === "OK") {
         //FIXME: Update this to include rain probability/intensity if available.
+        var contentString;
         contentString = datapoint.fTime + "<br>" + datapoint.fSummary + "<br>" + datapoint.fTemp + "℉";
     } else { 
         contentString = datapoint.fTime + "<br>" + datapoint.fStatus;
     }
     return contentString;
+}
+
+function makeTitleString(datapoint) {
+    // Write titleString for marker depending on forecast status.
+    var titleString;
+    if (datapoint.fStatus === "OK") {
+        //FIXME: Update this to include rain probability/intensity if available.
+        titleString = datapoint.fTime + "\n" + datapoint.fSummary + "\n" + datapoint.fTemp + "℉";
+    } else { 
+        titleString = datapoint.fTime + "\n" + datapoint.fStatus;
+    }
+    return titleString;
 }
 
 function calculateAndDisplayRoute(directionsService, directionsDisplay) {
