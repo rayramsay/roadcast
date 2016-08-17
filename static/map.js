@@ -43,24 +43,24 @@ function makeAndSetMarkers(response) {
     for (var i = 0; i < response.length; i++) {
 
         var markerLatLng = new google.maps.LatLng(response[i].lat, response[i].lng);
+        var datapoint = response[i];
+        var myImageURL = pickImage(datapoint);
 
         var marker = new google.maps.Marker({
-                position: markerLatLng,
-                // map: map,
-            });
+            position: markerLatLng,
+            icon: myImageURL,
+            map: map
+        });
 
-        // To add the marker to the map, call setMap();
-        marker.setMap(map);
+
+        // The marker's map is set above, but alternately we could call setMap();
+        // marker.setMap(map);
 
         // Add marker to global array.
         markersArray.push(marker);
 
         // Make infoWindow content.
-        var weatherData = response[i];
-        var contentString = makeContentString(weatherData);
-
-        // Inside the loop, call bindInfoWindow, passing it the marker, map,
-        // infoWindow and contentString.
+        var contentString = makeContentString(datapoint);
         bindInfoWindow(marker, map, infoWindow, contentString);
     }
 }
@@ -70,20 +70,53 @@ function bindInfoWindow(marker, map, infoWindow, contentString) {
     // that's passed through, then open the window with the new content on the
     // marker that's clicked.
 
-      google.maps.event.addListener(marker, 'click', function () {
-          infoWindow.setContent(contentString);
-          infoWindow.open(map, marker);
-      });
+    google.maps.event.addListener(marker, 'click', function () {
+        // infoWindow.close();  // This is unnecessary.
+        infoWindow.setContent(contentString);
+        infoWindow.open(map, marker);
+    });
 }
 
-function makeContentString(weatherData) {
+function pickImage(datapoint) {
+    // debugger;
+
+    console.log(datapoint);
+    console.log(datapoint.fIcon);
+    var URLBase = "/static/img/";
+    var myImage;
+
+    if (datapoint.fIcon === "clear-night") {
+        myImage = "moonstar.png";
+    } else if (datapoint.fIcon === "clear-day") {
+        myImage = "sunny.png";
+    } else if (datapoint.fIcon === "rain" || datapoint.fIcon === "sleet") {
+        myImage = "rainy.png";
+    } else if (datapoint.fIcon === "snow") {
+        myImage = "snowy-2.png";
+    } else if (datapoint.fIcon === "wind") {
+        myImage = "wind-2.png";
+    } else if (datapoint.fIcon === "partly-cloudy-day") {
+        myImage = "cloudysunny.png";
+    } else if (datapoint.fIcon === "tornado") {
+        myImage = "tornado-2.png";
+    } else if (datapoint.fIcon === "thunderstorm") {
+        myImage = "thunderstorm.png";
+    } else {
+        myImage = "cloudy.png";
+    }
+    
+    var myImageURL = URLBase + myImage;
+    console.log(myImageURL);
+    return myImageURL;
+}
+
+function makeContentString(datapoint) {
     // Write contentString for infoWindow depending on forecast status.
 
     var contentString;
-    if (weatherData.fStatus === "OK") {
-        contentString = weatherData.fTime + "<br>" + weatherData.fSummary + "<br>" + weatherData.fTemp + "℉";
-    } else { 
-        contentString = weatherData.fTime + "<br>" + weatherData.fStatus;
+    if (datapoint.fStatus === "OK") {
+        contentString = datapoint.fTime + "<br>" + datapoint.fSummary + "<br>" + datapoint.fTemp + "℉";
+        contentString = datapoint.fTime + "<br>" + datapoint.fStatus;
     }
     return contentString;
 }

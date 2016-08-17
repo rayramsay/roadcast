@@ -2,7 +2,18 @@ forecast.summary
     A human-readable text summary of this data point. (Do not use this value for automated purposes: you should use the icon property, instead.)
 
 forecast.icon
-    A machine-readable text summary of this data point, suitable for selecting an icon for display. If defined, this property will have one of the following values: clear-day, clear-night, rain, snow, sleet, wind, fog, cloudy, partly-cloudy-day, or partly-cloudy-night. (Developers should ensure that a sensible default is defined, as additional values, such as hail, thunderstorm, or tornado, may be defined in the future.)
+    A machine-readable text summary of this data point, suitable for selecting an icon for display. If defined, this property will have one of the following values:
+        clear-day
+        clear-night
+        rain
+        snow
+        sleet
+        wind
+        fog
+        cloudy
+        partly-cloudy-day
+        partly-cloudy-night
+    (Developers should ensure that a sensible default is defined, as additional values, such as hail, thunderstorm, or tornado, may be defined in the future.)
 
 forecast.precipIntensity
     A numerical value representing the average expected intensity (in inches of liquid water per hour) of precipitation occurring at the given time conditional on probability (that is, assuming any precipitation occurs at all). A very rough guide is that a value of 0 in./hr. corresponds to no precipitation, 0.002 in./hr. corresponds to very light precipitation, 0.017 in./hr. corresponds to light precipitation, 0.1 in./hr. corresponds to moderate precipitation, and 0.4 in./hr. corresponds to heavy precipitation.
