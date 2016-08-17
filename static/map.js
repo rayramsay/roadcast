@@ -41,19 +41,25 @@ function initMap(){
     $("#directions-request").on("submit", onSubmitHandler);
 }
 
-function makeAndSetMarkers(response) {
-    for (var i = 0; i < response.length; i++) {
+function makeMarkersAndReport(data) {
+    debugger;
+    var markerInfo = data.markerInfo;
+    console.log(markerInfo);
+    makeAndSetMarkers(markerInfo);
+}
 
-        var markerLatLng = new google.maps.LatLng(response[i].lat, response[i].lng);
-        var datapoint = response[i];
-        var contentString = makeContentString(response[i]);
-        // var titleString = makeTitleString(datapoint);
+function makeAndSetMarkers(markerInfo) {
+
+    for (var i = 0; i < markerInfo.length; i++) {
+
+        var markerLatLng = new google.maps.LatLng(markerInfo[i].lat, markerInfo[i].lng);
+        var datapoint = markerInfo[i];
+        var contentString = makeContentString(datapoint);
         var myImageURL = pickImage(datapoint);
 
         var marker = new google.maps.Marker({
             position: markerLatLng,
             icon: myImageURL,
-            // title: titleString,
             map: map
         });
 
@@ -74,10 +80,19 @@ function bindInfoWindow(marker, map, infoWindow, contentString) {
     // that's passed through, then open the window with the new content on the
     // marker that's clicked.
 
-    google.maps.event.addListener(marker, 'mousemove', function () {
-        // infoWindow.close();  // This is unnecessary.
+    // google.maps.event.addListener(marker, 'mousemove', function () {
+    //     // infoWindow.close();  // This is unnecessary.
+    //     infoWindow.setContent(contentString);
+    //     infoWindow.open(map, marker);
+    // });
+
+    google.maps.event.addListener(marker, 'mouseover', function () {
         infoWindow.setContent(contentString);
         infoWindow.open(map, marker);
+    });
+
+    google.maps.event.addListener(marker, 'mouseout', function () {
+        infoWindow.close();
     });
 }
 
@@ -122,18 +137,6 @@ function makeContentString(datapoint) {
     return contentString;
 }
 
-function makeTitleString(datapoint) {
-    // Write titleString for marker depending on forecast status.
-    var titleString;
-    if (datapoint.fStatus === "OK") {
-        //FIXME: Update this to include rain probability/intensity if available.
-        titleString = datapoint.fTime + "\n" + datapoint.fSummary + "\n" + datapoint.fTemp + "℉";
-    } else { 
-        titleString = datapoint.fTime + "\n" + datapoint.fStatus;
-    }
-    return titleString;
-}
-
 function calculateAndDisplayRoute(directionsService, directionsDisplay) {
     var start = document.getElementById('start').value;
     var end = document.getElementById('end').value;
@@ -163,7 +166,7 @@ function calculateAndDisplayRoute(directionsService, directionsDisplay) {
 
         $.post("/request.json",
                formInputs,
-               makeAndSetMarkers);
+               makeMarkersAndReport);
       } else {
         window.alert('Directions request failed due to ' + status);
       }
