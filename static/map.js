@@ -18,13 +18,18 @@ function initMap(){
     // it easier to dynamically change if you need to recenter.
     var myLatLng = {lat: 37.788668, lng: -122.411499};  // Hackbright
 
-    var directionsDisplay = new google.maps.DirectionsRenderer;
-    var directionsService = new google.maps.DirectionsService;
+    var directionsDisplay = new google.maps.DirectionsRenderer({suppressMarkers: true});
+    var directionsService = new google.maps.DirectionsService();
 
     // Create a map object and specify the DOM element for display.
     map = new google.maps.Map(document.getElementById('map'), {
         center: myLatLng,
         zoom: 10,
+        scrollwheel: false,
+        zoomControl: true,
+        panControl: false,
+        streetViewControl: false,
+        mapTypeControl: false
     });
 
     directionsDisplay.setMap(map);
@@ -115,6 +120,7 @@ function makeContentString(datapoint) {
 
     var contentString;
     if (datapoint.fStatus === "OK") {
+        //FIXME: Update this to include rain probability/intensity if available.
         contentString = datapoint.fTime + "<br>" + datapoint.fSummary + "<br>" + datapoint.fTemp + "℉";
     } else { 
         contentString = datapoint.fTime + "<br>" + datapoint.fStatus;

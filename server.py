@@ -50,10 +50,11 @@ def handle_form():
     print coords_time
 
     # Get weather info for coords and times.
+    # FIXME: Remember to put me back.
     # result = marker_info(coords_time)
 
-    #FIXME: I'm just here so we don't run out of weather calls.
-    result = [{'fPrecipType': None, 'fStatus': 'OK', 'fTemp': 67.0, 'fCloudCover': 0.15, 'fTime': '6:33 PM PDT', 'lat': 37.8043732, 'lng': -122.27113939999998, 'fIcon': u'clear-day', 'fSummary': u'Clear', 'fPrecipProb': 0, 'fPrecipIntensity': 0}, {'fPrecipType': None, 'fStatus': 'OK', 'fTemp': 63.0, 'fCloudCover': 0.23, 'fTime': '6:48 PM PDT', 'lat': 37.77228, 'lng': -122.40669000000001, 'fIcon': u'clear-day', 'fSummary': u'Clear', 'fPrecipProb': 0, 'fPrecipIntensity': 0}, {'fPrecipType': None, 'fStatus': 'OK', 'fTemp': 62.0, 'fCloudCover': 0.26, 'fTime': '6:52 PM PDT', 'lat': 37.7749901, 'lng': -122.41949260000001, 'fIcon': u'partly-cloudy-day', 'fSummary': u'Partly Cloudy', 'fPrecipProb': 0, 'fPrecipIntensity': 0}]
+    # FIXME: I'm just here so we don't run out of weather calls.
+    result = [{'fPrecipType': None, 'fStatus': 'OK', 'fTemp': 69.0, 'fCloudCover': 0.11, 'fTime': '2:33 PM PDT', 'lat': 37.8043732, 'lng': -122.27113939999998, 'fIcon': u'clear-day', 'fSummary': u'Clear', 'fPrecipProb': 0, 'fPrecipIntensity': 0}, {'fPrecipType': u'rain', 'fStatus': 'OK', 'fTemp': 64.0, 'fCloudCover': 0.16, 'fTime': '2:48 PM PDT', 'lat': 37.77228, 'lng': -122.40669000000001, 'fIcon': u'clear-day', 'fSummary': u'Clear', 'fPrecipProb': 0.31, 'fPrecipIntensity': 0.0032}, {'fPrecipType': None, 'fStatus': 'OK', 'fTemp': 63.0, 'fCloudCover': 0.17, 'fTime': '2:52 PM PDT', 'lat': 37.7749901, 'lng': -122.41949260000001, 'fIcon': u'clear-day', 'fSummary': u'Clear', 'fPrecipProb': 0, 'fPrecipIntensity': 0}]
 
     print result
 
@@ -64,6 +65,9 @@ if __name__ == "__main__":
 
     # Set debug = True in order to invoke the DebugToolbarExtension.
     app.debug = True
+
+    # There's currently a bug in flask 0.11 that prevents template reloading.
+    app.jinja_env.auto_reload = True
 
     # Use the DebugToolbarExtension.
     DebugToolbarExtension(app)
