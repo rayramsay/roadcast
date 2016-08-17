@@ -3,6 +3,7 @@ import googlemaps
 import forecastio
 import pendulum
 import json
+from collections import Counter
 
 ############# GLOBALS ##############
 
@@ -11,8 +12,11 @@ import json
 GMAPS = googlemaps.Client(key=os.environ['GOOGLE_API_SERVER_KEY'])
 FIO_KEY = os.environ['FORECAST_API_KEY']
 
-####################################
+######### FIXME: MOCK DATA #########
 
+results = [{'fPrecipType': u'rain', 'fStatus': 'OK', 'fTemp': 77.0, 'fCloudCover': 1, 'fTime': '2:33 PM EDT', 'lat': 39.8465196, 'lng': -82.81250210000002, 'fIcon': u'rain', 'fSummary': u'Drizzle', 'fPrecipProb': 0.47, 'fPrecipIntensity': 0.0179}, {'fPrecipType': u'rain', 'fStatus': 'OK', 'fTemp': 77.0, 'fCloudCover': 1, 'fTime': '2:48 PM EDT', 'lat': 39.94717, 'lng': -82.84570000000001, 'fIcon': u'rain', 'fSummary': u'Drizzle', 'fPrecipProb': 0.43, 'fPrecipIntensity': 0.0112}, {'fPrecipType': u'rain', 'fStatus': 'OK', 'fTemp': 79.0, 'fCloudCover': 0.98, 'fTime': '3:03 PM EDT', 'lat': 40.11462, 'lng': -82.92744, 'fIcon': u'cloudy', 'fSummary': u'Overcast', 'fPrecipProb': 0.26, 'fPrecipIntensity': 0.0065}, {'fPrecipType': u'rain', 'fStatus': 'OK', 'fTemp': 79.0, 'fCloudCover': 0.97, 'fTime': '3:07 PM EDT', 'lat': 40.1262429, 'lng': -82.92908390000002, 'fIcon': u'cloudy', 'fSummary': u'Overcast', 'fPrecipProb': 0.24, 'fPrecipIntensity': 0.0062}]
+
+####################################
 
 def dictify(directions_result):
     """Given directions_result as a string, make it into a dictionary."""
@@ -252,6 +256,56 @@ def marker_info(coords_time):
                             "fTime": time})
 
     return results
+
+
+def weather_report(weather_results):
+    """Given a list of weather result dictionaries, generate a weather report
+    dictionary for the trip."""
+
+    weather_report = {}
+
+    mode = modal_weather(weather_results)
+    weather_report["mode"] = mode
+
+    avg = avg_temp(weather_results)
+    weather_report["avg"] = avg
+
+    print weather_report
+
+    # Cumulative precipProb per precipType x precipIntensity
+    # "It is forecast to be dry."
+    # Score
+
+
+def modal_weather(weather_results):
+    """Given a list of weather result dictionaries, returns the modal weather as
+    a string.
+
+    In the event of multi-modality, chooses an arbitrary mode."""
+
+    cnt = Counter()
+    for result in weather_results:
+        summary = result["fSummary"]
+        cnt[summary] += 1
+    mode = cnt.most_common(1)
+    mode = mode[0][0].lower()
+
+    return mode
+
+
+def avg_temp(weather_results):
+    """Given a list of weather result dictionaries, returns the average
+    temperature as an integer."""
+
+    numerator = 0
+    denominator = len(weather_results)
+    for result in weather_results:
+        temp = result["fTemp"]
+        numerator += temp
+    mean = int(numerator/denominator)
+
+    return mean
+
 
 ####################################
 
