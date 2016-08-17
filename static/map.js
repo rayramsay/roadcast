@@ -47,13 +47,13 @@ function makeAndSetMarkers(response) {
         var markerLatLng = new google.maps.LatLng(response[i].lat, response[i].lng);
         var datapoint = response[i];
         var contentString = makeContentString(response[i]);
-        var titleString = makeTitleString(datapoint);
+        // var titleString = makeTitleString(datapoint);
         var myImageURL = pickImage(datapoint);
 
         var marker = new google.maps.Marker({
             position: markerLatLng,
             icon: myImageURL,
-            title: titleString,
+            // title: titleString,
             map: map
         });
 
@@ -74,7 +74,7 @@ function bindInfoWindow(marker, map, infoWindow, contentString) {
     // that's passed through, then open the window with the new content on the
     // marker that's clicked.
 
-    google.maps.event.addListener(marker, 'click', function () {
+    google.maps.event.addListener(marker, 'mousemove', function () {
         // infoWindow.close();  // This is unnecessary.
         infoWindow.setContent(contentString);
         infoWindow.open(map, marker);
