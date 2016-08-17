@@ -116,6 +116,7 @@ function makeContentString(datapoint) {
     var contentString;
     if (datapoint.fStatus === "OK") {
         contentString = datapoint.fTime + "<br>" + datapoint.fSummary + "<br>" + datapoint.fTemp + "℉";
+    } else { 
         contentString = datapoint.fTime + "<br>" + datapoint.fStatus;
     }
     return contentString;
