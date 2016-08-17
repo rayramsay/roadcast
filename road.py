@@ -14,9 +14,12 @@ FIO_KEY = os.environ['FORECAST_API_KEY']
 
 ######### FIXME: MOCK DATA #########
 
-results = [{'fPrecipType': u'rain', 'fStatus': 'OK', 'fTemp': 77.0, 'fCloudCover': 1, 'fTime': '2:33 PM EDT', 'lat': 39.8465196, 'lng': -82.81250210000002, 'fIcon': u'rain', 'fSummary': u'Drizzle', 'fPrecipProb': 0.47, 'fPrecipIntensity': 0.0179}, {'fPrecipType': u'rain', 'fStatus': 'OK', 'fTemp': 77.0, 'fCloudCover': 1, 'fTime': '2:48 PM EDT', 'lat': 39.94717, 'lng': -82.84570000000001, 'fIcon': u'rain', 'fSummary': u'Drizzle', 'fPrecipProb': 0.43, 'fPrecipIntensity': 0.0112}, {'fPrecipType': u'rain', 'fStatus': 'OK', 'fTemp': 79.0, 'fCloudCover': 0.98, 'fTime': '3:03 PM EDT', 'lat': 40.11462, 'lng': -82.92744, 'fIcon': u'cloudy', 'fSummary': u'Overcast', 'fPrecipProb': 0.26, 'fPrecipIntensity': 0.0065}, {'fPrecipType': u'rain', 'fStatus': 'OK', 'fTemp': 79.0, 'fCloudCover': 0.97, 'fTime': '3:07 PM EDT', 'lat': 40.1262429, 'lng': -82.92908390000002, 'fIcon': u'cloudy', 'fSummary': u'Overcast', 'fPrecipProb': 0.24, 'fPrecipIntensity': 0.0062}]
+sunny_results = [{'fPrecipType': None, 'fStatus': 'OK', 'fTemp': 71.0, 'fCloudCover': 0.11, 'fTime': '2:33 PM PDT', 'lat': 37.8043732, 'lng': -122.27113939999998, 'fIcon': u'clear-day', 'fSummary': u'Clear', 'fPrecipProb': 0, 'fPrecipIntensity': 0}, {'fPrecipType': None, 'fStatus': 'OK', 'fTemp': 67.0, 'fCloudCover': 0.15, 'fTime': '2:48 PM PDT', 'lat': 37.77228, 'lng': -122.40669000000001, 'fIcon': u'clear-day', 'fSummary': u'Clear', 'fPrecipProb': 0, 'fPrecipIntensity': 0}, {'fPrecipType': None, 'fStatus': 'OK', 'fTemp': 66.0, 'fCloudCover': 0.15, 'fTime': '2:52 PM PDT', 'lat': 37.7749901, 'lng': -122.41949260000001, 'fIcon': u'clear-day', 'fSummary': u'Clear', 'fPrecipProb': 0, 'fPrecipIntensity': 0}]
+rainy_results = [{'fPrecipType': u'rain', 'fStatus': 'OK', 'fTemp': 77.0, 'fCloudCover': 1, 'fTime': '2:33 PM EDT', 'lat': 39.8465196, 'lng': -82.81250210000002, 'fIcon': u'rain', 'fSummary': u'Drizzle', 'fPrecipProb': 0.47, 'fPrecipIntensity': 0.0179}, {'fPrecipType': u'rain', 'fStatus': 'OK', 'fTemp': 77.0, 'fCloudCover': 1, 'fTime': '2:48 PM EDT', 'lat': 39.94717, 'lng': -82.84570000000001, 'fIcon': u'rain', 'fSummary': u'Drizzle', 'fPrecipProb': 0.43, 'fPrecipIntensity': 0.0112}, {'fPrecipType': u'rain', 'fStatus': 'OK', 'fTemp': 79.0, 'fCloudCover': 0.98, 'fTime': '3:03 PM EDT', 'lat': 40.11462, 'lng': -82.92744, 'fIcon': u'cloudy', 'fSummary': u'Overcast', 'fPrecipProb': 0.26, 'fPrecipIntensity': 0.0065}, {'fPrecipType': u'rain', 'fStatus': 'OK', 'fTemp': 79.0, 'fCloudCover': 0.97, 'fTime': '3:07 PM EDT', 'lat': 40.1262429, 'lng': -82.92908390000002, 'fIcon': u'cloudy', 'fSummary': u'Overcast', 'fPrecipProb': 0.24, 'fPrecipIntensity': 0.0062}]
+mixed_results = [{'fPrecipType': None, 'fStatus': 'OK', 'fTemp': 41.0, 'fCloudCover': 0.11, 'fTime': '2:33 PM PDT', 'lat': 37.8043732, 'lng': -122.27113939999998, 'fIcon': u'clear-day', 'fSummary': u'Clear', 'fPrecipProb': 0, 'fPrecipIntensity': 0}, {'fPrecipType': u'sleet', 'fStatus': 'OK', 'fTemp': 34.0, 'fCloudCover': 1, 'fTime': '2:33 PM EDT', 'lat': 39.8465196, 'lng': -82.81250210000002, 'fIcon': u'sleet', 'fSummary': u'Wintery Mix', 'fPrecipProb': 0.47, 'fPrecipIntensity': 0.0179}, {'fPrecipType': u'rain', 'fStatus': 'OK', 'fTemp': 37.0, 'fCloudCover': 1, 'fTime': '2:48 PM EDT', 'lat': 39.94717, 'lng': -82.84570000000001, 'fIcon': u'rain', 'fSummary': u'Drizzle', 'fPrecipProb': 0.43, 'fPrecipIntensity': 0.0112}, {'fPrecipType': u'snow', 'fStatus': 'OK', 'fTemp': 30.0, 'fCloudCover': 1, 'fTime': '2:33 PM EDT', 'lat': 39.8465196, 'lng': -82.81250210000002, 'fIcon': u'snow', 'fSummary': u'Flurries', 'fPrecipProb': 0.47, 'fPrecipIntensity': 0.0179}, {'fPrecipType': u'snow', 'fStatus': 'OK', 'fTemp': 30.0, 'fCloudCover': 1, 'fTime': '2:48 PM EDT', 'lat': 39.94717, 'lng': -82.84570000000001, 'fIcon': u'snow', 'fSummary': u'Flurries', 'fPrecipProb': 0.43, 'fPrecipIntensity': 0.0112}]
 
 ####################################
+
 
 def dictify(directions_result):
     """Given directions_result as a string, make it into a dictionary."""
@@ -197,7 +200,7 @@ class Route(object):
             self.fill_buckets(sliced_step)
 
 
-def marker_info(coords_time):
+def make_marker_info(coords_time):
     """Given a list of coords/time tuples, construct a list of weather
     forecasts at those coords and times."""
 
@@ -258,23 +261,30 @@ def marker_info(coords_time):
     return results
 
 
-def weather_report(weather_results):
+def make_weather_report(weather_results):
     """Given a list of weather result dictionaries, generate a weather report
     dictionary for the trip."""
 
     weather_report = {}
+    precip_types = ["snow", "rain", "sleet"]
 
     mode = modal_weather(weather_results)
     weather_report["mode"] = mode
 
     avg = avg_temp(weather_results)
-    weather_report["avg"] = avg
+    weather_report["avgTemp"] = round(avg)
 
-    print weather_report
+    cum_precip_prob = precip_prob(weather_results)
+    cum_precip_prob *= 100  # Turn into percentage points.
+    weather_report["precipProb"] = round(cum_precip_prob)
 
-    # Cumulative precipProb per precipType x precipIntensity
-    # "It is forecast to be dry."
-    # Score
+    for p_type in precip_types:
+        key = p_type + "Prob"
+        cum_type_prob = type_prob(weather_results, p_type)
+        cum_type_prob *= 100
+        weather_report[key] = round(cum_type_prob)
+
+    return weather_report
 
 
 def modal_weather(weather_results):
@@ -295,22 +305,92 @@ def modal_weather(weather_results):
 
 def avg_temp(weather_results):
     """Given a list of weather result dictionaries, returns the average
-    temperature as an integer."""
+    temperature as a float."""
 
     numerator = 0
     denominator = len(weather_results)
     for result in weather_results:
         temp = result["fTemp"]
         numerator += temp
-    mean = int(numerator/denominator)
+    mean = numerator/denominator
 
     return mean
 
 
+def precip_prob(weather_results):
+    """Given a list of weather result dictionaries, returns the probability of
+    precipitation for the whole trip."""
+
+    # The probability of no precipitation occurring at a specific point is
+    # (1 - precip_prob). The cumulative probability of no precipitation is each
+    # point's no-precip prob multiplied together. Thus the probability of at
+    # least one incident of precipitation is 1 - the product of no-precip probs.
+
+    cum_no_precip_prob = 1
+    for result in weather_results:
+        precip_prob = result["fPrecipProb"]
+        cum_no_precip_prob *= (1 - precip_prob)
+    cum_precip_prob = 1 - cum_no_precip_prob
+    return cum_precip_prob
+
+
+def type_prob(weather_results, precip_type):
+    """Given a list of weather result dictionaries, returns the probability of a
+    particular precipitation type for the whole trip."""
+
+    cum_no_precip_prob = 1
+    for result in weather_results:
+        p_type = result.get("fPrecipType")
+        if p_type == precip_type:
+            precip_prob = result["fPrecipProb"]
+        else:
+            precip_prob = 0
+        cum_no_precip_prob *= (1 - precip_prob)
+    cum_precip_prob = 1 - cum_no_precip_prob
+    return cum_precip_prob
+
+
+def max_intensity(weather_results):
+    """Given a list of weather result dictionaries, returns the maximum
+    precipitation intensity."""
+
+    pass
+
+
+def make_result(directions_result, departure_time, departure_day):
+    """Builds the dictionary for jsonification."""
+
+    result = {}
+
+    # Instantiate route object.
+    timed_route = Route(directions_result, departure_time, departure_day)
+
+    print timed_route
+
+    # Make list of coordinates and datetimes.
+    coords_time = timed_route.make_coords_time()
+
+    print coords_time
+
+    # Get weather info for coords and times.
+    marker_info = make_marker_info(coords_time)
+
+    print marker_info
+
+    # Make weather report for trip.
+    weather_report = make_weather_report(marker_info)
+
+    print weather_report
+
+    result["markerInfo"] = marker_info
+    result["weatherReport"] = weather_report
+
+    return result
+
 ####################################
 
 #FIXME: Does this still get used anywhere?
-def convert_time(time):
+# def convert_time(time):
     """Given a datetime object from Forecast.io, (e.g., forecast.time), convert
     to a timezone-aware Pendulum datetime object."""
 
@@ -318,7 +398,7 @@ def convert_time(time):
 
 
 #FIXME: Does this still get used anywhere?
-def get_lat_lng(loc_string):
+# def get_lat_lng(loc_string):
     """Given location as a human-readable string, return its latitude and
     longitude as a tuple of floats."""
 
