@@ -42,29 +42,28 @@ function initMap(){
 }
 
 function makeMarkersAndReport(data) {
-    debugger;
     var markerInfo = data.markerInfo;
-    console.log(markerInfo);
     makeAndSetMarkers(markerInfo);
+    var weatherReport = data.weatherReport;
+    displayWeatherReport(weatherReport);
 }
 
 function makeAndSetMarkers(markerInfo) {
 
     for (var i = 0; i < markerInfo.length; i++) {
 
-        var markerLatLng = new google.maps.LatLng(markerInfo[i].lat, markerInfo[i].lng);
         var datapoint = markerInfo[i];
+        var markerLatLng = new google.maps.LatLng(datapoint.lat, datapoint.lng);
         var contentString = makeContentString(datapoint);
-        var myImageURL = pickImage(datapoint);
+        var markerImageURL = pickImage(datapoint);
 
         var marker = new google.maps.Marker({
             position: markerLatLng,
-            icon: myImageURL,
+            icon: markerImageURL,
             map: map
         });
 
-
-        // The marker's map is set above, but alternately we could call setMap();
+        // The marker's map is set above, but alternatively we could call setMap();
         // marker.setMap(map);
 
         // Add marker to global array.
@@ -76,20 +75,16 @@ function makeAndSetMarkers(markerInfo) {
 }
 
 function bindInfoWindow(marker, map, infoWindow, contentString) {
-    // When a marker is clicked, set the content for the window with the content
-    // that's passed through, then open the window with the new content on the
-    // marker that's clicked.
-
-    // google.maps.event.addListener(marker, 'mousemove', function () {
-    //     // infoWindow.close();  // This is unnecessary.
-    //     infoWindow.setContent(contentString);
-    //     infoWindow.open(map, marker);
-    // });
+    // When a marker is moused-over, set the content for the info window with
+    // the string that's passed through, and then open the window with the new
+    // content above that marker.
 
     google.maps.event.addListener(marker, 'mouseover', function () {
         infoWindow.setContent(contentString);
         infoWindow.open(map, marker);
     });
+
+    // When a marker is moused-out, close the info window.
 
     google.maps.event.addListener(marker, 'mouseout', function () {
         infoWindow.close();
@@ -135,6 +130,29 @@ function makeContentString(datapoint) {
         contentString = datapoint.fTime + "<br>" + datapoint.fStatus;
     }
     return contentString;
+}
+
+function displayWeatherReport(weatherReport) {
+    var htmlString = "<h4>Weather Report</h4>";
+    
+    var precipProb = weatherReport.precipProb;
+    var modalWeather = weatherReport.modalWeather;
+    var avgTemp = weatherReport.avgTemp;
+
+    // {'snowProb': 0.0, 'avgTemp': 79.0, 'mode': u'partly cloudy', 'sleetProb': 0.0, 'precipProb': 0.0, 'rainProb': 0.0}
+
+    htmlString += "<p>On your trip, the weather will mostly be <b>" + modalWeather + "</b>.</p>";
+
+    if (precipProb === 0.0) {
+        htmlString += "<p>It is forecast to be <b>dry</b>.</p>";
+    } else {
+        htmlString += "<p>The chance of precipitation is <b>" + precipProb + "</b>%.</p>";
+    }
+
+    htmlString += "<p>The average temperature will be <b>" + avgTemp + "</b>℉.</p>";
+
+    $("#weather-report").html(htmlString);
+    $("#weather-report").show();
 }
 
 function calculateAndDisplayRoute(directionsService, directionsDisplay) {

@@ -18,26 +18,38 @@
         have a height of 100%. */
         html, body {
             height: 100%;
-            margin: 0px;
-            padding: 0px;
+            margin: 0;
+            padding: 0;
         }
+        
         #map {
             height: 100%;
         }
-        #floating-panel {
+        
+        .floating-panel {
             position: absolute;
-            top: 1%;
-            left: 1%;
             z-index: 5;
             background-color: #fff;
             padding: 1%;
             border: 1px solid #999;
-      }
+        }
+
+        #submission-form {
+            top: 1%;
+            left: 1%;
+        }
+
+        #weather-report {
+            top: 1%;
+            right: 1%;
+            width: 20%;
+        }
+
     </style>
 </head>
 <body>
 
-    <div id="floating-panel">
+    <div class="floating-panel" id="submission-form">
 
         <!-- The "for" attribute of the <label> tag should be equal to the "id"
         attribute of the related element to bind them together. -->
@@ -57,6 +69,9 @@
     </div>
 
     <div id="map"></div>
+
+    <div class="floating-panel" id="weather-report"></div>
+    <script>$("#weather-report").hide();</script>
 
     <script src="/static/map.js"></script>
 

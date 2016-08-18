@@ -269,7 +269,7 @@ def make_weather_report(weather_results):
     precip_types = ["snow", "rain", "sleet"]
 
     mode = modal_weather(weather_results)
-    weather_report["mode"] = mode
+    weather_report["modalWeather"] = mode
 
     avg = avg_temp(weather_results)
     weather_report["avgTemp"] = round(avg)
