@@ -176,6 +176,11 @@ function calculateAndDisplayRoute(directionsService, directionsDisplay) {
         }
         markersArray.length = 0;
 
+        // Hide existing weather report.
+        $("#weather-report").hide();
+
+        // FIXME: Display loading thing.
+
         var formInputs = {
             "start": start,
             "end": end,
@@ -184,8 +189,6 @@ function calculateAndDisplayRoute(directionsService, directionsDisplay) {
             "departure-time": $("#departure-time").val(),
             "data": JSON.stringify(response)
         };
-
-        // FIXME: Display loading thing.
 
         $.post("/request.json",
                formInputs,

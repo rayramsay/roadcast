@@ -296,13 +296,25 @@ def modal_weather(weather_results):
 
     In the event of multi-modality, chooses an arbitrary mode."""
 
-    #FIXME: Consider using icon rather than summary.
-
     cnt = Counter()
+    cnt[u'Rainy'] = 0
+    cnt[u'Cloudy'] = 0
+    rainy = [u'Drizzle', u'Light Rain']
+    cloudy = [u'Partly Cloudy', u'Mostly Cloudy']
+
     for result in weather_results:
         summary = result["fSummary"]
         cnt[summary] += 1
-    mode = cnt.most_common(1)
+
+    for key in cnt.iterkeys():
+        if key in rainy:
+            cnt[u'Rainy'] += cnt[key]
+        if key in cloudy:
+            cnt[u'Cloudy'] += cnt[key]
+
+    mode = cnt.most_common()
+    print mode
+
     mode = mode[0][0].lower()
 
     return mode
@@ -370,7 +382,7 @@ def make_result(directions_result, departure_time, departure_day):
     # Instantiate route object.
     timed_route = Route(directions_result, departure_time, departure_day)
 
-    print timed_route
+    # print timed_route
 
     # Make list of coordinates and datetimes.
     coords_time = timed_route.make_coords_time()
@@ -380,15 +392,17 @@ def make_result(directions_result, departure_time, departure_day):
     # Get weather info for coords and times.
     marker_info = make_marker_info(coords_time)
 
-    print marker_info
+    # print marker_info
 
     # Make weather report for trip.
     weather_report = make_weather_report(marker_info)
 
-    print weather_report
+    # print weather_report
 
     result["markerInfo"] = marker_info
     result["weatherReport"] = weather_report
+
+    # print result
 
     return result
 
