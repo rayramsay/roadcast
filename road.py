@@ -276,12 +276,12 @@ def make_weather_report(weather_results):
     weather_report["avgTemp"] = round(avg)
 
     cum_precip_prob = precip_prob(weather_results) * 100  # Turn into percentage points.
-    weather_report["precipProb"] = cum_precip_prob
+    weather_report["precipProb"] = round(cum_precip_prob)
 
     for p_type in precip_types:
         key = p_type + "Prob"
         cum_type_prob = type_prob(weather_results, p_type) * 100  # Turn into percentage points.
-        weather_report[key] = cum_type_prob
+        weather_report[key] = round(cum_type_prob)
 
     maxi = max_intensity(weather_results)
     weather_report["maxIntensity"] = maxi
