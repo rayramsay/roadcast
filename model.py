@@ -1,5 +1,5 @@
-# This code is based on my implementation of Hackbright's Ratings exercise,
-# which I pair-programmed with Jennifer Griffith-Delgado (gh: jgriffith23).
+# The following code is based on my implementation of Hackbright's Ratings
+# exercise, which I pair programmed with Jennifer Griffith-Delgado (jgriffith23).
 
 from flask_sqlalchemy import SQLAlchemy
 
