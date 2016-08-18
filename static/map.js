@@ -12,24 +12,28 @@ var infoWindow = new google.maps.InfoWindow();
 //////////////////////
 
 function initMap(){
-    
-    // Specify where the map is centered.
-    // Defining this variable outside of the map options makes
-    // it easier to dynamically change if you need to recenter.
-    var myLatLng = {lat: 37.788668, lng: -122.411499};  // Hackbright
 
     var directionsDisplay = new google.maps.DirectionsRenderer({suppressMarkers: true});
     var directionsService = new google.maps.DirectionsService();
 
     // Create a map object and specify the DOM element for display.
     map = new google.maps.Map(document.getElementById('map'), {
-        center: myLatLng,
+        center: {lat: 37.7888185, lng: -122.41198699999995},  // Hackbright
         zoom: 12,
         mapTypeControl: false,
         streetViewControl: false,        
     });
 
     directionsDisplay.setMap(map);
+
+    // Try HTML5 geolocation; if successful, center map on user location.
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function (position) {
+            var initialLocation = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+            map.setCenter(initialLocation);
+            console.log("Geolocation and recentering successful.");
+        });
+    }
     
     // This event handler is inside initMap so that it has access to
     // directionsService and directionsDisplay.
