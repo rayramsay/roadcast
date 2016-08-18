@@ -136,25 +136,14 @@ function makeContentString(datapoint) {
 
 function displayWeatherReport(weatherReport) {
 
-    // FIXME: Put text that doesn't change into index.html and provide id'd spans to insert into.
-
-    var htmlString = "<h4>Weather Report</h4>";
-
     var modalWeather = weatherReport.modalWeather;
     var precipProb = weatherReport.precipProb;
     var avgTemp = weatherReport.avgTemp;
 
-    htmlString += "<p>On your trip, the weather will mostly be <b>" + modalWeather + "</b>.</p>";
+    $("#modal-weather").html(modalWeather);
+    $("#precip-prob").html(precipProb);
+    $("#avg-temp").html(avgTemp);
 
-    if (precipProb === 0.0) {
-        htmlString += "<p>It is forecast to be <b>dry</b>.</p>";
-    } else {
-        htmlString += "<p>The chance of precipitation is <b>" + precipProb + "</b>%.</p>";
-    }
-
-    htmlString += "<p>The average temperature will be <b>" + avgTemp + "</b>℉.</p>";
-
-    $("#weather-report").html(htmlString);
     $("#weather-report").show();
 }
 

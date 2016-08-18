@@ -71,7 +71,12 @@
 
     <div id="map"></div>
 
-    <div class="floating-panel" id="weather-report"></div>
+    <div class="floating-panel" id="weather-report">
+        <h4>Weather Report</h4>
+        <p>On your trip, the weather will mostly be <b><span id="modal-weather"></span></b>.</p>
+        <p>The chance of precipitation is <b><span id="precip-prob"></span></b>%.</p>
+        <p>The average temperature will be <b><span id="avg-temp"></span></b>℉.</p>
+    </div>
     <script>$("#weather-report").hide();</script>
 
     <script src="/static/map.js"></script>
