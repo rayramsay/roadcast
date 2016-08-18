@@ -17,7 +17,7 @@ FIO_KEY = os.environ['FORECAST_API_KEY']
 sunny_results = [{'fPrecipType': None, 'fStatus': 'OK', 'fTemp': 71.0, 'fCloudCover': 0.11, 'fTime': '2:33 PM PDT', 'lat': 37.8043732, 'lng': -122.27113939999998, 'fIcon': u'clear-day', 'fSummary': u'Clear', 'fPrecipProb': 0, 'fPrecipIntensity': 0}, {'fPrecipType': None, 'fStatus': 'OK', 'fTemp': 67.0, 'fCloudCover': 0.15, 'fTime': '2:48 PM PDT', 'lat': 37.77228, 'lng': -122.40669000000001, 'fIcon': u'clear-day', 'fSummary': u'Clear', 'fPrecipProb': 0, 'fPrecipIntensity': 0}, {'fPrecipType': None, 'fStatus': 'OK', 'fTemp': 66.0, 'fCloudCover': 0.15, 'fTime': '2:52 PM PDT', 'lat': 37.7749901, 'lng': -122.41949260000001, 'fIcon': u'clear-day', 'fSummary': u'Clear', 'fPrecipProb': 0, 'fPrecipIntensity': 0}]
 rainy_results = [{'fPrecipType': u'rain', 'fStatus': 'OK', 'fTemp': 77.0, 'fCloudCover': 1, 'fTime': '2:33 PM EDT', 'lat': 39.8465196, 'lng': -82.81250210000002, 'fIcon': u'rain', 'fSummary': u'Drizzle', 'fPrecipProb': 0.47, 'fPrecipIntensity': 0.0179}, {'fPrecipType': u'rain', 'fStatus': 'OK', 'fTemp': 77.0, 'fCloudCover': 1, 'fTime': '2:48 PM EDT', 'lat': 39.94717, 'lng': -82.84570000000001, 'fIcon': u'rain', 'fSummary': u'Drizzle', 'fPrecipProb': 0.43, 'fPrecipIntensity': 0.0112}, {'fPrecipType': u'rain', 'fStatus': 'OK', 'fTemp': 79.0, 'fCloudCover': 0.98, 'fTime': '3:03 PM EDT', 'lat': 40.11462, 'lng': -82.92744, 'fIcon': u'cloudy', 'fSummary': u'Overcast', 'fPrecipProb': 0.26, 'fPrecipIntensity': 0.0065}, {'fPrecipType': u'rain', 'fStatus': 'OK', 'fTemp': 79.0, 'fCloudCover': 0.97, 'fTime': '3:07 PM EDT', 'lat': 40.1262429, 'lng': -82.92908390000002, 'fIcon': u'cloudy', 'fSummary': u'Overcast', 'fPrecipProb': 0.24, 'fPrecipIntensity': 0.0062}]
 mixed_results = [{'fPrecipType': None, 'fStatus': 'OK', 'fTemp': 41.0, 'fCloudCover': 0.11, 'fTime': '2:33 PM PDT', 'lat': 37.8043732, 'lng': -122.27113939999998, 'fIcon': u'clear-day', 'fSummary': u'Clear', 'fPrecipProb': 0, 'fPrecipIntensity': 0}, {'fPrecipType': u'sleet', 'fStatus': 'OK', 'fTemp': 34.0, 'fCloudCover': 1, 'fTime': '2:33 PM EDT', 'lat': 39.8465196, 'lng': -82.81250210000002, 'fIcon': u'sleet', 'fSummary': u'Wintery Mix', 'fPrecipProb': 0.47, 'fPrecipIntensity': 0.0179}, {'fPrecipType': u'rain', 'fStatus': 'OK', 'fTemp': 37.0, 'fCloudCover': 1, 'fTime': '2:48 PM EDT', 'lat': 39.94717, 'lng': -82.84570000000001, 'fIcon': u'rain', 'fSummary': u'Drizzle', 'fPrecipProb': 0.43, 'fPrecipIntensity': 0.0112}, {'fPrecipType': u'snow', 'fStatus': 'OK', 'fTemp': 30.0, 'fCloudCover': 1, 'fTime': '2:33 PM EDT', 'lat': 39.8465196, 'lng': -82.81250210000002, 'fIcon': u'snow', 'fSummary': u'Flurries', 'fPrecipProb': 0.47, 'fPrecipIntensity': 0.0179}, {'fPrecipType': u'snow', 'fStatus': 'OK', 'fTemp': 30.0, 'fCloudCover': 1, 'fTime': '2:48 PM EDT', 'lat': 39.94717, 'lng': -82.84570000000001, 'fIcon': u'snow', 'fSummary': u'Flurries', 'fPrecipProb': 0.43, 'fPrecipIntensity': 0.0112}]
-
+oh_results = [{'fPrecipType': u'rain', 'fStatus': 'OK', 'fTemp': 75.0, 'fCloudCover': 0.67, 'fTime': '10:13 AM EDT', 'lat': 39.8465196, 'lng': -82.81250210000002, 'fIcon': u'rain', 'fSummary': u'Drizzle', 'fPrecipProb': 42.0, 'fPrecipIntensity': 0.0104}, {'fPrecipType': u'rain', 'fStatus': 'OK', 'fTemp': 76.0, 'fCloudCover': 0.6, 'fTime': '10:28 AM EDT', 'lat': 39.94295, 'lng': -82.84656000000001, 'fIcon': u'rain', 'fSummary': u'Drizzle', 'fPrecipProb': 41.0, 'fPrecipIntensity': 0.01}, {'fPrecipType': u'rain', 'fStatus': 'OK', 'fTemp': 76.0, 'fCloudCover': 0.6, 'fTime': '10:43 AM EDT', 'lat': 40.11462, 'lng': -82.92744, 'fIcon': u'partly-cloudy-day', 'fSummary': u'Mostly Cloudy', 'fPrecipProb': 24.0, 'fPrecipIntensity': 0.0062}, {'fPrecipType': u'rain', 'fStatus': 'OK', 'fTemp': 76.0, 'fCloudCover': 0.6, 'fTime': '10:47 AM EDT', 'lat': 40.1262429, 'lng': -82.92908390000002, 'fIcon': u'partly-cloudy-day', 'fSummary': u'Mostly Cloudy', 'fPrecipProb': 20.0, 'fPrecipIntensity': 0.0055}]
 ####################################
 
 
@@ -352,8 +352,9 @@ def precip_prob(weather_results):
 
 
 def type_prob(weather_results, precip_type):
-    """Given a list of weather result dictionaries, returns the probability of a
-    particular precipitation type for the whole trip."""
+    """Given a list of weather result dictionaries and a type of precipitation
+    as a string, returns the probability of that particular type for the whole
+    trip."""
 
     cum_no_precip_prob = 1
     for result in weather_results:
@@ -369,9 +370,58 @@ def type_prob(weather_results, precip_type):
 
 def max_intensity(weather_results):
     """Given a list of weather result dictionaries, returns the maximum
+    precipitation intensity out of the whole trip."""
+
+    max_intensity = 0
+    for result in weather_results:
+        if result["fPrecipIntensity"] > max_intensity:
+            max_intensity = result["fPrecipIntensity"]
+
+    return max_intensity
+
+
+def type_max(weather_results, precip_type):
+    """Given a list of weather result dictionaries and a type of precipitation
+    as a string, returns the maximum precipitation intensity of that particular
+    type for the whole trip."""
+
+    max_intensity = 0
+    for result in weather_results:
+        p_type = result.get("fPrecipType")
+        if p_type == precip_type and result["fPrecipIntensity"] > max_intensity:
+            max_intensity = result["fPrecipIntensity"]
+
+    return max_intensity
+
+
+def normalize(value, vmin, vmax):
+    normalized = (value - vmin) / (vmax - vmin)
+    return normalized
+
+
+def normalized_intensity(intensity):
+    """Normalize an intensity to between 0 and 1."""
+
+    # normalized = ( x - min(x) ) / ( max(x) - min(x) )
+    # theoretical maximum intensity is 0.5
+    # therefore:
+
+    normalized = intensity/0.5
+    return normalized
+
+
+def avg_intensity(weather_results):
+    """Given a list of weather result dictionaries, returns the average
     precipitation intensity."""
 
-    pass
+    numerator = 0
+    denominator = len(weather_results)
+    for result in weather_results:
+        intensity = result["fPrecipIntensity"]
+        numerator += intensity
+    mean = numerator/denominator
+
+    return mean
 
 
 def make_result(directions_result, departure_time, departure_day):
@@ -405,6 +455,14 @@ def make_result(directions_result, departure_time, departure_day):
     # print result
 
     return result
+
+
+def make_score(weather_results):
+    """Calculate ``badness`` of weather score."""
+
+    pass
+
+
 
 ####################################
 
