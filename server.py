@@ -5,6 +5,7 @@ from flask import Flask, render_template, redirect, request, flash, session, url
 from flask_debugtoolbar import DebugToolbarExtension
 
 from road import dictify, make_result
+from model import User, Label, Addr, connect_to_db, db
 
 app = Flask(__name__)
 
@@ -42,7 +43,7 @@ def handle_form():
     directions_result = dictify(request.form.get("data"))
 
     #FIXME: Switch me off once you're ready to make API calls.
-    result = {'markerInfo': [{'fPrecipType': None, 'fStatus': 'OK', 'fTemp': 86.0, 'fCloudCover': 0.56, 'fTime': '11:30 AM CDT', 'lat': 30.5335476, 'lng': -92.0816484, 'fIcon': u'partly-cloudy-day', 'fSummary': u'Partly Cloudy', 'fPrecipProb': 0, 'fPrecipIntensity': 0}, {'fPrecipType': None, 'fStatus': 'OK', 'fTemp': 87.0, 'fCloudCover': 0.72, 'fTime': '12:00 PM CDT', 'lat': 30.55693, 'lng': -91.65060000000001, 'fIcon': u'partly-cloudy-day', 'fSummary': u'Mostly Cloudy', 'fPrecipProb': 0, 'fPrecipIntensity': 0}, {'fPrecipType': None, 'fStatus': 'OK', 'fTemp': 89.0, 'fCloudCover': 0.15, 'fTime': '12:30 PM CDT', 'lat': 30.43981, 'lng': -91.20334000000001, 'fIcon': u'clear-day', 'fSummary': u'Clear', 'fPrecipProb': 0, 'fPrecipIntensity': 0}, {'fPrecipType': None, 'fStatus': 'OK', 'fTemp': 89.0, 'fCloudCover': 0.44, 'fTime': '1:00 PM CDT', 'lat': 30.202220000000004, 'lng': -90.93957, 'fIcon': u'partly-cloudy-day', 'fSummary': u'Partly Cloudy', 'fPrecipProb': 0, 'fPrecipIntensity': 0}, {'fPrecipType': None, 'fStatus': 'OK', 'fTemp': 84.0, 'fCloudCover': 0.39, 'fTime': '1:30 PM CDT', 'lat': 30.007490000000004, 'lng': -90.21399000000001, 'fIcon': u'partly-cloudy-day', 'fSummary': u'Partly Cloudy', 'fPrecipProb': 0, 'fPrecipIntensity': 0}, {'fPrecipType': u'rain', 'fStatus': 'OK', 'fTemp': 87.0, 'fCloudCover': 0.5, 'fTime': '1:45 PM CDT', 'lat': 29.9510555, 'lng': -90.07148239999998, 'fIcon': u'rain', 'fSummary': u'Light Rain', 'fPrecipProb': 100, 'fPrecipIntensity': 0.0197}], 'weatherReport': {'snowProb': 0, 'rainMax': 0.0197, 'avgTemp': 87.0, 'sleetMax': 0, 'snowMax': 0, 'maxIntensity': 0.0197, 'modalWeather': u'cloudy', 'sleetProb': 0, 'precipProb': 100.0, 'rainProb': 100.0}}
+    result = {'markerInfo': [{'fPrecipType': None, 'fStatus': 'OK', 'fTemp': 69.0, 'fCloudCover': 0.08, 'fTime': '2:30 PM PDT', 'lat': 37.8716404, 'lng': -122.27275600000002, 'fIcon': u'clear-day', 'fSummary': u'Clear', 'fPrecipProb': 0, 'fPrecipIntensity': 0}, {'fPrecipType': None, 'fStatus': 'OK', 'fTemp': 67.0, 'fCloudCover': 0.12, 'fTime': '2:45 PM PDT', 'lat': 37.811040000000006, 'lng': -122.36414, 'fIcon': u'clear-day', 'fSummary': u'Clear', 'fPrecipProb': 0, 'fPrecipIntensity': 0}, {'fPrecipType': None, 'fStatus': 'OK', 'fTemp': 65.0, 'fCloudCover': 0.13, 'fTime': '2:54 PM PDT', 'lat': 37.7749901, 'lng': -122.41949260000001, 'fIcon': u'clear-day', 'fSummary': u'Clear', 'fPrecipProb': 0, 'fPrecipIntensity': 0}], 'weatherReport': {'snowProb': 0.0, 'rainMax': 0, 'avgTemp': 67.0, 'sleetMax': 0, 'snowMax': 0, 'maxIntensity': 0, 'modalWeather': u'clear', 'sleetProb': 0.0, 'precipProb': 0.0, 'rainProb': 0.0}}
 
     #FIXME: Switch me back on once you're ready to make API calls.
     # result = make_result(directions_result, departure_time, departure_day)
@@ -63,9 +64,10 @@ if __name__ == "__main__":
     app.jinja_env.auto_reload = True
 
     # Connect to database.
-    #connect_to_db(app)
+    connect_to_db(app)
+    print "Connected to DB."
 
-    # Must specify port for Vagrant.
-    # app.run(host="0.0.0.0")
+    # Must specify host for Vagrant.
+    app.run(host="0.0.0.0")
 
-    app.run()
+    # app.run()
