@@ -123,9 +123,11 @@ function makeContentString(datapoint) {
     // Write contentString for infoWindow depending on forecast status.
 
     if (datapoint.fStatus === "OK") {
-        //FIXME: Update this to include rain probability/intensity if available.
         var contentString;
         contentString = datapoint.fTime + "<br>" + datapoint.fSummary + "<br>" + datapoint.fTemp + "℉";
+        if (datapoint.fPrecipProb > 0) {
+            contentString += "<br>" + "Chance of precipitation: " + datapoint.fPrecipProb +"%";
+        }
     } else { 
         contentString = datapoint.fTime + "<br>" + datapoint.fStatus;
     }
@@ -133,13 +135,14 @@ function makeContentString(datapoint) {
 }
 
 function displayWeatherReport(weatherReport) {
-    var htmlString = "<h4>Weather Report</h4>";
-    
-    var precipProb = weatherReport.precipProb;
-    var modalWeather = weatherReport.modalWeather;
-    var avgTemp = weatherReport.avgTemp;
 
-    // {'snowProb': 0.0, 'avgTemp': 79.0, 'mode': u'partly cloudy', 'sleetProb': 0.0, 'precipProb': 0.0, 'rainProb': 0.0}
+    // FIXME: Put text that doesn't change into index.html and provide id'd spans to insert into.
+
+    var htmlString = "<h4>Weather Report</h4>";
+
+    var modalWeather = weatherReport.modalWeather;
+    var precipProb = weatherReport.precipProb;
+    var avgTemp = weatherReport.avgTemp;
 
     htmlString += "<p>On your trip, the weather will mostly be <b>" + modalWeather + "</b>.</p>";
 
@@ -181,6 +184,8 @@ function calculateAndDisplayRoute(directionsService, directionsDisplay) {
             "departure-time": $("#departure-time").val(),
             "data": JSON.stringify(response)
         };
+
+        // FIXME: Display loading thing.
 
         $.post("/request.json",
                formInputs,

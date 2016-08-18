@@ -230,6 +230,9 @@ def make_marker_info(coords_time):
             summary = forecast.summary
             icon = forecast.icon
             precip_prob = forecast.precipProbability
+            precip_prob *= 100  # Turn into percentage points.
+            precip_prob = round(precip_prob)
+
             precip_intensity = forecast.precipIntensity
             if forecast.precipIntensity > 0:
                 precip_type = forecast.precipType  # This is only defined if intensity > 0.
@@ -293,6 +296,8 @@ def modal_weather(weather_results):
 
     In the event of multi-modality, chooses an arbitrary mode."""
 
+    #FIXME: Consider using icon rather than summary.
+
     cnt = Counter()
     for result in weather_results:
         summary = result["fSummary"]
@@ -329,7 +334,7 @@ def precip_prob(weather_results):
     cum_no_precip_prob = 1
     for result in weather_results:
         precip_prob = result["fPrecipProb"]
-        cum_no_precip_prob *= (1 - precip_prob)
+        cum_no_precip_prob *= (1 - precip_prob/100.0)
     cum_precip_prob = 1 - cum_no_precip_prob
     return cum_precip_prob
 
@@ -345,7 +350,7 @@ def type_prob(weather_results, precip_type):
             precip_prob = result["fPrecipProb"]
         else:
             precip_prob = 0
-        cum_no_precip_prob *= (1 - precip_prob)
+        cum_no_precip_prob *= (1 - precip_prob/100.0)
     cum_precip_prob = 1 - cum_no_precip_prob
     return cum_precip_prob
 
