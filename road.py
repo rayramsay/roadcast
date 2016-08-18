@@ -14,10 +14,8 @@ FIO_KEY = os.environ['FORECAST_API_KEY']
 
 ######### FIXME: MOCK DATA #########
 
-sunny_results = [{'fPrecipType': None, 'fStatus': 'OK', 'fTemp': 71.0, 'fCloudCover': 0.11, 'fTime': '2:33 PM PDT', 'lat': 37.8043732, 'lng': -122.27113939999998, 'fIcon': u'clear-day', 'fSummary': u'Clear', 'fPrecipProb': 0, 'fPrecipIntensity': 0}, {'fPrecipType': None, 'fStatus': 'OK', 'fTemp': 67.0, 'fCloudCover': 0.15, 'fTime': '2:48 PM PDT', 'lat': 37.77228, 'lng': -122.40669000000001, 'fIcon': u'clear-day', 'fSummary': u'Clear', 'fPrecipProb': 0, 'fPrecipIntensity': 0}, {'fPrecipType': None, 'fStatus': 'OK', 'fTemp': 66.0, 'fCloudCover': 0.15, 'fTime': '2:52 PM PDT', 'lat': 37.7749901, 'lng': -122.41949260000001, 'fIcon': u'clear-day', 'fSummary': u'Clear', 'fPrecipProb': 0, 'fPrecipIntensity': 0}]
-rainy_results = [{'fPrecipType': u'rain', 'fStatus': 'OK', 'fTemp': 77.0, 'fCloudCover': 1, 'fTime': '2:33 PM EDT', 'lat': 39.8465196, 'lng': -82.81250210000002, 'fIcon': u'rain', 'fSummary': u'Drizzle', 'fPrecipProb': 0.47, 'fPrecipIntensity': 0.0179}, {'fPrecipType': u'rain', 'fStatus': 'OK', 'fTemp': 77.0, 'fCloudCover': 1, 'fTime': '2:48 PM EDT', 'lat': 39.94717, 'lng': -82.84570000000001, 'fIcon': u'rain', 'fSummary': u'Drizzle', 'fPrecipProb': 0.43, 'fPrecipIntensity': 0.0112}, {'fPrecipType': u'rain', 'fStatus': 'OK', 'fTemp': 79.0, 'fCloudCover': 0.98, 'fTime': '3:03 PM EDT', 'lat': 40.11462, 'lng': -82.92744, 'fIcon': u'cloudy', 'fSummary': u'Overcast', 'fPrecipProb': 0.26, 'fPrecipIntensity': 0.0065}, {'fPrecipType': u'rain', 'fStatus': 'OK', 'fTemp': 79.0, 'fCloudCover': 0.97, 'fTime': '3:07 PM EDT', 'lat': 40.1262429, 'lng': -82.92908390000002, 'fIcon': u'cloudy', 'fSummary': u'Overcast', 'fPrecipProb': 0.24, 'fPrecipIntensity': 0.0062}]
-mixed_results = [{'fPrecipType': None, 'fStatus': 'OK', 'fTemp': 41.0, 'fCloudCover': 0.11, 'fTime': '2:33 PM PDT', 'lat': 37.8043732, 'lng': -122.27113939999998, 'fIcon': u'clear-day', 'fSummary': u'Clear', 'fPrecipProb': 0, 'fPrecipIntensity': 0}, {'fPrecipType': u'sleet', 'fStatus': 'OK', 'fTemp': 34.0, 'fCloudCover': 1, 'fTime': '2:33 PM EDT', 'lat': 39.8465196, 'lng': -82.81250210000002, 'fIcon': u'sleet', 'fSummary': u'Wintery Mix', 'fPrecipProb': 0.47, 'fPrecipIntensity': 0.0179}, {'fPrecipType': u'rain', 'fStatus': 'OK', 'fTemp': 37.0, 'fCloudCover': 1, 'fTime': '2:48 PM EDT', 'lat': 39.94717, 'lng': -82.84570000000001, 'fIcon': u'rain', 'fSummary': u'Drizzle', 'fPrecipProb': 0.43, 'fPrecipIntensity': 0.0112}, {'fPrecipType': u'snow', 'fStatus': 'OK', 'fTemp': 30.0, 'fCloudCover': 1, 'fTime': '2:33 PM EDT', 'lat': 39.8465196, 'lng': -82.81250210000002, 'fIcon': u'snow', 'fSummary': u'Flurries', 'fPrecipProb': 0.47, 'fPrecipIntensity': 0.0179}, {'fPrecipType': u'snow', 'fStatus': 'OK', 'fTemp': 30.0, 'fCloudCover': 1, 'fTime': '2:48 PM EDT', 'lat': 39.94717, 'lng': -82.84570000000001, 'fIcon': u'snow', 'fSummary': u'Flurries', 'fPrecipProb': 0.43, 'fPrecipIntensity': 0.0112}]
-oh_results = [{'fPrecipType': u'rain', 'fStatus': 'OK', 'fTemp': 75.0, 'fCloudCover': 0.67, 'fTime': '10:13 AM EDT', 'lat': 39.8465196, 'lng': -82.81250210000002, 'fIcon': u'rain', 'fSummary': u'Drizzle', 'fPrecipProb': 42.0, 'fPrecipIntensity': 0.0104}, {'fPrecipType': u'rain', 'fStatus': 'OK', 'fTemp': 76.0, 'fCloudCover': 0.6, 'fTime': '10:28 AM EDT', 'lat': 39.94295, 'lng': -82.84656000000001, 'fIcon': u'rain', 'fSummary': u'Drizzle', 'fPrecipProb': 41.0, 'fPrecipIntensity': 0.01}, {'fPrecipType': u'rain', 'fStatus': 'OK', 'fTemp': 76.0, 'fCloudCover': 0.6, 'fTime': '10:43 AM EDT', 'lat': 40.11462, 'lng': -82.92744, 'fIcon': u'partly-cloudy-day', 'fSummary': u'Mostly Cloudy', 'fPrecipProb': 24.0, 'fPrecipIntensity': 0.0062}, {'fPrecipType': u'rain', 'fStatus': 'OK', 'fTemp': 76.0, 'fCloudCover': 0.6, 'fTime': '10:47 AM EDT', 'lat': 40.1262429, 'lng': -82.92908390000002, 'fIcon': u'partly-cloudy-day', 'fSummary': u'Mostly Cloudy', 'fPrecipProb': 20.0, 'fPrecipIntensity': 0.0055}]
+la_results = [{'fPrecipType': None, 'fStatus': 'OK', 'fTemp': 86.0, 'fCloudCover': 0.56, 'fTime': '11:30 AM CDT', 'lat': 30.5335476, 'lng': -92.0816484, 'fIcon': u'partly-cloudy-day', 'fSummary': u'Partly Cloudy', 'fPrecipProb': 0, 'fPrecipIntensity': 0}, {'fPrecipType': None, 'fStatus': 'OK', 'fTemp': 87.0, 'fCloudCover': 0.72, 'fTime': '12:00 PM CDT', 'lat': 30.55693, 'lng': -91.65060000000001, 'fIcon': u'partly-cloudy-day', 'fSummary': u'Mostly Cloudy', 'fPrecipProb': 0, 'fPrecipIntensity': 0}, {'fPrecipType': None, 'fStatus': 'OK', 'fTemp': 89.0, 'fCloudCover': 0.15, 'fTime': '12:30 PM CDT', 'lat': 30.43981, 'lng': -91.20334000000001, 'fIcon': u'clear-day', 'fSummary': u'Clear', 'fPrecipProb': 0, 'fPrecipIntensity': 0}, {'fPrecipType': None, 'fStatus': 'OK', 'fTemp': 89.0, 'fCloudCover': 0.44, 'fTime': '1:00 PM CDT', 'lat': 30.202220000000004, 'lng': -90.93957, 'fIcon': u'partly-cloudy-day', 'fSummary': u'Partly Cloudy', 'fPrecipProb': 0, 'fPrecipIntensity': 0}, {'fPrecipType': None, 'fStatus': 'OK', 'fTemp': 84.0, 'fCloudCover': 0.39, 'fTime': '1:30 PM CDT', 'lat': 30.007490000000004, 'lng': -90.21399000000001, 'fIcon': u'partly-cloudy-day', 'fSummary': u'Partly Cloudy', 'fPrecipProb': 0, 'fPrecipIntensity': 0}, {'fPrecipType': u'rain', 'fStatus': 'OK', 'fTemp': 87.0, 'fCloudCover': 0.5, 'fTime': '1:45 PM CDT', 'lat': 29.9510555, 'lng': -90.07148239999998, 'fIcon': u'rain', 'fSummary': u'Light Rain', 'fPrecipProb': 100, 'fPrecipIntensity': 0.0197}]
+
 ####################################
 
 
@@ -231,7 +229,7 @@ def make_marker_info(coords_time):
             icon = forecast.icon
             precip_prob = forecast.precipProbability
             precip_prob *= 100  # Turn into percentage points.
-            precip_prob = round(precip_prob)
+            # precip_prob = round(precip_prob)
 
             precip_intensity = forecast.precipIntensity
             if forecast.precipIntensity > 0:
@@ -277,15 +275,21 @@ def make_weather_report(weather_results):
     avg = avg_temp(weather_results)
     weather_report["avgTemp"] = round(avg)
 
-    cum_precip_prob = precip_prob(weather_results)
-    cum_precip_prob *= 100  # Turn into percentage points.
-    weather_report["precipProb"] = round(cum_precip_prob)
+    cum_precip_prob = precip_prob(weather_results) * 100  # Turn into percentage points.
+    weather_report["precipProb"] = cum_precip_prob
 
     for p_type in precip_types:
         key = p_type + "Prob"
-        cum_type_prob = type_prob(weather_results, p_type)
-        cum_type_prob *= 100
-        weather_report[key] = round(cum_type_prob)
+        cum_type_prob = type_prob(weather_results, p_type) * 100  # Turn into percentage points.
+        weather_report[key] = cum_type_prob
+
+    maxi = max_intensity(weather_results)
+    weather_report["maxIntensity"] = maxi
+
+    for p_type in precip_types:
+        key = p_type + "Max"
+        max_type = type_max(weather_results, p_type)
+        weather_report[key] = max_type
 
     return weather_report
 
@@ -345,8 +349,8 @@ def precip_prob(weather_results):
 
     cum_no_precip_prob = 1
     for result in weather_results:
-        precip_prob = result["fPrecipProb"]
-        cum_no_precip_prob *= (1 - precip_prob/100.0)
+        precip_prob = result["fPrecipProb"]/100.0  # Turn back into a decimal.
+        cum_no_precip_prob *= (1 - precip_prob)
     cum_precip_prob = 1 - cum_no_precip_prob
     return cum_precip_prob
 
@@ -360,10 +364,10 @@ def type_prob(weather_results, precip_type):
     for result in weather_results:
         p_type = result.get("fPrecipType")
         if p_type == precip_type:
-            precip_prob = result["fPrecipProb"]
+            precip_prob = result["fPrecipProb"]/100.0  # Turn back into a decimal.
         else:
             precip_prob = 0
-        cum_no_precip_prob *= (1 - precip_prob/100.0)
+        cum_no_precip_prob *= (1 - precip_prob)
     cum_precip_prob = 1 - cum_no_precip_prob
     return cum_precip_prob
 
