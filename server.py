@@ -112,8 +112,11 @@ def handle_login():
     password = request.form.get("password")
 
     # Python's built-in hash function is not cryptographically secure; we're
-    # just using it for convenience. (We need to convert it to unicode because
-    # hash returns an integer but unicode is its type out of the database.)
+    # just using it for convenience.
+
+    # We need to convert the hash to unicode because hash returns an integer but
+    # unicode is its type out of the database.
+
     password = unicode(hash(password))
 
     user = User.query.filter(User.email == email).first()
@@ -127,7 +130,7 @@ def handle_login():
             session["user_id"] = user.user_id
             session["fname"] = user.fname
 
-            print "Session:", session, "\n"
+            print "Session:", session
 
             flash("You've been logged in.")
             return redirect("/")
@@ -136,6 +139,19 @@ def handle_login():
         flash("No account with that email exists.")
         return redirect("/login")
 
+
+@app.route('/logout')
+def logout():
+
+    if "user_id" in session:
+        del session["user_id"]
+        del session["fname"]
+        flash("You've been logged out.")
+    print "Session", session
+
+    return redirect("/")
+
+####################################################
 
 if __name__ == "__main__":
 
