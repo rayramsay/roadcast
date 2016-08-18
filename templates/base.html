@@ -1,0 +1,29 @@
+<!doctype html>
+<html>
+<head>
+    <title>{% block title %}{% endblock %}</title>
+
+    {% block javascript %}
+    {% endblock %}
+    
+    {% block css %}
+    {% endblock %}
+</head>
+<body>
+
+    {% if get_flashed_messages() %}
+        <div>
+          <!-- Show flashed messages -->
+            {% with messages = get_flashed_messages() %}
+                {% for message in messages %}
+                    <div>{{ message }}</div>
+                {% endfor %}
+            {% endwith %}
+        </div>
+    {% endif %}
+
+    {% block content %}
+    {% endblock %}
+
+</body>
+</html>

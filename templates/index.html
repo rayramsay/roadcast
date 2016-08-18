@@ -1,7 +1,8 @@
-<!doctype html>
-<html>
-<head>
-    <title></title>
+{% extends 'base.html' %}
+
+{% block title %}RoadCast{% endblock %}
+
+{% block javascript %}
 
     <!-- load jQuery -->
     <script src="https://code.jquery.com/jquery.js"></script>
@@ -9,13 +10,17 @@
     <!-- load Google Map -->
     <script src="https://maps.googleapis.com/maps/api/js?key={{jskey}}&v=3"></script>
 
-    <!-- CSS -->
+{% endblock %}
+
+{% block css %}
+
     <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/pure-min.css">
+
     <style>
         /* Percentage-based sizes must inherit from parent block elements, and
         if any of those ancestors fail to specify a size, they are assumed to be
         0 x 0 pixels; therefore, html and body must specify a size for #map to
-        have a height of 100%. */
+        have height as a percentage. */
         html, body {
             height: 100%;
             margin: 0;
@@ -44,10 +49,11 @@
             right: 1%;
             width: 20%;
         }
-
     </style>
-</head>
-<body>
+
+{% endblock %}
+
+{% block content %}
 
     <div class="floating-panel" id="submission-form">
 
@@ -55,13 +61,13 @@
         attribute of the related element to bind them together. -->
 
         <form action="/request" method="POST" id="directions-request">
-            <label for="start">Starting location:</label> <input type="text" name="start" id="start" value="Opelousas, LA"><br>
-            <label for="end">Destination:</label> <input type="text" name="end" id="end" value="New Orleans, LA"><br>
+            <label for="start">Starting location:</label> <input type="text" name="start" id="start" value="Berkeley, CA"><br>
+            <label for="end">Destination:</label> <input type="text" name="end" id="end" value="San Francisco, CA"><br>
             <label for="departure-day">Departing </label> <select name="departure-day" id="departure-day">
                 <option value="today">Today</option>
                 <option value="tomorrow">Tomorrow</option>
             </select>
-            <label for="departure-time">at</label> <input type="time" name="departure-time" id="departure-time" value="11:30"><br>
+            <label for="departure-time">at</label> <input type="time" name="departure-time" id="departure-time" value="14:30"><br>
             <label for="mode">Transportation mode:</label> <select name="mode" id="mode">
                 <option value="DRIVING">Driving</option> <!-- JS API requires this value to be capitalized. -->
             </select><br>
@@ -81,5 +87,4 @@
 
     <script src="/static/map.js"></script>
 
-</body>
-</html>
+{% endblock %}
