@@ -6,35 +6,37 @@
 
 //////////////////////
 // global variables //
+
 var map;
+var initialLocation;
 var markersArray = [];
-var infoWindow = new google.maps.InfoWindow();
+
 //////////////////////
 
 function initMap(){
 
     var directionsDisplay = new google.maps.DirectionsRenderer({suppressMarkers: true});
     var directionsService = new google.maps.DirectionsService();
+    directionsDisplay.setMap(map);
 
     // Create a map object and specify the DOM element for display.
     map = new google.maps.Map(document.getElementById('map'), {
         center: {lat: 37.7888185, lng: -122.41198699999995},  // Hackbright
         zoom: 12,
+        mapTypeId: 'roadmap',
         mapTypeControl: false,
         streetViewControl: false,        
     });
 
-    directionsDisplay.setMap(map);
-
     // Try HTML5 geolocation; if successful, center map on user location.
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(function (position) {
-            var initialLocation = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+            initialLocation = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
             map.setCenter(initialLocation);
             console.log("Geolocation and recentering successful.");
         });
     }
-    
+
     // This event handler is inside initMap so that it has access to
     // directionsService and directionsDisplay.
     var onSubmitHandler = function(evt) {
@@ -74,6 +76,7 @@ function makeAndSetMarkers(markerInfo) {
         markersArray.push(marker);
 
         // Make infoWindows.
+        var infoWindow = new google.maps.InfoWindow();
         bindInfoWindow(marker, map, infoWindow, contentString);
     }
 }
@@ -126,15 +129,19 @@ function pickImage(datapoint) {
 function makeContentString(datapoint) {
     // Write contentString for infoWindow depending on forecast status.
 
-    if (datapoint.fStatus === "OK") {
-        var contentString;
+    var contentString;
+
+    if (datapoint.fStatus === "OK") {    
         contentString = datapoint.fTime + "<br>" + datapoint.fSummary + "<br>" + datapoint.fTemp + "℉";
+
         if (datapoint.fPrecipProb > 0) {
             contentString += "<br>" + "Chance of precipitation: " + datapoint.fPrecipProb +"%";
         }
-    } else { 
+
+    } else {
         contentString = datapoint.fTime + "<br>" + datapoint.fStatus;
     }
+    
     return contentString;
 }
 
