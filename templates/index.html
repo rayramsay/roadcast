@@ -75,11 +75,12 @@
         <p>The chance of precipitation is <b><span id="precip-prob"></span></b>%.</p>
         <p>The average temperature will be <b><span id="avg-temp"></span></b>℉.</p>
     </div>
+    <script>$("#weather-report").hide();</script>
 
 {% endblock %}
 
 {% block javascript %}
-    
+
     <!-- Google Maps -->
     <script src="https://maps.googleapis.com/maps/api/js?key={{jskey}}&v=3&libraries=places"></script>
 

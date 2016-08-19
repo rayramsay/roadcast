@@ -8,24 +8,22 @@
 // global variables //
 
 var map;
-var initialLocation;
 var markersArray = [];
 
 //////////////////////
 
 function init(){
-    initPage();
+    initForm();
     initMap();
 }
 
-function initPage(){
+function initForm(){
     $("#start").geocomplete({types:['geocode', 'establishment']});
     $("#end").geocomplete({types:['geocode', 'establishment']});
     var now = new Date();
     var hours = now.getHours();
     var minutes = now.getMinutes();
     $("#departure-time").val(hours + ":" + minutes);
-    $("#weather-report").hide();
 }
 
 function initMap(){
@@ -45,7 +43,7 @@ function initMap(){
     // Try HTML5 geolocation; if successful, center map on user location.
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(function (position) {
-            initialLocation = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+            var initialLocation = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
             map.setCenter(initialLocation);
             console.log("Geolocation and recentering successful.");
         });
