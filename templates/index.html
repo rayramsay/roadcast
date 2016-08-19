@@ -77,3 +77,13 @@
     </div>
 
 {% endblock %}
+
+{% block javascript %}
+    
+    <!-- Google Maps -->
+    <script src="https://maps.googleapis.com/maps/api/js?key={{jskey}}&v=3&libraries=places"></script>
+
+    <!-- my JavaScript -->
+    <script src="/static/map.js"></script>
+
+{% endblock%}
