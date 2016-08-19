@@ -1,4 +1,5 @@
 env/
+genv/
 *.sh
 *.pyc
 .DS_Store
