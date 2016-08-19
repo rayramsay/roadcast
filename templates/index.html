@@ -49,8 +49,8 @@
         attribute of the related element to bind them together. -->
 
         <form action="/request" method="POST" id="directions-request">
-            <label for="start">Starting location:</label> <input type="text" name="start" id="start" placeholder=""><br>
-            <label for="end">Destination:</label> <input type="text" name="end" id="end" placeholder=""><br>
+            <label for="start">Starting location:</label> <input type="text" name="start" id="start" size="40" placeholder=""><br>
+            <label for="end">Destination:</label> <input type="text" name="end" id="end" size="40" placeholder=""><br>
             <label for="departure-day">Departing </label> <select name="departure-day" id="departure-day">
                 <option value="today">Today</option>
                 <option value="tomorrow">Tomorrow</option>
@@ -58,13 +58,13 @@
             <label for="departure-time">at</label> <input type="time" name="departure-time" id="departure-time"><br>
             <label for="mode">Transportation mode:</label> <select name="mode" id="mode">
                 <option value="DRIVING">Driving</option> <!-- JS API requires this value to be capitalized. -->
+                <option value="TRANSIT">Public Transit</option>
+                <option value="WALKING">Walking</option>
+                <option value="BICYCLING">Bicycling</option>
+
             </select><br>
-            <input type="submit" value="Submit">
+            <input type="submit" id="submit-button" value="Submit">
         </form>
-        <script>
-            $("#start").geocomplete({types:['geocode', 'establishment']});
-            $("#end").geocomplete({types:['geocode', 'establishment']});
-        </script>
     </div>
 
     <div id="map"></div>
@@ -75,6 +75,5 @@
         <p>The chance of precipitation is <b><span id="precip-prob"></span></b>%.</p>
         <p>The average temperature will be <b><span id="avg-temp"></span></b>℉.</p>
     </div>
-    <script>$("#weather-report").hide();</script>
 
 {% endblock %}

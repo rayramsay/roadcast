@@ -13,6 +13,21 @@ var markersArray = [];
 
 //////////////////////
 
+function init(){
+    initPage();
+    initMap();
+}
+
+function initPage(){
+    $("#start").geocomplete({types:['geocode', 'establishment']});
+    $("#end").geocomplete({types:['geocode', 'establishment']});
+    var now = new Date();
+    var hours = now.getHours();
+    var minutes = now.getMinutes();
+    $("#departure-time").val(hours + ":" + minutes);
+    $("#weather-report").hide();
+}
+
 function initMap(){
 
     var directionsDisplay = new google.maps.DirectionsRenderer({suppressMarkers: true});
@@ -51,6 +66,7 @@ function makeMarkersAndReport(data) {
     makeAndSetMarkers(markerInfo);
     var weatherReport = data.weatherReport;
     displayWeatherReport(weatherReport);
+    $("#submit-button").val("Submit");
 }
 
 function makeAndSetMarkers(markerInfo) {
@@ -179,7 +195,7 @@ function calculateAndDisplayRoute(directionsService, directionsDisplay) {
         // Hide existing weather report.
         $("#weather-report").hide();
 
-        // FIXME: Display loading thing.
+        $("#submit-button").val("Loading...");
 
         var formInputs = {
             "start": start,
@@ -199,4 +215,4 @@ function calculateAndDisplayRoute(directionsService, directionsDisplay) {
     });
 }
 
-google.maps.event.addDomListener(window, 'load', initMap);
+google.maps.event.addDomListener(window, 'load', init);
