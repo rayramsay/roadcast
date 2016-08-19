@@ -42,10 +42,10 @@ def handle_form():
     departure_time = request.form.get("departure-time")
     directions_result = dictify(request.form.get("data"))
 
-    result = {'markerInfo': [{'fPrecipType': None, 'fStatus': 'OK', 'fTemp': 69.0, 'fCloudCover': 0.08, 'fTime': '2:30 PM PDT', 'lat': 37.8716404, 'lng': -122.27275600000002, 'fIcon': u'clear-day', 'fSummary': u'Clear', 'fPrecipProb': 0, 'fPrecipIntensity': 0}, {'fPrecipType': None, 'fStatus': 'OK', 'fTemp': 67.0, 'fCloudCover': 0.12, 'fTime': '2:45 PM PDT', 'lat': 37.811040000000006, 'lng': -122.36414, 'fIcon': u'clear-day', 'fSummary': u'Clear', 'fPrecipProb': 0, 'fPrecipIntensity': 0}, {'fPrecipType': None, 'fStatus': 'OK', 'fTemp': 65.0, 'fCloudCover': 0.13, 'fTime': '2:54 PM PDT', 'lat': 37.7749901, 'lng': -122.41949260000001, 'fIcon': u'clear-day', 'fSummary': u'Clear', 'fPrecipProb': 0, 'fPrecipIntensity': 0}], 'weatherReport': {'snowProb': 0.0, 'rainMax': 0, 'avgTemp': 67.0, 'sleetMax': 0, 'snowMax': 0, 'maxIntensity': 0, 'modalWeather': u'clear', 'sleetProb': 0.0, 'precipProb': 0.0, 'rainProb': 0.0}}
+    # result = {'markerInfo': [{'fPrecipType': None, 'fStatus': 'OK', 'fTemp': 69.0, 'fCloudCover': 0.08, 'fTime': '2:30 PM PDT', 'lat': 37.8716404, 'lng': -122.27275600000002, 'fIcon': u'clear-day', 'fSummary': u'Clear', 'fPrecipProb': 0, 'fPrecipIntensity': 0}, {'fPrecipType': None, 'fStatus': 'OK', 'fTemp': 67.0, 'fCloudCover': 0.12, 'fTime': '2:45 PM PDT', 'lat': 37.811040000000006, 'lng': -122.36414, 'fIcon': u'clear-day', 'fSummary': u'Clear', 'fPrecipProb': 0, 'fPrecipIntensity': 0}, {'fPrecipType': None, 'fStatus': 'OK', 'fTemp': 65.0, 'fCloudCover': 0.13, 'fTime': '2:54 PM PDT', 'lat': 37.7749901, 'lng': -122.41949260000001, 'fIcon': u'clear-day', 'fSummary': u'Clear', 'fPrecipProb': 0, 'fPrecipIntensity': 0}], 'weatherReport': {'snowProb': 0.0, 'rainMax': 0, 'avgTemp': 67.0, 'sleetMax': 0, 'snowMax': 0, 'maxIntensity': 0, 'modalWeather': u'clear', 'sleetProb': 0.0, 'precipProb': 0.0, 'rainProb': 0.0}}
 
     #FIXME: Switch me back on once you're ready to make API calls.
-    # result = make_result(directions_result, departure_time, departure_day)
+    result = make_result(directions_result, departure_time, departure_day)
     # print result
 
     return jsonify(result)
@@ -165,8 +165,7 @@ if __name__ == "__main__":
     app.jinja_env.auto_reload = True
 
     # Connect to database.
-    connect_to_db(app)
-    print "Connected to DB."
+    # connect_to_db(app)
 
     # Must specify host for Vagrant.
     app.run(host="0.0.0.0")
