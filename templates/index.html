@@ -4,11 +4,12 @@
 
 {% block javascript %}
 
+    <!-- load Google Map -->
+    <script src="https://maps.googleapis.com/maps/api/js?key={{jskey}}&v=3&libraries=places"></script>
+
     <!-- load jQuery -->
     <script src="https://code.jquery.com/jquery.js"></script>
-
-    <!-- load Google Map -->
-    <script src="https://maps.googleapis.com/maps/api/js?key={{jskey}}&v=3"></script>
+    <script src="static/jquery.geocomplete.js"></script>
 
 {% endblock %}
 
@@ -73,6 +74,10 @@
             </select><br>
             <input type="submit" value="Submit">
         </form>
+        <script>
+            $("#start").geocomplete({types:['geocode', 'establishment']});
+            $("#end").geocomplete({types:['geocode', 'establishment']});
+        </script>
     </div>
 
     <div id="map"></div>
