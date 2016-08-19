@@ -17,7 +17,6 @@ function initMap(){
 
     var directionsDisplay = new google.maps.DirectionsRenderer({suppressMarkers: true});
     var directionsService = new google.maps.DirectionsService();
-    directionsDisplay.setMap(map);
 
     // Create a map object and specify the DOM element for display.
     map = new google.maps.Map(document.getElementById('map'), {
@@ -169,6 +168,7 @@ function calculateAndDisplayRoute(directionsService, directionsDisplay) {
     }, function(response, status) {
       if (status === 'OK') {
         directionsDisplay.setDirections(response);
+        directionsDisplay.setMap(map);
 
         // Delete existing markers.
         for (var i = 0; i < markersArray.length; i++) {
