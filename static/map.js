@@ -17,12 +17,19 @@ function init(){
     initMap();
 }
 
+function addZero(i) {
+    if (i < 10) {
+        i = "0" + i;
+    }
+    return i;
+}
+
 function initForm(){
     $("#start").geocomplete({types:['geocode', 'establishment']});
     $("#end").geocomplete({types:['geocode', 'establishment']});
     var now = new Date();
-    var hours = now.getHours();
-    var minutes = now.getMinutes();
+    var hours = addZero(now.getHours());
+    var minutes = addZero(now.getMinutes());
     $("#departure-time").val(hours + ":" + minutes);
 }
 
@@ -33,7 +40,7 @@ function initMap(){
 
     // Create a map object and specify the DOM element for display.
     map = new google.maps.Map(document.getElementById('map'), {
-        center: {lat: 37.7888185, lng: -122.41198699999995},  // Hackbright
+        center: {lat: 37.7886794, lng: -122.41153689999999},  // Hackbright
         zoom: 12,
         mapTypeId: 'roadmap',
         mapTypeControl: false,
@@ -44,6 +51,7 @@ function initMap(){
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(function (position) {
             var initialLocation = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+            console.log(initialLocation.lat(), initialLocation.lng());
             map.setCenter(initialLocation);
             console.log("Geolocation and recentering successful.");
         });
@@ -53,6 +61,8 @@ function initMap(){
     // directionsService and directionsDisplay.
     var onSubmitHandler = function(evt) {
         evt.preventDefault();
+        // FIXME: Check Geocomplete docs.
+        // $("#directions-request").trigger("geocode");
         calculateAndDisplayRoute(directionsService, directionsDisplay);
     };
 
