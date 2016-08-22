@@ -2,7 +2,6 @@ import os
 import googlemaps
 import forecastio
 import pendulum
-import json
 from collections import Counter
 
 ############# GLOBALS ##############
@@ -12,55 +11,8 @@ from collections import Counter
 GMAPS = googlemaps.Client(key=os.environ['GOOGLE_API_SERVER_KEY'])
 FIO_KEY = os.environ['FORECAST_API_KEY']
 
-######### FIXME: MOCK DATA #########
 
-la_results = [{'fPrecipType': None, 'fStatus': 'OK', 'fTemp': 86.0, 'fCloudCover': 0.56, 'fTime': '11:30 AM CDT', 'lat': 30.5335476, 'lng': -92.0816484, 'fIcon': u'partly-cloudy-day', 'fSummary': u'Partly Cloudy', 'fPrecipProb': 0, 'fPrecipIntensity': 0}, {'fPrecipType': None, 'fStatus': 'OK', 'fTemp': 87.0, 'fCloudCover': 0.72, 'fTime': '12:00 PM CDT', 'lat': 30.55693, 'lng': -91.65060000000001, 'fIcon': u'partly-cloudy-day', 'fSummary': u'Mostly Cloudy', 'fPrecipProb': 0, 'fPrecipIntensity': 0}, {'fPrecipType': None, 'fStatus': 'OK', 'fTemp': 89.0, 'fCloudCover': 0.15, 'fTime': '12:30 PM CDT', 'lat': 30.43981, 'lng': -91.20334000000001, 'fIcon': u'clear-day', 'fSummary': u'Clear', 'fPrecipProb': 0, 'fPrecipIntensity': 0}, {'fPrecipType': None, 'fStatus': 'OK', 'fTemp': 89.0, 'fCloudCover': 0.44, 'fTime': '1:00 PM CDT', 'lat': 30.202220000000004, 'lng': -90.93957, 'fIcon': u'partly-cloudy-day', 'fSummary': u'Partly Cloudy', 'fPrecipProb': 0, 'fPrecipIntensity': 0}, {'fPrecipType': None, 'fStatus': 'OK', 'fTemp': 84.0, 'fCloudCover': 0.39, 'fTime': '1:30 PM CDT', 'lat': 30.007490000000004, 'lng': -90.21399000000001, 'fIcon': u'partly-cloudy-day', 'fSummary': u'Partly Cloudy', 'fPrecipProb': 0, 'fPrecipIntensity': 0}, {'fPrecipType': u'rain', 'fStatus': 'OK', 'fTemp': 87.0, 'fCloudCover': 0.5, 'fTime': '1:45 PM CDT', 'lat': 29.9510555, 'lng': -90.07148239999998, 'fIcon': u'rain', 'fSummary': u'Light Rain', 'fPrecipProb': 100, 'fPrecipIntensity': 0.0197}]
-
-####################################
-
-
-def dictify(directions_result):
-    """Given directions_result as a string, make it into a dictionary."""
-    return json.loads(directions_result)
-
-
-def format_time(coords, time):
-    """Given a lat/lng tuple and time as a string, return a timezone-aware
-    Pendulum datetime object."""
-
-    timezone_result = GMAPS.timezone(coords)
-    timezone_id = timezone_result["timeZoneId"]
-
-    # Note that the time's date will be the current date in that timezone.
-    time = pendulum.parse(time, timezone_id)
-
-    return time
-
-
-def get_forecast(coords, time):
-    """Given lat/lng tuple and Pendulum datetime object, return forecast."""
-
-    lat = coords[0]
-    lng = coords[1]
-
-    # Convert to ISO 8601 string.
-    time = time.to_iso8601_string()
-
-    url = 'https://api.forecast.io/forecast/%s/%s,%s,%s' \
-        % (FIO_KEY, lat, lng, time)
-
-    return forecastio.manual(url)
-
-
-def slice_step(step, fraction_needed):
-    """Cuts off part of step."""
-    index = int(fraction_needed * len(step["path"]))  # Indices must be ints.
-    sliced_step = {
-        u'duration': {u'value': int(step["duration"]["value"]) * (1 - fraction_needed)},
-        u'path': step["path"][index + 1:],  # We already used the path at that index.
-        u'end_location': step["end_location"]}
-    return sliced_step
-
+######## ROUTE CLASS + Help ########
 
 class Route(object):
 
@@ -97,7 +49,7 @@ class Route(object):
         if departure_day == "tomorrow":
             self.start_time = self.start_time.add(days=1)
 
-        # Add starting location coords and formatted departure time to list of
+        # Add starting location coords and departure datetime object to list of
         # (coord, datetime) tuples.
         self.coords_time = [(start_location, self.start_time)]
 
@@ -197,6 +149,48 @@ class Route(object):
             sliced_step = slice_step(step, fraction_needed)
             self.fill_buckets(sliced_step)
 
+
+def format_time(coords, time):
+    """Given a lat/lng tuple and time as a string, return a timezone-aware
+    Pendulum datetime object."""
+
+    timezone_result = GMAPS.timezone(coords)
+    timezone_id = timezone_result["timeZoneId"]
+
+    # Note that the time's date will be the current date in that timezone.
+    datetime = pendulum.parse(time, timezone_id)
+
+    return datetime
+
+def slice_step(step, fraction_needed):
+    """Cuts off part of step."""
+    index = int(fraction_needed * len(step["path"]))  # Indices must be ints.
+    sliced_step = {
+        u'duration': {u'value': int(step["duration"]["value"]) * (1 - fraction_needed)},
+        u'path': step["path"][index + 1:],  # We already used the path at that index.
+        u'end_location': step["end_location"]}
+    return sliced_step
+
+
+
+
+####################################
+# Weather
+####################################
+
+def get_forecast(coords, time):
+    """Given lat/lng tuple and Pendulum datetime object, return forecast."""
+
+    lat = coords[0]
+    lng = coords[1]
+
+    # Convert to ISO 8601 string.
+    time = time.to_iso8601_string()
+
+    url = 'https://api.forecast.io/forecast/%s/%s,%s,%s' \
+        % (FIO_KEY, lat, lng, time)
+
+    return forecastio.manual(url)
 
 def make_marker_info(coords_time):
     """Given a list of coords/time tuples, construct a list of weather

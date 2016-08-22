@@ -4,7 +4,8 @@ from jinja2 import StrictUndefined
 from flask import Flask, render_template, redirect, request, flash, session, url_for, jsonify
 from flask_debugtoolbar import DebugToolbarExtension
 
-from road import dictify, make_result
+from road import make_result
+from utils import dictify
 from model import User, Label, Addr, connect_to_db, db
 
 app = Flask(__name__)
@@ -42,9 +43,11 @@ def handle_form():
     departure_time = request.form.get("departure-time")
     directions_result = dictify(request.form.get("data"))
 
+    # print directions_result
+
     #FIXME: Switch me back on once you're ready to make API calls.
     result = make_result(directions_result, departure_time, departure_day)
-    print result
+    # print result
 
     return jsonify(result)
 
@@ -163,8 +166,8 @@ if __name__ == "__main__":
     app.jinja_env.auto_reload = True
 
     # Connect to database.
-    connect_to_db(app)
+    # connect_to_db(app)
 
     # Must specify host for Vagrant.
-    app.run(host="0.0.0.0")
-    #app.run()
+    #app.run(host="0.0.0.0")
+    app.run()
