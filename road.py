@@ -36,7 +36,7 @@ class Route(object):
 
     def __init__(self, directions_prepped, departure_time, departure_day):
         """Given directions_prepped dictionary, departure_time string, and
-        departure_day string, initialize route object."""
+        departure_day string, initialize Route object."""
 
         self.steps = directions_prepped["steps"]
 
@@ -64,7 +64,6 @@ class Route(object):
 
         # If trip is shorter than fifteen minutes, just pick middle coord.
         if self.overall_duration < 900:
-            print "Trip is shorter than fifteen minutes; only getting the middle coords."
             for step in self.steps:
                 step_duration = int(step["duration"]["value"])
 
@@ -157,7 +156,7 @@ class Route(object):
 
 
 def get_bucket_size(overall_duration):
-    """Given overall_duration in seconds, choose appropriate bucket size."""
+    """Given overall_duration in seconds, choose appropriate time between coords."""
 
     if overall_duration < 7200:  # If trip duration less than 2 hrs (7200 sec):
         size_of_bucket = 900  # Get coords every fifteen minutes (900 sec).
@@ -183,9 +182,10 @@ def format_time(coords, time_string, day_string):
     datetime = pendulum.parse(time_string, timezone_id)
 
     if day_string == "tomorrow":
-        datetime.add(days=1)
+        datetime = datetime.add(days=1)
 
     return datetime
+
 
 def slice_step(step, fraction_needed):
     """Cuts off part of step."""
