@@ -12,7 +12,7 @@ GMAPS = googlemaps.Client(key=os.environ['GOOGLE_API_SERVER_KEY'])
 FIO_KEY = os.environ['FORECAST_API_KEY']
 
 
-######## ROUTE CLASS + Help ########
+###### ROUTE CLASS + Helpers #######
 
 class Route(object):
 
@@ -25,9 +25,10 @@ class Route(object):
         self.time_in_bucket = 0
         self.time_elapsed = 0
 
-        # Get trip duration in seconds.
+        # Set trip duration in seconds.
         self.overall_duration = int(directions_result["routes"][0]["legs"][0]["duration"]["value"])
 
+        # Set size of interval.
         if self.overall_duration < 7200:  # If trip duration less than 2 hrs (7200 sec):
             self.size_of_bucket = 900  # Get coords every fifteen minutes (900 sec).
             print "Trip is shorter than two hours; getting coords every 15 minutes."
@@ -37,7 +38,7 @@ class Route(object):
             print "Trip is longer than two but less than eight hours; getting coords every 30 minutes."
 
         else:
-            self.size_of_bucket = 3600  # Get coords every hour (3600 sec).
+            self.size_of_bucket = 3600  # Else: Get coords every hour (3600 sec).
             print "Trip is longer than eight hours; getting coords every hour."
 
         # Make coords for the starting location of the first step.
@@ -390,11 +391,6 @@ def type_max(weather_results, precip_type):
             max_intensity = result["fPrecipIntensity"]
 
     return max_intensity
-
-
-def normalize(value, vmin, vmax):
-    normalized = (value - vmin) / (vmax - vmin)
-    return normalized
 
 
 def normalized_intensity(intensity):
