@@ -124,7 +124,6 @@ class Route(object):
 
         elif (self.time_in_bucket + step_duration) == self.size_of_bucket:
 
-            self.time_in_bucket += step_duration
             self.time_elapsed += step_duration
 
             lat = step["end_location"]["lat"]
@@ -133,8 +132,6 @@ class Route(object):
 
             time = self.start_time.add(seconds=self.time_elapsed)
             self.coords_time.append((end_location, time))
-
-            self.time_in_bucket = 0  # Empty the bucket.
 
             return
 
@@ -199,8 +196,6 @@ def slice_step(step, fraction_needed):
         u'path': step["path"][index + 1:],  # We already used the path at that index.
         u'end_location': step["end_location"]}
     return sliced_step
-
-
 
 
 ####################################
