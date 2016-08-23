@@ -64,33 +64,7 @@ class Route(object):
 
         # If trip is shorter than fifteen minutes, just pick middle coord.
         if self.overall_duration < 900:
-            for step in self.steps:
-                step_duration = int(step["duration"]["value"])
-
-                # If taking this step would put you over the halfway point:
-                if (self.time_elapsed + step_duration) > self.overall_duration/2:
-
-                    # Pick middle (or if len(paths) is even, one past) path coord.
-                    index = len(step["path"])/2
-
-                    # Make coords.
-                    lat = step["path"][index]["lat"]
-                    lng = step["path"][index]["lng"]
-                    coords = (lat, lng)
-
-                    # Divide step's duration by intervals in path.
-                    seconds_per_interval = step_duration / len(step["path"])-1
-
-                    # Add seconds up to selected coord.
-                    self.time_elapsed += (seconds_per_interval * index)
-                    time = self.start_time.add(seconds=self.time_elapsed)
-
-                    # Append coords, time to list.
-                    self.coords_time.append((coords, time))
-                    break
-
-                else:
-                    self.time_elapsed += step_duration
+            self.pick_middle()
 
         else:
             for step in self.steps:
@@ -106,8 +80,38 @@ class Route(object):
 
         return self.coords_time
 
+    def pick_middle(self):
+        """Adds middle coords and datetime to coords_time."""
+
+        for step in self.steps:
+                step_duration = int(step["duration"]["value"])
+
+                # If taking this step keeps you below the halfway point:
+                if (self.time_elapsed + step_duration) < self.overall_duration/2:
+                    self.time_elapsed += step_duration
+
+                else:
+                    # Pick middle (or if len(paths) is even, one past) path coord.
+                    index = len(step["path"])/2
+
+                    # Make coords.
+                    lat = step["path"][index]["lat"]
+                    lng = step["path"][index]["lng"]
+                    coords = (lat, lng)
+
+                    # Divide step's duration by intervals in path.
+                    seconds_per_interval = step_duration / (len(step["path"])-1)
+
+                    # Add seconds up to selected coord.
+                    self.time_elapsed += (seconds_per_interval * index)
+                    time = self.start_time.add(seconds=self.time_elapsed)
+
+                    # Append coords, time to list.
+                    self.coords_time.append((coords, time))
+                    return
+
     def fill_buckets(self, step):
-        """Given a step, fills buckets to get middle coords."""
+        """Given a step, fills buckets to get middle coords and datetimes."""
 
         step_duration = int(step["duration"]["value"])
 
