@@ -12,43 +12,48 @@ GMAPS = googlemaps.Client(key=os.environ['GOOGLE_API_SERVER_KEY'])
 FIO_KEY = os.environ['FORECAST_API_KEY']
 
 
+###### API TRANSLATION LAYER #######
+
+def prep_directions(directions_result):
+    """Given a directions_result dictionary from an API, translate it into a
+    format suitable for the Route class."""
+
+    directions_prepped = {}
+
+    directions_prepped["steps"] = directions_result["routes"][0]["legs"][0]["steps"]
+    directions_prepped["duration"] = int(directions_result["routes"][0]["legs"][0]["duration"]["value"])
+
+    return directions_prepped
+
+
+def prep_weather(weather_result):
+    pass
+
+
 ###### ROUTE CLASS + Helpers #######
 
 class Route(object):
 
-    def __init__(self, directions_result, departure_time, departure_day):
-        """Given directions_result dictionary, departure_time string, and
-        departure_day, initialize route object."""
+    def __init__(self, directions_prepped, departure_time, departure_day):
+        """Given directions_prepped dictionary, departure_time string, and
+        departure_day string, initialize route object."""
 
-        self.steps = directions_result["routes"][0]["legs"][0]["steps"]
+        self.steps = directions_prepped["steps"]
 
         self.time_in_bucket = 0
         self.time_elapsed = 0
 
-        # Set trip duration in seconds.
-        self.overall_duration = int(directions_result["routes"][0]["legs"][0]["duration"]["value"])
+        self.overall_duration = directions_prepped["duration"]
 
-        # Set size of interval.
-        if self.overall_duration < 7200:  # If trip duration less than 2 hrs (7200 sec):
-            self.size_of_bucket = 900  # Get coords every fifteen minutes (900 sec).
-            print "Trip is shorter than two hours; getting coords every 15 minutes."
-
-        elif self.overall_duration < 28800:  # If trip duration less than 8 hrs (28800 sec):
-            self.size_of_bucket = 1800  # Get coords every thirty minutes (1800 sec).
-            print "Trip is longer than two but less than eight hours; getting coords every 30 minutes."
-
-        else:
-            self.size_of_bucket = 3600  # Else: Get coords every hour (3600 sec).
-            print "Trip is longer than eight hours; getting coords every hour."
+        # Set time between coords based on overall duration.
+        self.size_of_bucket = get_bucket_size(self.overall_duration)
 
         # Make coords for the starting location of the first step.
         lat = self.steps[0]["start_location"]["lat"]
         lng = self.steps[0]["start_location"]["lng"]
         start_location = (lat, lng)
 
-        self.start_time = format_time(start_location, departure_time)
-        if departure_day == "tomorrow":
-            self.start_time = self.start_time.add(days=1)
+        self.start_time = format_time(start_location, departure_time, departure_day)
 
         # Add starting location coords and departure datetime object to list of
         # (coord, datetime) tuples.
@@ -151,15 +156,34 @@ class Route(object):
             self.fill_buckets(sliced_step)
 
 
-def format_time(coords, time):
-    """Given a lat/lng tuple and time as a string, return a timezone-aware
-    Pendulum datetime object."""
+def get_bucket_size(overall_duration):
+    """Given overall_duration in seconds, choose appropriate bucket size."""
 
+    if overall_duration < 7200:  # If trip duration less than 2 hrs (7200 sec):
+        size_of_bucket = 900  # Get coords every fifteen minutes (900 sec).
+
+    elif overall_duration < 28800:  # If trip duration less than 8 hrs (28800 sec):
+        size_of_bucket = 1800  # Get coords every thirty minutes (1800 sec).
+
+    else:
+        size_of_bucket = 3600  # Else: Get coords every hour (3600 sec).
+
+    return size_of_bucket
+
+
+def format_time(coords, time_string, day_string):
+    """Given a lat/lng tuple and time and day as strings, returns a timezone-
+    aware Pendulum datetime object."""
+
+    # Make an API call to find the location's timezone.
     timezone_result = GMAPS.timezone(coords)
     timezone_id = timezone_result["timeZoneId"]
 
-    # Note that the time's date will be the current date in that timezone.
-    datetime = pendulum.parse(time, timezone_id)
+    # Note that upon instantiation, the date will be the current date in that timezone.
+    datetime = pendulum.parse(time_string, timezone_id)
+
+    if day_string == "tomorrow":
+        datetime.add(days=1)
 
     return datetime
 
@@ -417,14 +441,18 @@ def avg_intensity(weather_results):
 
     return mean
 
+######
 
 def make_result(directions_result, departure_time, departure_day):
     """Builds the dictionary for jsonification."""
 
     result = {}
 
+    # Prepare the directions result.
+    directions_prepped = prep_directions(directions_result)
+
     # Instantiate route object.
-    timed_route = Route(directions_result, departure_time, departure_day)
+    timed_route = Route(directions_prepped, departure_time, departure_day)
 
     # print timed_route
 
