@@ -36,18 +36,30 @@ def handle_form():
     """Handles input from user."""
 
     # Get values from form.
-    start = request.form.get("start")
-    end = request.form.get("end")
-    mode = request.form.get("mode")
     departure_day = request.form.get("departure-day")
     departure_time = request.form.get("departure-time")
     directions_result = dictify(request.form.get("data"))
 
-    #FIXME: Switch me back on once you're ready to make API calls.
     result = make_result(directions_result, departure_time, departure_day)
-    # print result
 
     return jsonify(result)
+
+
+@app.route('/recommendation.json', methods=['POST'])
+def handle_recs():
+    """Handles request for recommendation."""
+
+    # Get values from form.
+    minutes_before = request.form.get("before")
+    minutes_after = request.form.get("after")
+    coords_time = dictify(request.form.get("data"))
+
+    print minutes_before
+    print minutes_after
+    print coords_time
+
+    return jsonify("hi")
+
 
 # The following code is based on my implementation of Hackbright's Ratings
 # exercise, which I pair programmed with Jennifer Griffith-Delgado (jgriffith23).

@@ -17,17 +17,39 @@ function init(){
     initMap();
 }
 
-function addZero(i) {
-    if (i < 10) {
-        i = "0" + i;
-    }
-    return i;
-}
-
 function initForm(){
-    $("#start").geocomplete({types:['geocode', 'establishment']});
-    $("#end").geocomplete({types:['geocode', 'establishment']});
+    $("#start")
+        .geocomplete({types:['geocode', 'establishment']})
+        .bind("geocode:result", function(event, result){
+            var startAddr;
+            if (result.formatted_address != "United States") {
+                startAddr = result.formatted_address;
+            } else {
+                startAddr = $("#start").val();
+            }
+            $("#start-addr").val(startAddr);
+        });
+    $("#end")
+        .geocomplete({types:['geocode', 'establishment']})
+        .bind("geocode:result", function(event, result){
+            var endAddr;
+            if (result.formatted_address != "United States") {
+                endAddr = result.formatted_address;
+            } else {
+                endAddr = $("#end").val();
+            }
+            $("#end-addr").val(endAddr);
+    });
+
     var now = new Date();
+
+    function addZero(i) {
+        if (i < 10) {
+            i = "0" + i;
+        }
+        return i;
+    }
+
     var hours = addZero(now.getHours());
     var minutes = addZero(now.getMinutes());
     $("#departure-time").val(hours + ":" + minutes);
@@ -61,12 +83,51 @@ function initMap(){
     // directionsService and directionsDisplay.
     var onSubmitHandler = function(evt) {
         evt.preventDefault();
-        // FIXME: Check Geocomplete docs.
-        // $("#directions-request").trigger("geocode");
         calculateAndDisplayRoute(directionsService, directionsDisplay);
     };
 
     $("#directions-request").on("submit", onSubmitHandler);
+}
+
+function calculateAndDisplayRoute(directionsService, directionsDisplay) {
+    var start = document.getElementById('start-addr').value;
+    console.log("Start:", start);
+    var end = document.getElementById('end-addr').value;
+    console.log("End:", end);
+    var mode = document.getElementById('mode').value;
+    directionsService.route({
+      origin: start,
+      destination: end,
+      travelMode: mode
+    }, function(response, status) {
+      if (status === 'OK') {
+        directionsDisplay.setDirections(response);
+        directionsDisplay.setMap(map);
+
+        // Delete existing markers.
+        for (var i = 0; i < markersArray.length; i++) {
+            markersArray[i].setMap(null);
+        }
+        markersArray.length = 0;
+
+        // Hide existing weather report.
+        $("#weather-report").hide();
+
+        $("#submit-button").val("Loading...");
+
+        var formInputs = {
+            "departure-day": $("#departure-day").val(),
+            "departure-time": $("#departure-time").val(),
+            "data": JSON.stringify(response)
+        };
+
+        $.post("/request.json",
+               formInputs,
+               makeMarkersAndReport);
+      } else {
+        window.alert('Directions request failed due to ' + status);
+      }
+    });
 }
 
 function makeMarkersAndReport(data) {
@@ -75,6 +136,25 @@ function makeMarkersAndReport(data) {
     var weatherReport = data.weatherReport;
     displayWeatherReport(weatherReport);
     $("#submit-button").val("Submit");
+
+    var before = $("#before").val();
+    var after = $("#after").val();
+
+    if (before > 0 || after > 0) {
+        $("#recommendation").show();
+
+        var formInputs = {
+            "before": before,
+            "after": after,
+            "data": JSON.stringify(data.coordsTime)
+        };
+
+        console.log(formInputs);
+
+        $.post("/recommendation.json",
+               formInputs,
+               handleRecs);
+    }
 }
 
 function makeAndSetMarkers(markerInfo) {
@@ -181,46 +261,8 @@ function displayWeatherReport(weatherReport) {
     $("#weather-report").show();
 }
 
-function calculateAndDisplayRoute(directionsService, directionsDisplay) {
-    var start = document.getElementById('start').value;
-    var end = document.getElementById('end').value;
-    var mode = document.getElementById('mode').value;
-    directionsService.route({
-      origin: start,
-      destination: end,
-      travelMode: mode
-    }, function(response, status) {
-      if (status === 'OK') {
-        directionsDisplay.setDirections(response);
-        directionsDisplay.setMap(map);
-
-        // Delete existing markers.
-        for (var i = 0; i < markersArray.length; i++) {
-            markersArray[i].setMap(null);
-        }
-        markersArray.length = 0;
-
-        // Hide existing weather report.
-        $("#weather-report").hide();
-
-        $("#submit-button").val("Loading...");
-
-        var formInputs = {
-            "start": start,
-            "end": end,
-            "mode": mode,
-            "departure-day": $("#departure-day").val(),
-            "departure-time": $("#departure-time").val(),
-            "data": JSON.stringify(response)
-        };
-
-        $.post("/request.json",
-               formInputs,
-               makeMarkersAndReport);
-      } else {
-        window.alert('Directions request failed due to ' + status);
-      }
-    });
+function handleRecs(data) {
+    console.log("hi");
 }
 
 google.maps.event.addDomListener(window, 'load', init);

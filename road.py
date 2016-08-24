@@ -11,6 +11,7 @@ from weather import make_marker_info, make_weather_report
 
 ####################################
 
+
 def make_result(directions_result, departure_time, departure_day):
     """Builds the dictionary for jsonification."""
 
@@ -41,11 +42,22 @@ def make_result(directions_result, departure_time, departure_day):
 
     result["markerInfo"] = marker_info
     result["weatherReport"] = weather_report
+    result["coordsTime"] = coords_time
 
     # print result
 
     return result
 
+
+def prep_coords_time(coords_time):
+    """Change datetimes into strings before sending to frontend."""
+
+    formated_cords_time = []
+
+    for ct in coords_time:
+        pass
+
+    pass
 
 def make_score(weather_results):
     """Calculate ``badness`` of weather score."""

@@ -11,8 +11,6 @@
         have height as a percentage. */
         html, body {
             height: 100%;
-            margin: 0;
-            padding: 0;
         }
         
         #map {
@@ -33,19 +31,39 @@
           <form action="/request" method="POST" id="directions-request">
             <!-- The "for" attribute of the <label> tag should be equal to the "id"
             attribute of the related element to bind them together. -->
-            <label for="start">Starting location:</label> <input type="text" name="start" id="start" size="40" placeholder=""><br>
-            <label for="end">Destination:</label> <input type="text" name="end" id="end" size="40" placeholder=""><br>
-            <label for="departure-day">Departing </label> <select name="departure-day" id="departure-day">
+            <label for="start">Starting location:</label> <input type="text" name="start" id="start" size="40" placeholder="">
+            <input type="hidden" name="start-addr" id="start-addr"><br>
+
+            <label for="end">Destination:</label> <input type="text" name="end" id="end" size="40" placeholder="">
+            <input type="hidden" name="end-addr" id="end-addr"><br>
+
+            <label for="departure-day">Departing</label> <select name="departure-day" id="departure-day">
                 <option value="today">Today</option>
                 <option value="tomorrow">Tomorrow</option>
             </select>
+
             <label for="departure-time">at</label> <input type="time" name="departure-time" id="departure-time"><br>
+
+            <label>Flexibility </label> <label for="before">before:</label>
+
+            <select name="before" id="before">
+                <option value="0">0</option>
+                <option value="60">60 min</option>
+            </select>
+
+            <label for="after">after:</label>
+            <select name="after" id="after">
+                <option value="0">0</option>
+                <option value="60">60 min</option>
+            </select><br>
+
             <label for="mode">Transportation mode:</label> <select name="mode" id="mode">
                 <option value="DRIVING">Driving</option> <!-- JS API requires this value to be capitalized. -->
                 <option value="TRANSIT">Public Transit</option>
                 <option value="WALKING">Walking</option>
                 <option value="BICYCLING">Bicycling</option>
             </select><br>
+
             <input type="submit" id="submit-button" value="Submit">
           </form>
         </div><!-- close submission-form div -->
@@ -55,6 +73,9 @@
             <p>On your trip, the weather will mostly be <b><span id="modal-weather"></span></b>.</p>
             <p>The chance of precipitation is <b><span id="precip-prob"></span></b>%.</p>
             <p>The average temperature will be <b><span id="avg-temp"></span></b>℉.</p>
+
+            <div id="recommendation"><p>Loading recommended time to leave...</p></div>
+            <script>$("#recommendation").hide();</script>
         </div> <!-- close weather-report div -->
         <script>$("#weather-report").hide();</script>
 
