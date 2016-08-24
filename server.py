@@ -4,8 +4,8 @@ from jinja2 import StrictUndefined
 from flask import Flask, render_template, redirect, request, flash, session, url_for, jsonify
 from flask_debugtoolbar import DebugToolbarExtension
 
-from road import make_result
 from utils import dictify
+from road import make_result
 from model import User, Label, Addr, connect_to_db, db
 
 app = Flask(__name__)
@@ -42,8 +42,6 @@ def handle_form():
     departure_day = request.form.get("departure-day")
     departure_time = request.form.get("departure-time")
     directions_result = dictify(request.form.get("data"))
-
-    # print directions_result
 
     #FIXME: Switch me back on once you're ready to make API calls.
     result = make_result(directions_result, departure_time, departure_day)
@@ -115,8 +113,8 @@ def handle_login():
     # Python's built-in hash function is not cryptographically secure; we're
     # just using it for convenience.
 
-    # We need to convert the hash to unicode because hash returns an integer but
-    # it's stored in the database as a unicode string.
+    # We need to convert the hash to unicode because hash() returns an integer
+    # but it's stored in the database as a unicode string.
 
     password = unicode(hash(password))
 
@@ -152,7 +150,7 @@ def logout():
 
     return redirect("/")
 
-####################################################
+################################################################################
 
 if __name__ == "__main__":
 
