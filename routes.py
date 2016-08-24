@@ -3,10 +3,26 @@ import googlemaps
 import pendulum
 
 ############# GLOBALS ##############
+
 # Remember to ``source secrets.sh``!
 GMAPS = googlemaps.Client(key=os.environ['GOOGLE_API_SERVER_KEY'])
-####################################
 
+
+###### API TRANSLATION LAYER #######
+
+def prep_directions(directions_result):
+    """Given a directions_result dictionary from an API, translate it into a
+    format suitable for the Route class."""
+
+    directions_prepped = {}
+
+    directions_prepped["steps"] = directions_result["routes"][0]["legs"][0]["steps"]
+    directions_prepped["duration"] = int(directions_result["routes"][0]["legs"][0]["duration"]["value"])
+
+    return directions_prepped
+
+
+########### ROUTE CLASS ############
 
 class Route(object):
 

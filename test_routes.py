@@ -1,8 +1,7 @@
 import unittest
 import pendulum
 
-from routes import Route
-from road import prep_directions
+from routes import prep_directions, Route
 
 # FIXME: Put DIRECTIONS_RESULT into setup?
 
