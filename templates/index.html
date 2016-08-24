@@ -18,38 +18,21 @@
         #map {
             height: 100%;
         }
-        
-        .floating-panel {
-            position: absolute;
-            z-index: 5;
-            background-color: #fff;
-            margin-top: 50px;
-            padding: 1%;
-            border: 1px solid #999;
-        }
-
-        #submission-form {
-            top: 1%;
-            left: 1%;
-        }
-
-        #weather-report {
-            top: 1%;
-            right: 1%;
-            width: 20%;
-        }
     </style>
 
 {% endblock %}
 
 {% block content %}
 
-    <div class="floating-panel" id="submission-form">
+    <div class="container">
 
-        <!-- The "for" attribute of the <label> tag should be equal to the "id"
-        attribute of the related element to bind them together. -->
+      <!-- first row needs to be moved down 55px b/c fixed navbar -->
+      <div class="row" style="margin-top: 55px">
 
-        <form action="/request" method="POST" id="directions-request">
+        <div class="col-xs-6" id="submission-form">
+          <form action="/request" method="POST" id="directions-request">
+            <!-- The "for" attribute of the <label> tag should be equal to the "id"
+            attribute of the related element to bind them together. -->
             <label for="start">Starting location:</label> <input type="text" name="start" id="start" size="40" placeholder=""><br>
             <label for="end">Destination:</label> <input type="text" name="end" id="end" size="40" placeholder=""><br>
             <label for="departure-day">Departing </label> <select name="departure-day" id="departure-day">
@@ -62,21 +45,30 @@
                 <option value="TRANSIT">Public Transit</option>
                 <option value="WALKING">Walking</option>
                 <option value="BICYCLING">Bicycling</option>
-
             </select><br>
             <input type="submit" id="submit-button" value="Submit">
-        </form>
-    </div>
+          </form>
+        </div><!-- close submission-form div -->
 
-    <div id="map"></div>
+        <div class="col-xs-6" id="weather-report">
+            <h4>Weather Report</h4>
+            <p>On your trip, the weather will mostly be <b><span id="modal-weather"></span></b>.</p>
+            <p>The chance of precipitation is <b><span id="precip-prob"></span></b>%.</p>
+            <p>The average temperature will be <b><span id="avg-temp"></span></b>℉.</p>
+        </div> <!-- close weather-report div -->
+        <script>$("#weather-report").hide();</script>
 
-    <div class="floating-panel" id="weather-report">
-        <h4>Weather Report</h4>
-        <p>On your trip, the weather will mostly be <b><span id="modal-weather"></span></b>.</p>
-        <p>The chance of precipitation is <b><span id="precip-prob"></span></b>%.</p>
-        <p>The average temperature will be <b><span id="avg-temp"></span></b>℉.</p>
-    </div>
-    <script>$("#weather-report").hide();</script>
+      </div><!-- close row -->
+    </div><!-- close container -->
+
+    <div class="container-fluid" style="height: 79%">
+
+      <div class="row" style="height: 100%">
+
+        <div id="map"></div>
+
+      </div><!-- close row -->
+    </div><!-- close container -->
 
 {% endblock %}
 
