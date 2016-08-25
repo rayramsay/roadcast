@@ -5,7 +5,7 @@ from flask import Flask, render_template, redirect, request, flash, session, url
 from flask_debugtoolbar import DebugToolbarExtension
 
 from utils import dictify
-from road import make_result
+from road import make_result, make_coords_datetime
 from model import User, Label, Addr, connect_to_db, db
 
 app = Flask(__name__)
@@ -30,6 +30,10 @@ def index():
                            jskey=jskey)
 
 
+####################################################
+# JSON routes
+####################################################
+
 # I am a POST request so that the long JSON string is not passed as an argument.
 @app.route('/request.json', methods=['POST'])
 def handle_form():
@@ -40,7 +44,13 @@ def handle_form():
     departure_time = request.form.get("departure-time")
     directions_result = dictify(request.form.get("data"))
 
+    # print directions_result
+    # print departure_day
+    # print departure_time
+
     result = make_result(directions_result, departure_time, departure_day)
+
+    print result
 
     return jsonify(result)
 
@@ -54,9 +64,9 @@ def handle_recs():
     minutes_after = request.form.get("after")
     coords_time = dictify(request.form.get("data"))
 
-    print minutes_before
-    print minutes_after
     print coords_time
+
+    # [[[37.7888568, -122.4115372], u'2016-08-24T18:04:00-07:00'], [[37.806250000000006, -122.35620000000002], u'2016-08-24T18:19:00-07:00'], [[37.80969, -122.26259], u'2016-08-24T18:34:00-07:00'], [[37.8119258, -122.25643980000001], u'2016-08-24T18:51:41-07:00']]
 
     return jsonify("hi")
 

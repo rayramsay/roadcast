@@ -1,5 +1,6 @@
 import os
-#import googlemaps
+import googlemaps
+import pendulum
 from routes import prep_directions, Route
 from weather import make_marker_info, make_weather_report
 
@@ -7,7 +8,7 @@ from weather import make_marker_info, make_weather_report
 
 # Remember to ``source secrets.sh``!
 
-#GMAPS = googlemaps.Client(key=os.environ['GOOGLE_API_SERVER_KEY'])
+GMAPS = googlemaps.Client(key=os.environ['GOOGLE_API_SERVER_KEY'])
 
 ####################################
 
@@ -28,7 +29,7 @@ def make_result(directions_result, departure_time, departure_day):
     # Make list of coordinates and datetimes.
     coords_time = timed_route.make_coords_time()
 
-    print coords_time
+    # print coords_time
 
     # Get weather info for coords and times.
     marker_info = make_marker_info(coords_time)
@@ -38,26 +39,58 @@ def make_result(directions_result, departure_time, departure_day):
     # Make weather report for trip.
     weather_report = make_weather_report(marker_info)
 
-    print weather_report
+    # print weather_report
+
+    # Convert datetimes to strings.
+    formatted_ct = format_coords_time(coords_time)
+
+    # print formatted_ct
 
     result["markerInfo"] = marker_info
     result["weatherReport"] = weather_report
-    result["coordsTime"] = coords_time
+    result["coordsTime"] = formatted_ct
 
-    # print result
+    print result
 
     return result
 
 
-def prep_coords_time(coords_time):
+def format_coords_time(coords_time):
     """Change datetimes into strings before sending to frontend."""
 
-    formated_cords_time = []
+    formatted_ct = []
 
     for ct in coords_time:
-        pass
+        coords, time = ct
+        time = time.to_iso8601_string()
+        formatted_ct.append((coords, time))
 
-    pass
+    return formatted_ct
+
+
+def make_coords_datetime(coords_time):
+    """Given a coords_time array with times as strings, recreates as a list of
+    (coords, datetimes) tuples."""
+
+    coords_datetime = []
+
+    start_lat, start_lng = coords_time[0][0]
+    start_coords = (start_lat, start_lng)
+
+    timezone_result = GMAPS.timezone(start_coords)
+    timezone_id = timezone_result["timeZoneId"]
+
+    for ct in coords_time:
+        coords, time = ct
+        time = time[:-6]
+
+        coords = tuple(coords)
+        datetime = pendulum.parse(time, timezone_id)
+
+        coords_datetime.append((coords, datetime))
+
+    return coords_datetime
+
 
 def make_score(weather_results):
     """Calculate ``badness`` of weather score."""
