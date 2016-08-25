@@ -22,7 +22,7 @@ function initForm(){
         .geocomplete({types:['geocode', 'establishment']})
         .bind("geocode:result", function(event, result){
             var startAddr;
-            if (result.formatted_address != "United States") {
+            if (result.formatted_address !== "United States") {
                 startAddr = result.formatted_address;
             } else {
                 startAddr = $("#start").val();
@@ -33,7 +33,7 @@ function initForm(){
         .geocomplete({types:['geocode', 'establishment']})
         .bind("geocode:result", function(event, result){
             var endAddr;
-            if (result.formatted_address != "United States") {
+            if (result.formatted_address !== "United States") {
                 endAddr = result.formatted_address;
             } else {
                 endAddr = $("#end").val();
@@ -90,11 +90,26 @@ function initMap(){
 }
 
 function calculateAndDisplayRoute(directionsService, directionsDisplay) {
-    var start = document.getElementById('start-addr').value;
+    var start;
+    var end;
+    var mode;
+
+    if (document.getElementById('start-addr').value === "") {
+        start = document.getElementById('start').value;
+    } else {
+        start = document.getElementById('start-addr').value;
+    }
     console.log("Start:", start);
-    var end = document.getElementById('end-addr').value;
+    
+    if (document.getElementById('end-addr').value === "") {
+        end = document.getElementById('end').value;
+    } else {
+        end = document.getElementById('end-addr').value;
+    }
     console.log("End:", end);
-    var mode = document.getElementById('mode').value;
+    
+    mode = document.getElementById('mode').value;
+    
     directionsService.route({
       origin: start,
       destination: end,
@@ -146,10 +161,8 @@ function makeMarkersAndReport(data) {
         var formInputs = {
             "before": before,
             "after": after,
-            "data": JSON.stringify(data.coordsTime)
+            "data": JSON.stringify(data)
         };
-
-        console.log(formInputs);
 
         $.post("/recommendation.json",
                formInputs,
