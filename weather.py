@@ -155,7 +155,7 @@ def modal_weather(weather_results):
             cnt[u'Cloudy'] += cnt[key]
 
     ordered_by_count = cnt.most_common()
-    print ordered_by_count
+    # print ordered_by_count
 
     mode = ordered_by_count[0][0].lower()
 

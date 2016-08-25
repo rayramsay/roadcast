@@ -5,7 +5,7 @@ from flask import Flask, render_template, redirect, request, flash, session, url
 from flask_debugtoolbar import DebugToolbarExtension
 
 from utils import dictify
-from road import make_result, make_coords_datetime, shift_time
+from road import make_result, make_coords_datetime, shift_time, get_alt_weather
 from model import User, Label, Addr, connect_to_db, db
 
 app = Flask(__name__)
@@ -60,21 +60,35 @@ def handle_recs():
     """Handles request for recommendation."""
 
     # Get values from form.
-    minutes_before = request.form.get("before")
-    minutes_after = request.form.get("after")
-    js_coords_time = dictify(request.form.get("data"))
+    minutes_before = int(request.form.get("before"))
+    minutes_after = int(request.form.get("after"))
+    data = dictify(request.form.get("data"))
 
-    coords_datetime = make_coords_datetime(js_coords_time)
+    coords_timestring = data["coordsTime"]
+    initial_marker_info = data["markerInfo"]
+    initial_weather_report = data["weatherReport"]
 
-    print coords_datetime
+    # Make time strings into datetime objects.
+    coords_datetime = make_coords_datetime(coords_timestring)
 
-    if int(minutes_after) > 0:
-        coords_shifted_forward = shift_time(coords_datetime, "forward", int(minutes_after))
-        print coords_shifted_forward
+    possibilities = {}
+    possibilities["initialRoute"] = {}
+    possibilities["initialRoute"]["markerInfo"] = initial_marker_info
+    possibilities["initialRoute"]["weatherReport"] = initial_weather_report
 
-    if int(minutes_before) > 0:
-        coords_shifted_backward = shift_time(coords_datetime, "backward", int(minutes_before))
-        print coords_shifted_backward
+    result = get_alt_weather(coords_datetime, minutes_before, minutes_after, possibilities)
+
+    print result
+
+    # print "Initial:", coords_datetime
+
+    # if minutes_after > 0:
+    #     coords_shifted_forward = shift_time(coords_datetime, "forward", minutes_after)
+    #     print "Forward:", coords_shifted_forward
+
+    # if minutes_before > 0:
+    #     coords_shifted_backward = shift_time(coords_datetime, "backward", minutes_before)
+    #     print "Backward:", coords_shifted_backward
 
     return jsonify("hi")
 

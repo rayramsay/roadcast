@@ -108,7 +108,62 @@ def shift_time(coords_datetime, direction, minutes):
     return shifted
 
 
-def make_score(weather_results):
+def get_alt_weather(coords_datetime, minutes_before, minutes_after, possibilities):
+
+    interval = 30
+
+    if minutes_before > 0:
+        # Divide minutes_before into 30 minute increments.
+        num = minutes_before / interval
+
+        count = 1
+        while count <= num:
+
+            minutes = interval * count  # 30 * 1 => 30 * 2
+            key = "before"+str(minutes)
+
+            new_ct = shift_time(coords_datetime, "backward", minutes)
+
+            # Get weather at new coords, datetime.
+            marker_info = make_marker_info(new_ct)
+
+            # Make weather report for trip.
+            weather_report = make_weather_report(marker_info)
+
+            possibilities[key] = {}
+            possibilities[key]["markerInfo"] = marker_info
+            possibilities[key]["weatherReport"] = weather_report
+
+            count += 1
+
+    if minutes_after > 0:
+        # Divide minutes_before into 30 minute increments.
+        num = minutes_after / interval
+
+        count = 1
+        while count <= num:
+
+            minutes = interval * count  # 30 * 1 => 30 * 2
+            key = "after"+str(minutes)
+
+            new_ct = shift_time(coords_datetime, "forward", minutes)
+
+            # Get weather at new coords, datetime.
+            marker_info = make_marker_info(new_ct)
+
+            # Make weather report for trip.
+            weather_report = make_weather_report(marker_info)
+
+            possibilities[key] = {}
+            possibilities[key]["markerInfo"] = marker_info
+            possibilities[key]["weatherReport"] = weather_report
+
+            count += 1
+
+    return possibilities
+
+
+def make_score(possibilities):
     """Calculate ``badness`` of weather score."""
 
     pass
