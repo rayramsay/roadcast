@@ -5,7 +5,7 @@ from flask import Flask, render_template, redirect, request, flash, session, url
 from flask_debugtoolbar import DebugToolbarExtension
 
 from utils import dictify
-from road import make_result, make_coords_datetime, shift_time, get_alt_weather
+from road import make_result, make_coords_datetime, get_alt_weather, make_x_weather, modal_route
 from model import User, Label, Addr, connect_to_db, db
 
 app = Flask(__name__)
@@ -78,17 +78,17 @@ def handle_recs():
 
     result = get_alt_weather(coords_datetime, minutes_before, minutes_after, possibilities)
 
-    print result
+    best_weather = make_x_weather(result, "best")
+    print "best", best_weather
 
-    # print "Initial:", coords_datetime
+    worst_weather = make_x_weather(result, "worst")
+    print "worst", worst_weather
 
-    # if minutes_after > 0:
-    #     coords_shifted_forward = shift_time(coords_datetime, "forward", minutes_after)
-    #     print "Forward:", coords_shifted_forward
+    best_mode = modal_route(best_weather)
+    print "best mode", best_mode
 
-    # if minutes_before > 0:
-    #     coords_shifted_backward = shift_time(coords_datetime, "backward", minutes_before)
-    #     print "Backward:", coords_shifted_backward
+    worst_mode = modal_route(worst_weather)
+    print "worst mode", worst_mode
 
     return jsonify("hi")
 

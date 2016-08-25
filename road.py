@@ -1,6 +1,7 @@
 import os
 import googlemaps
 import pendulum
+from collections import Counter
 from routes import prep_directions, Route
 from weather import make_marker_info, make_weather_report
 
@@ -101,8 +102,10 @@ def shift_time(coords_datetime, direction, minutes):
         coords, time = ct
         if direction == "forward" or direction == "forwards":
             time = time.add(minutes=minutes)
-        else:
+        elif direction == "backward" or direction == "backwards":
             time = time.subtract(minutes=minutes)
+        else:
+            raise ValueError("Direction can only be forward or backward.")
         shifted.append((coords, time))
 
     return shifted
@@ -163,11 +166,48 @@ def get_alt_weather(coords_datetime, minutes_before, minutes_after, possibilitie
     return possibilities
 
 
-def make_score(possibilities):
-    """Calculate ``badness`` of weather score."""
+def make_x_weather(possibilities, quality):
 
-    pass
+    weather = {}
+    weather_attributes = ["precipProb", "maxIntensity"]
 
+    if quality == "worst":
+        for attribute in weather_attributes:
+            worst_attribute = 0
+            for key in possibilities.iterkeys():
+                if possibilities[key]["weatherReport"][attribute] > worst_attribute:
+                    worst_attribute = possibilities[key]["weatherReport"][attribute]
+                    weather[attribute] = key
+
+    elif quality == "best":
+        for attribute in weather_attributes:
+            best_attribute = 100
+            for key in possibilities.iterkeys():
+                if possibilities[key]["weatherReport"][attribute] < best_attribute:
+                    best_attribute = possibilities[key]["weatherReport"][attribute]
+                    weather[attribute] = key
+
+    else:
+        raise ValueError("Quality can only be best or worst.")
+
+    return weather
+
+def modal_route(x_weather):
+    """Given a dictionary of best/worst weather, return most common route.
+
+    In the event of multi-modality, chooses an arbitrary mode."""
+
+    cnt = Counter()
+
+    for value in x_weather.itervalues():
+        cnt[value] += 1
+
+    ordered_by_count = cnt.most_common()
+    print ordered_by_count
+
+    mode = ordered_by_count[0][0]
+
+    return mode
 
 ####################################
 

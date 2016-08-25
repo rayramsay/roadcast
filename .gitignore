@@ -3,3 +3,11 @@ env/
 *.pyc
 .DS_Store
 .coverage
+
+-----------
+
+snippets.py
+example_simplified.py
+seed.py
+scratchpad.py
+example.py
