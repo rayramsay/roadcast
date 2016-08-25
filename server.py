@@ -5,7 +5,7 @@ from flask import Flask, render_template, redirect, request, flash, session, url
 from flask_debugtoolbar import DebugToolbarExtension
 
 from utils import dictify
-from road import make_result, make_coords_datetime
+from road import make_result, make_coords_datetime, shift_time
 from model import User, Label, Addr, connect_to_db, db
 
 app = Flask(__name__)
@@ -50,7 +50,7 @@ def handle_form():
 
     result = make_result(directions_result, departure_time, departure_day)
 
-    print result
+    # print result
 
     return jsonify(result)
 
@@ -62,11 +62,19 @@ def handle_recs():
     # Get values from form.
     minutes_before = request.form.get("before")
     minutes_after = request.form.get("after")
-    coords_time = dictify(request.form.get("data"))
+    js_coords_time = dictify(request.form.get("data"))
 
-    print coords_time
+    coords_datetime = make_coords_datetime(js_coords_time)
 
-    # [[[37.7888568, -122.4115372], u'2016-08-24T18:04:00-07:00'], [[37.806250000000006, -122.35620000000002], u'2016-08-24T18:19:00-07:00'], [[37.80969, -122.26259], u'2016-08-24T18:34:00-07:00'], [[37.8119258, -122.25643980000001], u'2016-08-24T18:51:41-07:00']]
+    print coords_datetime
+
+    if int(minutes_after) > 0:
+        coords_shifted_forward = shift_time(coords_datetime, "forward", int(minutes_after))
+        print coords_shifted_forward
+
+    if int(minutes_before) > 0:
+        coords_shifted_backward = shift_time(coords_datetime, "backward", int(minutes_before))
+        print coords_shifted_backward
 
     return jsonify("hi")
 

@@ -50,7 +50,7 @@ def make_result(directions_result, departure_time, departure_day):
     result["weatherReport"] = weather_report
     result["coordsTime"] = formatted_ct
 
-    print result
+    # print result
 
     return result
 
@@ -68,28 +68,44 @@ def format_coords_time(coords_time):
     return formatted_ct
 
 
-def make_coords_datetime(coords_time):
+def make_coords_datetime(coords_timestring):
     """Given a coords_time array with times as strings, recreates as a list of
-    (coords, datetimes) tuples."""
+    (coords, datetimes) lists."""
 
     coords_datetime = []
 
-    start_lat, start_lng = coords_time[0][0]
+    start_lat, start_lng = coords_timestring[0][0]
     start_coords = (start_lat, start_lng)
 
     timezone_result = GMAPS.timezone(start_coords)
     timezone_id = timezone_result["timeZoneId"]
 
-    for ct in coords_time:
+    for ct in coords_timestring:
         coords, time = ct
         time = time[:-6]
 
         coords = tuple(coords)
         datetime = pendulum.parse(time, timezone_id)
 
-        coords_datetime.append((coords, datetime))
+        coords_datetime.append([coords, datetime])
 
     return coords_datetime
+
+
+def shift_time(coords_datetime, direction, minutes):
+    """Shifts datetime in specified direction by number of minutes."""
+
+    shifted = []
+
+    for ct in coords_datetime:
+        coords, time = ct
+        if direction == "forward" or direction == "forwards":
+            time = time.add(minutes=minutes)
+        else:
+            time = time.subtract(minutes=minutes)
+        shifted.append((coords, time))
+
+    return shifted
 
 
 def make_score(weather_results):
