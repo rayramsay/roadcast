@@ -76,21 +76,30 @@ def handle_recs():
     possibilities["initialRoute"]["markerInfo"] = initial_marker_info
     possibilities["initialRoute"]["weatherReport"] = initial_weather_report
 
-    result = get_alt_weather(coords_datetime, minutes_before, minutes_after, possibilities)
+    all_possibilities = get_alt_weather(coords_datetime, minutes_before, minutes_after, possibilities)
+    print all_possibilities
 
-    best_weather = make_x_weather(result, "best")
+    best_weather = make_x_weather(all_possibilities, "best")
     print "best", best_weather
-
-    worst_weather = make_x_weather(result, "worst")
-    print "worst", worst_weather
 
     best_mode = modal_route(best_weather)
     print "best mode", best_mode
 
-    worst_mode = modal_route(worst_weather)
-    print "worst mode", worst_mode
+    result = {}
 
-    return jsonify("hi")
+    if best_mode == "initialRoute":
+        result["initialRoute"] = True
+    else:
+        result["initialRoute"] = False
+
+    result["route"] = all_possibilities[best_mode]
+    all_possibilities[best_mode]["time"] = best_mode
+
+    print all_possibilities[best_mode]["time"]
+
+    print result
+
+    return jsonify(result)
 
 
 # The following code is based on my implementation of Hackbright's Ratings

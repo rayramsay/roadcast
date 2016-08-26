@@ -167,6 +167,7 @@ def get_alt_weather(coords_datetime, minutes_before, minutes_after, possibilitie
 
 
 def make_x_weather(possibilities, quality):
+    """Biased toward initialRoute."""
 
     weather = {}
     weather_attributes = ["precipProb", "maxIntensity"]
@@ -174,7 +175,8 @@ def make_x_weather(possibilities, quality):
     if quality == "worst":
         for attribute in weather_attributes:
             worst_attribute = 0
-            for key in possibilities.iterkeys():
+
+            for key in sorted(possibilities.keys(), reverse=True):
                 if possibilities[key]["weatherReport"][attribute] > worst_attribute:
                     worst_attribute = possibilities[key]["weatherReport"][attribute]
                     weather[attribute] = key
@@ -182,7 +184,8 @@ def make_x_weather(possibilities, quality):
     elif quality == "best":
         for attribute in weather_attributes:
             best_attribute = 100
-            for key in possibilities.iterkeys():
+
+            for key in sorted(possibilities.keys(), reverse=True):
                 if possibilities[key]["weatherReport"][attribute] < best_attribute:
                     best_attribute = possibilities[key]["weatherReport"][attribute]
                     weather[attribute] = key
@@ -192,10 +195,11 @@ def make_x_weather(possibilities, quality):
 
     return weather
 
+
 def modal_route(x_weather):
     """Given a dictionary of best/worst weather, return most common route.
 
-    In the event of multi-modality, chooses an arbitrary mode."""
+    In the event of multi-modality, biased toward initialRoute."""
 
     cnt = Counter()
 
@@ -203,22 +207,11 @@ def modal_route(x_weather):
         cnt[value] += 1
 
     ordered_by_count = cnt.most_common()
-    print ordered_by_count
 
-    mode = ordered_by_count[0][0]
+    if cnt['initialRoute'] == ordered_by_count[0][0]:
+        mode = "initialRoute"
+
+    else:
+        mode = ordered_by_count[0][0]
 
     return mode
-
-####################################
-
-#FIXME: Does this still get used anywhere?
-# def get_lat_lng(loc_string):
-    """Given location as a human-readable string, return its latitude and
-    longitude as a tuple of floats."""
-
-    geocode_result = GMAPS.geocode(loc_string)
-    lat = float(geocode_result[0]["geometry"]["location"]["lat"])
-    lng = float(geocode_result[0]["geometry"]["location"]["lng"])
-    tup = (lat, lng)
-
-    return tup

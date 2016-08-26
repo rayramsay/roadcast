@@ -94,6 +94,13 @@ function initMap(){
     $("#directions-request").on("submit", onSubmitHandler);
 }
 
+function deleteMarkers() {
+    for (var i = 0; i < markersArray.length; i++) {
+        markersArray[i].setMap(null);
+    }
+    markersArray.length = 0;
+}
+
 function calculateAndDisplayRoute(directionsService, directionsDisplay) {
     var start;
     var end;
@@ -131,10 +138,7 @@ function calculateAndDisplayRoute(directionsService, directionsDisplay) {
         directionsDisplay.setMap(map);
 
         // Delete existing markers.
-        for (var i = 0; i < markersArray.length; i++) {
-            markersArray[i].setMap(null);
-        }
-        markersArray.length = 0;
+        deleteMarkers();
 
         // Hide existing weather report.
         $("#weather-report").hide();
@@ -286,7 +290,11 @@ function displayWeatherReport(weatherReport) {
 }
 
 function handleRecs(data) {
-    console.log("hi");
+    if (data.initialRoute) {
+        $("#recommendation").html("<p>You're already departing at the optimal time.</p>");
+    } else {
+        console.log("falsey");
+    }
 }
 
 google.maps.event.addDomListener(window, 'load', init);
