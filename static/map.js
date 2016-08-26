@@ -28,7 +28,8 @@ function initForm(){
                 startAddr = $("#start").val();
             }
             $("#start-addr").val(startAddr);
-        });
+        });        
+
     $("#end")
         .geocomplete({types:['geocode', 'establishment']})
         .bind("geocode:result", function(event, result){
@@ -95,17 +96,17 @@ function calculateAndDisplayRoute(directionsService, directionsDisplay) {
     var mode;
 
     if (document.getElementById('start-addr').value === "") {
-        start = document.getElementById('start').value;
-    } else {
-        start = document.getElementById('start-addr').value;
+        $("#start-addr").val($("#start").val());
     }
+    start = document.getElementById('start-addr').value;
+    $("#start-addr").val("");
     console.log("Start:", start);
     
     if (document.getElementById('end-addr').value === "") {
-        end = document.getElementById('end').value;
-    } else {
-        end = document.getElementById('end-addr').value;
+        $("#end-addr").val($("#end").val());
     }
+    end = document.getElementById('end-addr').value;
+    $("#end-addr").val("");
     console.log("End:", end);
     
     mode = document.getElementById('mode').value;
