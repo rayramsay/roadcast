@@ -161,27 +161,41 @@ function calculateAndDisplayRoute(directionsService, directionsDisplay) {
 }
 
 function makeMarkersAndReport(data) {
+
+    if (markersArray.length > 0) {deleteMarkers();}
+
+    console.log(data);
+
     var markerInfo = data.markerInfo;
     makeAndSetMarkers(markerInfo);
     var weatherReport = data.weatherReport;
     displayWeatherReport(weatherReport);
     $("#submit-button").val("Submit");
 
-    var before = $("#before").val();
-    var after = $("#after").val();
+    if (data.routeName === null) {
+        var before = $("#before").val();
+        var after = $("#after").val();
 
-    if (before > 0 || after > 0) {
-        $("#recommendation").show();
+        if (before > 0 || after > 0) {
+            $("#recommendation").show();
 
-        var formInputs = {
-            "before": before,
-            "after": after,
-            "data": JSON.stringify(data)
-        };
+            var formInputs = {
+                "before": before,
+                "after": after,
+                "data": JSON.stringify(data)
+            };
 
-        $.post("/recommendation.json",
-               formInputs,
-               handleRecs);
+            $.post("/recommendation.json",
+                   formInputs,
+                   handleRecs);
+        }
+    }
+
+    if (data.routeName) {
+        $("#recommendation").html("<p>You should leave <b><span id='rec-minutes'></span></b> minutes <b><span id='rec-direction'></span></b> your original departure time.</p>");
+        $("#rec-minutes").html(data.routeName.slice(-2));
+        $("#rec-direction").html(data.routeName.slice(0,-2));
+        data.routeName = null;
     }
 }
 
@@ -290,10 +304,11 @@ function displayWeatherReport(weatherReport) {
 }
 
 function handleRecs(data) {
-    if (data.initialRoute) {
+    if (data.routeName === "initialRoute") {
         $("#recommendation").html("<p>You're already departing at the optimal time.</p>");
     } else {
         console.log("falsey");
+        makeMarkersAndReport(data);
     }
 }
 

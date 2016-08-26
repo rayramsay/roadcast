@@ -87,15 +87,9 @@ def handle_recs():
 
     result = {}
 
-    if best_mode == "initialRoute":
-        result["initialRoute"] = True
-    else:
-        result["initialRoute"] = False
+    result = all_possibilities[best_mode]
 
-    result["route"] = all_possibilities[best_mode]
-    all_possibilities[best_mode]["time"] = best_mode
-
-    print all_possibilities[best_mode]["time"]
+    result["routeName"] = best_mode
 
     print result
 

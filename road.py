@@ -50,6 +50,7 @@ def make_result(directions_result, departure_time, departure_day):
     result["markerInfo"] = marker_info
     result["weatherReport"] = weather_report
     result["coordsTime"] = formatted_ct
+    result["routeName"] = None
 
     # print result
 
