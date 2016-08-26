@@ -20,24 +20,28 @@ function init(){
 function initForm(){
     $("#start")
         .geocomplete({types:['geocode', 'establishment']})
+
+        // We need to capture the street address to make the directions request.
         .bind("geocode:result", function(event, result){
             var startAddr;
-            if (result.formatted_address !== "United States") {
-                startAddr = result.formatted_address;
-            } else {
+            // There's a weird bug where sometimes the formatted address is just
+            // the country, in which case we're better off with the autocomplete.
+            if (result.formatted_address === "United States") {
                 startAddr = $("#start").val();
+            } else {
+                startAddr = result.formatted_address;
             }
             $("#start-addr").val(startAddr);
-        });        
+        });
 
     $("#end")
         .geocomplete({types:['geocode', 'establishment']})
         .bind("geocode:result", function(event, result){
             var endAddr;
-            if (result.formatted_address !== "United States") {
-                endAddr = result.formatted_address;
-            } else {
+            if (result.formatted_address === "United States") {
                 endAddr = $("#end").val();
+            } else {
+                endAddr = result.formatted_address;
             }
             $("#end-addr").val(endAddr);
     });
@@ -95,22 +99,28 @@ function calculateAndDisplayRoute(directionsService, directionsDisplay) {
     var end;
     var mode;
 
-    if (document.getElementById('start-addr').value === "") {
+    // If autocomplete wasn't used, the hidden start-addr field is empty, so we
+    // need to copy start's value.
+    if ($("#start-addr").val() === "") {
         $("#start-addr").val($("#start").val());
     }
-    start = document.getElementById('start-addr').value;
+    // After we set start to start-addr's value, empty the value so that if the
+    // user inputs another address, start-addr gets updated as above.
+    start = $("#start-addr").val();
     $("#start-addr").val("");
+
     console.log("Start:", start);
     
-    if (document.getElementById('end-addr').value === "") {
+    if ($("#end-addr").val() === "") {
         $("#end-addr").val($("#end").val());
     }
-    end = document.getElementById('end-addr').value;
+    end = $("#end-addr").val();
     $("#end-addr").val("");
+
     console.log("End:", end);
     
-    mode = document.getElementById('mode').value;
-    
+    mode = $("#mode").val();
+
     directionsService.route({
       origin: start,
       destination: end,
