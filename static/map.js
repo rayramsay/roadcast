@@ -192,7 +192,8 @@ function makeMarkersAndReport(data) {
     }
 
     if (data.routeName) {
-        $("#recommendation").html("<p>You should leave <b><span id='rec-minutes'></span></b> minutes <b><span id='rec-direction'></span></b> your original departure time.</p>");
+        $("#recommendation").hide();
+        $("#new-recommendation").html("<p>If you leave <b><span id='rec-minutes'></span></b> <b>minutes</b> <b><span id='rec-direction'></span></b> your original departure time...</p>");
         $("#rec-minutes").html(data.routeName.slice(-2));
         $("#rec-direction").html(data.routeName.slice(0,-2));
         data.routeName = null;

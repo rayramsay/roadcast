@@ -15,7 +15,7 @@ GMAPS = googlemaps.Client(key=os.environ['GOOGLE_API_SERVER_KEY'])
 
 
 def make_result(directions_result, departure_time, departure_day):
-    """Builds the dictionary for jsonification."""
+    """Builds the initial result dictionary for jsonification."""
 
     result = {}
 
@@ -68,6 +68,33 @@ def format_coords_time(coords_time):
         formatted_ct.append((coords, time))
 
     return formatted_ct
+
+
+def make_recommendation(data, minutes_before, minutes_after):
+    """Build recommendation dictionary for jsonification."""
+
+    coords_timestring = data["coordsTime"]
+    initial_marker_info = data["markerInfo"]
+    initial_weather_report = data["weatherReport"]
+
+    # Make time strings into datetime objects.
+    coords_datetime = make_coords_datetime(coords_timestring)
+
+    # Put initialRoute into possibilities dictionary.
+    possibilities = {"initialRoute": {"markerInfo": initial_marker_info, "weatherReport": initial_weather_report}}
+
+    # Add alternate routes into possibilities dictionary.
+    possibilities = get_alt_weather(coords_datetime, minutes_before, minutes_after, possibilities)
+
+    best_weather = make_x_weather(possibilities, "best")
+
+    best_route = modal_route(best_weather)
+
+    # Put best route's information into result dict.
+    result = dict(possibilities[best_route])
+    result["routeName"] = best_route
+
+    return result
 
 
 def make_coords_datetime(coords_timestring):

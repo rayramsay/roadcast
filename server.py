@@ -5,7 +5,7 @@ from flask import Flask, render_template, redirect, request, flash, session, url
 from flask_debugtoolbar import DebugToolbarExtension
 
 from utils import dictify
-from road import make_result, make_coords_datetime, get_alt_weather, make_x_weather, modal_route
+from road import make_result, make_recommendation
 from model import User, Label, Addr, connect_to_db, db
 
 app = Flask(__name__)
@@ -44,10 +44,6 @@ def handle_form():
     departure_time = request.form.get("departure-time")
     directions_result = dictify(request.form.get("data"))
 
-    # print directions_result
-    # print departure_day
-    # print departure_time
-
     result = make_result(directions_result, departure_time, departure_day)
 
     # print result
@@ -64,34 +60,7 @@ def handle_recs():
     minutes_after = int(request.form.get("after"))
     data = dictify(request.form.get("data"))
 
-    coords_timestring = data["coordsTime"]
-    initial_marker_info = data["markerInfo"]
-    initial_weather_report = data["weatherReport"]
-
-    # Make time strings into datetime objects.
-    coords_datetime = make_coords_datetime(coords_timestring)
-
-    possibilities = {}
-    possibilities["initialRoute"] = {}
-    possibilities["initialRoute"]["markerInfo"] = initial_marker_info
-    possibilities["initialRoute"]["weatherReport"] = initial_weather_report
-
-    all_possibilities = get_alt_weather(coords_datetime, minutes_before, minutes_after, possibilities)
-    print all_possibilities
-
-    best_weather = make_x_weather(all_possibilities, "best")
-    print "best", best_weather
-
-    best_mode = modal_route(best_weather)
-    print "best mode", best_mode
-
-    result = {}
-
-    result = all_possibilities[best_mode]
-
-    result["routeName"] = best_mode
-
-    print result
+    result = make_recommendation(data, minutes_before, minutes_after)
 
     return jsonify(result)
 
