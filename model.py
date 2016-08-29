@@ -10,7 +10,7 @@ from flask_sqlalchemy import SQLAlchemy
 db = SQLAlchemy()
 
 
-##############################################################################
+################################################################################
 # Model definitions
 
 class User(db.Model):
@@ -23,13 +23,13 @@ class User(db.Model):
     password = db.Column(db.String(64), nullable=False)
     fname = db.Column(db.String(64), nullable=True)
     lname = db.Column(db.String(64), nullable=True)
-    celsius = db.Column(db.Boolean, nullable=True)
+    cel = db.Column(db.Boolean, nullable=True)
 
     def __repr__(self):
         """Provide a human-readable representation of an instance of a user."""
 
-        return "<User user_id=%s email=%s password=%s fname=%s lname=%s temp=%>" % \
-            (self.user_id, self.email, self.password, self.fname, self.lname, self.celsius)
+        return "<User user_id=%s email=%s password=%s fname=%s lname=%s cel=%s>" % \
+            (self.user_id, self.email, self.password, self.fname, self.lname, self.cel)
 
 
 class Addr(db.Model):
