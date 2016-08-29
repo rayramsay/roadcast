@@ -180,8 +180,8 @@ if __name__ == "__main__":
     app.jinja_env.auto_reload = True
 
     # Connect to database.
-    # connect_to_db(app)
+    connect_to_db(app)
 
     # Must specify host for Vagrant.
-    #app.run(host="0.0.0.0")
-    app.run()
+    app.run(host="0.0.0.0")
+    # app.run()

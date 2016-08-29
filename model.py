@@ -23,12 +23,13 @@ class User(db.Model):
     password = db.Column(db.String(64), nullable=False)
     fname = db.Column(db.String(64), nullable=True)
     lname = db.Column(db.String(64), nullable=True)
+    celsius = db.Column(db.Boolean, nullable=True)
 
     def __repr__(self):
         """Provide a human-readable representation of an instance of a user."""
 
-        return "<User user_id=%s email=%s password=%s fname=%s lname=%s>" % \
-            (self.user_id, self.email, self.password, self.fname, self.lname)
+        return "<User user_id=%s email=%s password=%s fname=%s lname=%s temp=%>" % \
+            (self.user_id, self.email, self.password, self.fname, self.lname, self.celsius)
 
 
 class Addr(db.Model):
@@ -84,7 +85,7 @@ class Label(db.Model):
             (self.label_id, self.addr_id, self.user_id, self.label)
 
 
-##############################################################################
+################################################################################
 # Helper functions
 
 def connect_to_db(app):
@@ -92,6 +93,7 @@ def connect_to_db(app):
 
     # Configure to use our PstgreSQL database
     app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///roadcast'
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     db.app = app
     db.init_app(app)
 
