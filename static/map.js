@@ -140,8 +140,9 @@ function calculateAndDisplayRoute(directionsService, directionsDisplay) {
         // Delete existing markers.
         deleteMarkers();
 
-        // Hide existing weather report.
+        // Hide existing weather report and empty top msg div.
         $("#weather-report").hide();
+        $("#wr-msg-top").html("");
 
         $("#submit-button").val("Loading...");
 
@@ -162,9 +163,7 @@ function calculateAndDisplayRoute(directionsService, directionsDisplay) {
 
 function makeMarkersAndReport(data) {
 
-    if (markersArray.length > 0) {deleteMarkers();}
-
-    console.log(data);
+    if (markersArray.length > 0) { deleteMarkers(); }
 
     var markerInfo = data.markerInfo;
     makeAndSetMarkers(markerInfo);
@@ -177,7 +176,7 @@ function makeMarkersAndReport(data) {
         var after = $("#after").val();
 
         if (before > 0 || after > 0) {
-            $("#recommendation").show();
+            $("#wr-msg-bottom").html("<p><i>Loading recommended time to leave...</i></p>");
 
             var formInputs = {
                 "before": before,
@@ -192,8 +191,8 @@ function makeMarkersAndReport(data) {
     }
 
     if (data.routeName) {
-        $("#recommendation").hide();
-        $("#new-recommendation").html("<p>If you leave <b><span id='rec-minutes'></span></b> <b>minutes</b> <b><span id='rec-direction'></span></b> your original departure time...</p>");
+        $("#wr-msg-bottom").html("");
+        $("#wr-msg-top").html("<p>If you leave <b><span id='rec-minutes'></span></b> <b>minutes</b> <b><span id='rec-direction'></span></b> your original departure time...</p>");
         $("#rec-minutes").html(data.routeName.slice(-2));
         $("#rec-direction").html(data.routeName.slice(0,-2));
         data.routeName = null;
@@ -306,7 +305,7 @@ function displayWeatherReport(weatherReport) {
 
 function handleRecs(data) {
     if (data.routeName === "initialRoute") {
-        $("#recommendation").html("<p>You're already departing at the optimal time.</p>");
+        $("#wr-msg-bottom").html("<p>You're already departing at the optimal time.</p>");
     } else {
         console.log("falsey");
         makeMarkersAndReport(data);
