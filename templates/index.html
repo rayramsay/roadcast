@@ -12,7 +12,7 @@
         html, body {
             height: 100%;
         }
-        
+
         .row, .container-fluid {
             height: 100%;
         }
@@ -40,16 +40,16 @@
       <!-- first row needs to be moved down b/c fixed navbar -->
       <div class="row" style="margin-top: 51px">
 
-        <div class="col-xs-4">
+        <div class="col-xs-12 col-sm-4">
 
         <div id="submission-form">
           <form action="/request" method="POST" id="directions-request">
             <!-- The "for" attribute of the <label> tag should be equal to the "id"
             attribute of the related element to bind them together. -->
-            <label for="start">Starting location:</label> <input type="text" name="start" id="start" size="40" placeholder="">
+            <label for="start">Start:</label> <input type="text" name="start" id="start" size="39" placeholder="">
             <input type="hidden" name="start-addr" id="start-addr"><br>
 
-            <label for="end">Destination:</label> <input type="text" name="end" id="end" size="40" placeholder="">
+            <label for="end">End:</label> <input type="text" name="end" id="end" size="39" placeholder="">
             <input type="hidden" name="end-addr" id="end-addr"><br>
 
             <label for="departure-day">Departing</label> <select name="departure-day" id="departure-day">
@@ -100,7 +100,7 @@
 
         </div>
 
-        <div class="col-xs-8" id="map"></div>
+        <div class="col-xs-12 col-sm-8" id="map"></div>
 
       </div><!-- close row -->
     </div><!-- close container -->
