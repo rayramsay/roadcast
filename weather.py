@@ -159,6 +159,9 @@ def modal_weather(weather_results):
 
     mode = ordered_by_count[0][0].lower()
 
+    if mode == "mostly cloudy":
+        mode = "cloudy"
+
     return mode
 
 
