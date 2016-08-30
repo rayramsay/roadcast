@@ -1,9 +1,15 @@
 import os
+import math
 import googlemaps
 import pendulum
 from collections import Counter
 from routes import prep_directions, Route
 from weather import make_marker_info, make_weather_report
+from utils import normalize
+import logging
+
+# Suppress requests' warnings while on Vagrant.
+logging.captureWarnings(True)
 
 ############# GLOBALS ##############
 
@@ -25,34 +31,22 @@ def make_result(directions_result, departure_time, departure_day):
     # Instantiate route object.
     timed_route = Route(directions_prepped, departure_time, departure_day)
 
-    # print timed_route
-
     # Make list of coordinates and datetimes.
     coords_time = timed_route.make_coords_time()
-
-    # print coords_time
 
     # Get weather info for coords and times.
     marker_info = make_marker_info(coords_time)
 
-    # print marker_info
-
     # Make weather report for trip.
     weather_report = make_weather_report(marker_info)
 
-    # print weather_report
-
     # Convert datetimes to strings.
     formatted_ct = format_coords_time(coords_time)
-
-    # print formatted_ct
 
     result["markerInfo"] = marker_info
     result["weatherReport"] = weather_report
     result["coordsTime"] = formatted_ct
     result["routeName"] = None
-
-    # print result
 
     return result
 
@@ -73,6 +67,8 @@ def format_coords_time(coords_time):
 def make_recommendation(data, minutes_before, minutes_after):
     """Build recommendation dictionary for jsonification."""
 
+    result = {}
+
     coords_timestring = data["coordsTime"]
     initial_marker_info = data["markerInfo"]
     initial_weather_report = data["weatherReport"]
@@ -90,9 +86,30 @@ def make_recommendation(data, minutes_before, minutes_after):
 
     best_route = modal_route(best_weather)
 
-    # Put best route's information into result dict.
-    result = dict(possibilities[best_route])
+    # Set routeName.
     result["routeName"] = best_route
+
+    if result["routeName"] != "initialRoute":
+
+        # Calculate differences between initialRoute and best route.
+        differences = {}
+
+        weather_attributes = ["precipProb", "maxIntensity"]
+
+        for w_a in weather_attributes:
+            differences[w_a] = make_difference(possibilities, best_route, w_a)
+
+        if differences["precipProb"] < 5 and differences["maxIntensity"] < 0.02:
+
+            # That's not a big enough difference, don't tell the user.
+            result["routeName"] = "initialRoute"
+
+        else:
+
+            # If route is a sufficient improvement, add its information.
+            result["markerInfo"] = possibilities[best_route]["markerInfo"]
+            result["weatherReport"] = possibilities[best_route]["weatherReport"]
+            result["differences"] = differences
 
     return result
 
@@ -222,6 +239,13 @@ def make_x_weather(possibilities, quality):
         raise ValueError("Quality can only be best or worst.")
 
     return weather
+
+
+def make_difference(possibilities, best_route, weather_attr):
+
+    difference = possibilities["initialRoute"]["weatherReport"][weather_attr] - possibilities[best_route]["weatherReport"][weather_attr]
+
+    return difference
 
 
 def modal_route(x_weather):
