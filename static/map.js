@@ -140,9 +140,10 @@ function calculateAndDisplayRoute(directionsService, directionsDisplay) {
         // Delete existing markers.
         deleteMarkers();
 
-        // Hide existing weather report and empty top msg div.
+        // Hide existing weather report and empty top msg and pp divs.
         $("#weather-report").hide();
         $("#wr-msg-top").html("");
+        $("#wr-msg-pp").html("");
 
         $("#submit-button").val("Loading...");
 
@@ -196,6 +197,8 @@ function makeMarkersAndReport(data) {
         $("#rec-absolute").html(data.markerInfo[0].fTime);
         $("#rec-minutes").html(data.routeName.slice(-2));
         $("#rec-direction").html(data.routeName.slice(0,-2));
+        $("#wr-msg-pp").html("<p>That's a <i><span id='pp-per-change'></span>% reduction</i> in the chance of precipitation.");
+        $("#pp-per-change").html(data.changes.precipProb);
         data.routeName = null;
     }
 }

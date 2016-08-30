@@ -64,7 +64,7 @@ def format_coords_time(coords_time):
     return formatted_ct
 
 
-def make_recommendation(data, minutes_before, minutes_after):
+def make_recommendation(data, minutes_before, minutes_after, preferences=None):
     """Build recommendation dictionary for jsonification."""
 
     result = {}
@@ -91,17 +91,23 @@ def make_recommendation(data, minutes_before, minutes_after):
 
     if result["routeName"] != "initialRoute":
 
-        # Calculate differences between initialRoute and best route.
-        differences = {}
+        # Calculate percentage changes between initialRoute and best route.
+        changes = {}
 
         weather_attributes = ["precipProb", "maxIntensity"]
 
         for w_a in weather_attributes:
-            differences[w_a] = make_difference(possibilities, best_route, w_a)
+            changes[w_a] = make_per_change(possibilities, best_route, w_a)
 
-        if differences["precipProb"] < 5 and differences["maxIntensity"] < 0.02:
+        if not preferences:
+            preferences = {"precipProb": 10, "maxIntensity": 10}
 
-            # That's not a big enough difference, don't tell the user.
+        print changes
+
+        if changes["precipProb"] < preferences["precipProb"]:
+        # and changes["maxIntensity"] < preferences["maxIntensity"]:
+
+            # That's not a big enough change, don't tell the user.
             result["routeName"] = "initialRoute"
 
         else:
@@ -109,7 +115,7 @@ def make_recommendation(data, minutes_before, minutes_after):
             # If route is a sufficient improvement, add its information.
             result["markerInfo"] = possibilities[best_route]["markerInfo"]
             result["weatherReport"] = possibilities[best_route]["weatherReport"]
-            result["differences"] = differences
+            result["changes"] = changes
 
     return result
 
@@ -241,11 +247,15 @@ def make_x_weather(possibilities, quality):
     return weather
 
 
-def make_difference(possibilities, best_route, weather_attr):
+def make_per_change(possibilities, best_route, weather_attr):
+    """Calculate percentage change of weather attribute between initialRoute and recommended route."""
 
-    difference = possibilities["initialRoute"]["weatherReport"][weather_attr] - possibilities[best_route]["weatherReport"][weather_attr]
+    old_value = possibilities["initialRoute"]["weatherReport"][weather_attr]
+    new_value = possibilities[best_route]["weatherReport"][weather_attr]
 
-    return difference
+    per_change = ((new_value - old_value)/old_value) * -100
+
+    return per_change
 
 
 def modal_route(x_weather):
