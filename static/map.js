@@ -11,6 +11,7 @@ var map;
 var markersArray = [];
 
 //////////////////////
+//FIXME what happened to preciprob on initial load???????
 
 function init(){
     initForm();
@@ -213,8 +214,13 @@ function makeMarkersAndReport(data) {
         $("#rec-absolute").html(data.markerInfo[0].fTime);
         $("#rec-minutes").html(data.routeName.slice(-2));
         $("#rec-direction").html(data.routeName.slice(0,-2));
-        $("#wr-msg-pp").html("<p>That's a <i><span id='pp-per-change'></span>% reduction</i> in the chance of precipitation.");
-        $("#pp-per-change").html(data.changes.precipProb);
+
+        var relPrecip = data.changes.precipProb;
+        if (relPrecip < 0) {
+            $("#wr-msg-pp").html("<br>That's a <i><span id='pp-per-change'></span>% reduction</i> in the chance of precipitation.");
+            relPrecip = Math.round(relPrecip * -1);
+            $("#pp-per-change").html(relPrecip);
+        }
         data.routeName = null;
     }
 }

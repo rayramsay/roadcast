@@ -59,20 +59,20 @@
 
             <label for="departure-time">at</label> <input type="time" name="departure-time" id="departure-time"><br>
 
-            <label>Flexibility </label> <label for="before">before:</label>
+            <label>Flexibility </label>  <select name="before" id="before">
+                <option value="0">0 min</option>
+                <option value="30">30 min</option>
+                <option value="60">60 min</option>
+            </select> <label for="before"> before </label>
 
-            <select name="before" id="before">
-                <option value="0">0</option>
+            &nbsp;&nbsp;&nbsp;
+
+            <select name="after" id="after">
+                <option value="0">0 min</option>
                 <option value="30">30 min</option>
                 <option value="60">60 min</option>
             </select>
-
-            <label for="after">after:</label>
-            <select name="after" id="after">
-                <option value="0">0</option>
-                <option value="30">30 min</option>
-                <option value="60">60 min</option>
-            </select><br>
+            <label for="after">after</label><br>
 
             <label for="mode">Transportation mode:</label> <select name="mode" id="mode">
                 <option value="DRIVING">Driving</option> <!-- JS API requires this value to be capitalized. -->
@@ -91,8 +91,8 @@
             <div id="wr-msg-top"></div>
 
             <p>On your trip, the weather will mostly be <b><span id="modal-weather"></span></b>.</p>
-            <p>The chance of precipitation will be <b><span id="precip-prob"></span></b>%.</p>
-            <div id="wr-msg-pp" style="margin-top: -10px"></div>
+            <p>The chance of precipitation will be <b><span id="precip-prob"></span></b>%.
+            <span id="wr-msg-pp"></span></p>
 
             <p>The average temperature will be <b><span id="avg-temp"></span></b>℉.</p>
 
