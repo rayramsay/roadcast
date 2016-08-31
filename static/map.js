@@ -11,7 +11,6 @@ var map;
 var markersArray = [];
 
 //////////////////////
-//FIXME what happened to preciprob on initial load???????
 
 function init(){
     initForm();
@@ -25,10 +24,10 @@ function initForm(){
         // We need to capture the street address to make the directions request.
         .bind("geocode:result", function(event, result){
             var startAddr;
+
             // There's a weird bug where sometimes the formatted address is just
             // the country, in which case we're better off with the autocomplete.
-            // FIXME: Check against country part of address, not just United States.
-            if (result.formatted_address === "United States") {
+            if (result.formatted_address === result.address_components[4].long_name) {
                 startAddr = $("#start").val();
             } else {
                 startAddr = result.formatted_address;
@@ -40,7 +39,7 @@ function initForm(){
         .geocomplete({types:['geocode', 'establishment']})
         .bind("geocode:result", function(event, result){
             var endAddr;
-            if (result.formatted_address === "United States") {
+            if (result.formatted_address === result.address_components[4].long_name) {
                 endAddr = $("#end").val();
             } else {
                 endAddr = result.formatted_address;
@@ -59,7 +58,9 @@ function initForm(){
 
     var hours = addZero(now.getHours());
     var minutes = addZero(now.getMinutes());
-    $("#departure-time").val(hours + ":" + minutes);
+    // FIXME: Currently suppressed so as not to overwrite the departure time set
+    // for the demo.
+    // $("#departure-time").val(hours + ":" + minutes);
 
     var onLoginHandler = function(evt) {
         evt.preventDefault();
