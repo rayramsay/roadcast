@@ -7,8 +7,7 @@ vagrant/
 
 -----------
 
-psql_workflow.txt
-vagrant_workflow.txt
+*workflow.txt
 snippets.py
 example*.py
 seed.py
