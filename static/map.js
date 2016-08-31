@@ -26,6 +26,7 @@ function initForm(){
             var startAddr;
             // There's a weird bug where sometimes the formatted address is just
             // the country, in which case we're better off with the autocomplete.
+            // FIXME: Check against country part of address, not just United States.
             if (result.formatted_address === "United States") {
                 startAddr = $("#start").val();
             } else {
@@ -58,6 +59,21 @@ function initForm(){
     var hours = addZero(now.getHours());
     var minutes = addZero(now.getMinutes());
     $("#departure-time").val(hours + ":" + minutes);
+
+    var onLoginHandler = function(evt) {
+        evt.preventDefault();
+
+        var formInputs = {
+            "email": $("#email").val(),
+            "password": $("#password").val()
+        };
+
+        $.post("/login",
+               formInputs,
+               location.reload());
+    };
+
+    $("#login-form").on("submit", onLoginHandler);
 }
 
 function initMap(){

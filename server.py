@@ -102,7 +102,6 @@ def handle_register():
         user = User(email=email, password=password, fname=fname, lname=lname)
         db.session.add(user)
         db.session.commit()
-        flash("Account created.")
 
         #Code 307 preserves the POST request, including form data.
         return redirect("/login", code=307)
@@ -121,7 +120,9 @@ def login_form():
 
 @app.route('/login', methods=['POST'])
 def handle_login():
-    """Handles input from login/registration form."""
+    """Handles input from login form."""
+
+    print request.form
 
     email = request.form.get("email")
     password = request.form.get("password")
@@ -147,7 +148,6 @@ def handle_login():
 
             print "Session:", session
 
-            flash("You've been logged in.")
             return redirect("/")
 
     else:
@@ -161,7 +161,7 @@ def logout():
     if "user_id" in session:
         del session["user_id"]
         del session["fname"]
-        flash("You've been logged out.")
+
     print "Session", session
 
     return redirect("/")

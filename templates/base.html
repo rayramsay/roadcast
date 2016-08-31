@@ -37,23 +37,57 @@
         
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="navbar-collapse">
-          <ul class="nav navbar-nav">
+          <ul class="nav navbar-nav navbar-right">
+
+            <!-- If user is not logged in, give them the option to log in or register. -->
+            {% if not session.get("user_id") %}
+
+            <li><a href="/register">Register</a></li>
+
+            <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Log In <span class="caret"></span></a>
+              <ul class="dropdown-menu">
+
+                    {% if get_flashed_messages() %}
+                    <div class="alert alert-warning" role="alert">
+                      <!-- Show flashed messages -->
+                        {% with messages = get_flashed_messages() %}
+                            {% for message in messages %}
+                                <div>{{ message }}</div>
+                            {% endfor %}
+                        {% endwith %}
+                    </div>
+                    {% endif %}
+
+                      <form action="/login" method="POST" class="navbar-form" id="login-form">
+                        <div class="form-group">
+                          <input type="text" placeholder="E-Mail" id="email">
+                          <input type="password" placeholder="Password" id="password">
+                        </div>
+                        <input type="submit" id="login-button" value="Login">
+                      </form>
+              </ul>
+            </li>
+
+            {% endif %}
+
+            <!-- If user is logged in, give them the option to log out. -->
+            {% if session.get("user_id") %}
+
+            <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{% if session.get("fname") %}{{ session.fname }}{% endif %} <span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                <li><a href="/logout">Log Out</a></li>
+              </ul>
+            </li>
+
+            {% endif %}
+
           </ul>
         </div><!-- close navbar-collapse -->
       
       </div><!-- close container-fluid -->
     </nav>
-
-    {% if get_flashed_messages() %}
-    <div>
-      <!-- Show flashed messages -->
-        {% with messages = get_flashed_messages() %}
-            {% for message in messages %}
-                <div>{{ message }}</div>
-            {% endfor %}
-        {% endwith %}
-    </div>
-    {% endif %}
 
     {% block content %}
     {% endblock %}
