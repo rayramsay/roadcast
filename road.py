@@ -69,6 +69,8 @@ def make_recommendation(data, minutes_before, minutes_after, preferences=None):
 
     result = {}
 
+    weather_attributes = ["precipProb", "maxIntensity"]
+
     coords_timestring = data["coordsTime"]
     initial_marker_info = data["markerInfo"]
     initial_weather_report = data["weatherReport"]
@@ -89,23 +91,33 @@ def make_recommendation(data, minutes_before, minutes_after, preferences=None):
     # Set routeName.
     result["routeName"] = best_route
 
+    print best_route
+
     if result["routeName"] != "initialRoute":
 
-        # Calculate percentage changes between initialRoute and best route.
+        # Calculate percentage changes, absolute differences, and thresholds between initialRoute and best route.
         changes = {}
-
-        weather_attributes = ["precipProb", "maxIntensity"]
+        absolutes = {}
+        thresholds = {}
 
         for w_a in weather_attributes:
             changes[w_a] = make_per_change(possibilities, best_route, w_a)
+            absolutes[w_a] = make_abs_diff(possibilities, best_route, w_a)
+            thresholds[w_a] = changes[w_a] * absolutes[w_a]
+
+            # if w_a == "precipProb":
+            #     thresholds[w_a] = normalize(changes[w_a], -100, 10000) * normalize(absolutes[w_a], -100, 100)
+            # if w_a == "maxIntensity":
+            #     thresholds[w_a] = normalize(changes[w_a], -100, 50000) * normalize(absolutes[w_a], -.5, .5)
+
+        print "changes", changes
+        print "absolutes", absolutes
+        print "thresholds", thresholds
 
         if not preferences:
-            preferences = {"precipProb": 10, "maxIntensity": 10}
+            preferences = {"precipProb": -100, "maxIntensity": -1}
 
-        print changes
-
-        if changes["precipProb"] < preferences["precipProb"]:
-        # and changes["maxIntensity"] < preferences["maxIntensity"]:
+        if thresholds["precipProb"] > preferences["precipProb"]:
 
             # That's not a big enough change, don't tell the user.
             result["routeName"] = "initialRoute"
@@ -116,6 +128,7 @@ def make_recommendation(data, minutes_before, minutes_after, preferences=None):
             result["markerInfo"] = possibilities[best_route]["markerInfo"]
             result["weatherReport"] = possibilities[best_route]["weatherReport"]
             result["changes"] = changes
+            result["absolutes"] = absolutes
 
     return result
 
@@ -253,9 +266,29 @@ def make_per_change(possibilities, best_route, weather_attr):
     old_value = possibilities["initialRoute"]["weatherReport"][weather_attr]
     new_value = possibilities[best_route]["weatherReport"][weather_attr]
 
-    per_change = ((new_value - old_value)/old_value) * -100
+    print "old", old_value
+    print "new", new_value
+
+    # Avoiding dividing by zero.
+    if old_value == 0 and weather_attr == "precipProb":
+        per_change = 10000
+    elif old_value == 0 and weather_attr == "maxIntensity":
+        per_change = 50000
+    else:
+        per_change = ((new_value - old_value)/old_value) * 100
 
     return per_change
+
+
+def make_abs_diff(possibilities, best_route, weather_attr):
+    """Calculate absolute difference in percentage points of weather attribute between initialRoute and recommended route."""
+
+    old_value = possibilities["initialRoute"]["weatherReport"][weather_attr]
+    new_value = possibilities[best_route]["weatherReport"][weather_attr]
+
+    absolute = old_value - new_value
+
+    return absolute
 
 
 def modal_route(x_weather):
