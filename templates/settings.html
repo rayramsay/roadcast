@@ -9,31 +9,54 @@
     <!-- first row needs to be moved down b/c fixed navbar -->
     <div class="row" style="margin-top: 51px">
 
+        <!-- If these haven't been set, they simply won't display -->
         <p>{{ user.fname }} {{ user.lname }}</p>
+
         <p>{{ user.email }}</p>
 
-        <form>
-            <p>Temperature preference: 
+        <form action="/settings" method="POST" id="preferences">
+            <p>
+                Temperature preference: 
 
-            {% if user.celsius %}
-                <input type="radio" name="temp-pref" value="fahr"> Fahrenheit&nbsp;
-                <input type="radio" name="temp-pref" value="cel" checked> Celsius<br>
-            {% else %}
-                <input type="radio" name="temp-pref" value="fahr" checked> Fahrenheit&nbsp;
-                <input type="radio" name="temp-pref" value="cel"> Celsius<br>
-            {% endif %}
+                {% if user.celsius %}
+                    <input type="radio" name="temp-pref" value="fahr"> Fahrenheit&nbsp;
+                    <input type="radio" name="temp-pref" value="cel" checked> Celsius
+                {% else %}
+                    <input type="radio" name="temp-pref" value="fahr" checked> Fahrenheit&nbsp;
+                    <input type="radio" name="temp-pref" value="cel"> Celsius
+                {% endif %}
 
-            <p>Recommendation sensitivity:
+            </p>
 
-            {% if user.sensitivity %}
+            <p>How sensitive to improvement do you want your departure time recommendations to be?<br>
+                (E.g., if sensitivity is set to low, leaving at a different time would have to substantially improve the trip's weather in order for you to see the recommendation.)</p>
 
-            {% endif %}
+            <p>
+                Recommendation sensitivity:
+
+                {% if user.sensitivity == 1 %}
+
+                    <input type="radio" name="rec-sense" value="low" checked> Low&nbsp;
+                    <input type="radio" name="rec-sense" value="medium"> Medium&nbsp;
+                    <input type="radio" name="rec-sense" value="high"> High
+
+                {% elif user.sensitivity == 5 %}
+
+                    <input type="radio" name="rec-sense" value="low"> Low&nbsp;
+                    <input type="radio" name="rec-sense" value="medium"> Medium&nbsp;
+                    <input type="radio" name="rec-sense" value="high" checked> High
+
+                {% else %}
+
+                    <input type="radio" name="rec-sense" value="low"> Low&nbsp;
+                    <input type="radio" name="rec-sense" value="medium" checked> Medium&nbsp;
+                    <input type="radio" name="rec-sense" value="high"> High
+
+                {% endif %}
+            </p>
+
+            <input type="submit" id="submit-button" value="Update Preferences">
         </form>
-
-
-
-
-
 
     </div>
 </div>

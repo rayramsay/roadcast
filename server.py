@@ -2,7 +2,7 @@ import os
 
 from jinja2 import StrictUndefined
 from flask import Flask, render_template, redirect, request, flash, session, url_for, jsonify
-from flask_debugtoolbar import DebugToolbarExtension
+# from flask_debugtoolbar import DebugToolbarExtension
 
 from utils import dictify
 from road import make_result, make_recommendation
@@ -78,15 +78,65 @@ def handle_recs():
 # User profile routes
 ####################################################
 @app.route('/settings', methods=['GET'])
-def user_settings():
+def display_settings():
     """Show a user's profile page."""
 
+    # Check that user is logged in.
     user_id = session.get("user_id")
-    if user_id:
+
+    # If they're not logged in, redirect them to the homepage.
+    if not user_id:
+        return redirect("/")
+
+    else:
         user = User.query.filter(User.user_id == user_id).first()
         print user
 
-    return render_template("settings.html", user=user)
+        return render_template("settings.html", user=user)
+
+
+@app.route('/settings', methods=['POST'])
+def update_settings():
+    """Update a user's preferences in the database."""
+
+    # Check that user is logged in.
+    user_id = session.get("user_id")
+
+    # If they're not logged in, redirect them to the homepage.
+    if not user_id:
+        return redirect("/")
+
+    else:
+        # Get values from form.
+        temp_pref = request.form.get("temp-pref")
+        rec_sense = request.form.get("rec-sense")
+
+        # Convert these values into those usable by database.
+        # Temperature preference is a boolean (T/F) re: Celsius.
+        if temp_pref == "cel":
+            temp_pref = True
+        else:
+            temp_pref = False
+
+        # Sensitivity is an integer.
+        if rec_sense == "low":
+            rec_sense = 1
+
+        elif rec_sense == "high":
+            rec_sense = 5
+
+        else:
+            rec_sense = 3
+
+        # Fetch and update user's record.
+        user = User.query.filter(User.user_id == user_id).first()
+
+        user.celsius = temp_pref
+        user.sensitivity = rec_sense
+
+        db.session.commit()
+
+        return redirect("/settings")
 
 
 ####################################################
@@ -153,8 +203,7 @@ def handle_login():
 
     if user:
         if password != user.password:
-            flash("Incorrect password.")
-            return redirect("/login")
+            return redirect("/")
         else:
             # Add their user_id and first name to session.
             session["user_id"] = user.user_id
@@ -165,8 +214,7 @@ def handle_login():
             return redirect("/")
 
     else:
-        flash("No account with that email exists.")
-        return redirect("/login")
+        return redirect("/")
 
 
 @app.route('/logout')
@@ -188,7 +236,7 @@ if __name__ == "__main__":
     app.debug = True
 
     # Use the DebugToolbarExtension.
-    DebugToolbarExtension(app)
+    # DebugToolbarExtension(app)
 
     # There's currently a bug in flask 0.11 that prevents template reloading.
     app.jinja_env.auto_reload = True
