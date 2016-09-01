@@ -23,13 +23,14 @@ class User(db.Model):
     password = db.Column(db.String(64), nullable=False)
     fname = db.Column(db.String(64), nullable=True)
     lname = db.Column(db.String(64), nullable=True)
-    cel = db.Column(db.Boolean, nullable=True)
+    celsius = db.Column(db.Boolean, nullable=True)
+    sensitivity = db.Column(db.Integer, nullable=True)
 
     def __repr__(self):
         """Provide a human-readable representation of an instance of a user."""
 
-        return "<User user_id=%s email=%s password=%s fname=%s lname=%s cel=%s>" % \
-            (self.user_id, self.email, self.password, self.fname, self.lname, self.cel)
+        return "<User user_id=%s email=%s password=%s fname=%s lname=%s celsius=%s sensitivity=%s>" % \
+            (self.user_id, self.email, self.password, self.fname, self.lname, self.celsius, self.sensitivity)
 
 
 class Addr(db.Model):
