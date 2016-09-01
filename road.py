@@ -1,11 +1,10 @@
 import os
-import math
 import googlemaps
 import pendulum
 from collections import Counter
 from routes import prep_directions, Route
 from weather import make_marker_info, make_weather_report
-from utils import normalize
+# from utils import normalize
 import logging
 
 # Suppress requests' warnings while on Vagrant.
@@ -128,7 +127,7 @@ def make_recommendation(data, minutes_before, minutes_after, preferences=None):
             result["markerInfo"] = possibilities[best_route]["markerInfo"]
             result["weatherReport"] = possibilities[best_route]["weatherReport"]
             result["changes"] = changes
-            result["absolutes"] = absolutes
+            # result["absolutes"] = absolutes
 
     return result
 
