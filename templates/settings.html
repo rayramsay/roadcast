@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block title %}RoadCast{% endblock %}
+
+{% block content %}
+
+<div class="container">
+
+    <!-- first row needs to be moved down b/c fixed navbar -->
+    <div class="row" style="margin-top: 51px">
+
+        <p>{{ user.fname }} {{ user.lname }}</p>
+        <p>{{ user.email }}</p>
+
+        <form>
+            <p>Temperature preference: 
+
+            {% if user.celsius %}
+                <input type="radio" name="temp-pref" value="fahr"> Fahrenheit&nbsp;
+                <input type="radio" name="temp-pref" value="cel" checked> Celsius<br>
+            {% else %}
+                <input type="radio" name="temp-pref" value="fahr" checked> Fahrenheit&nbsp;
+                <input type="radio" name="temp-pref" value="cel"> Celsius<br>
+            {% endif %}
+
+            <p>Recommendation sensitivity:
+
+            {% if user.sensitivity %}
+
+            {% endif %}
+        </form>
+
+
+
+
+
+
+    </div>
+</div>
+
+{% endblock %}

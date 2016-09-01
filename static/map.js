@@ -71,8 +71,8 @@ function initForm(){
         };
 
         $.post("/login",
-               formInputs,
-               location.reload());
+               formInputs, function () {
+               window.location.reload(true); });
     };
 
     $("#login-form").on("submit", onLoginHandler);

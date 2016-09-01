@@ -69,14 +69,13 @@
               </ul>
             </li>
 
-            {% endif %}
-
             <!-- If user is logged in, give them the option to log out. -->
-            {% if session.get("user_id") %}
+            {% else %}
 
             <li class="dropdown">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{% if session.get("fname") %}{{ session.fname }}{% endif %} <span class="caret"></span></a>
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{% if session.get("fname") %}{{ session.fname }}{% else %}Account{% endif %} <span class="caret"></span></a>
               <ul class="dropdown-menu">
+                <li><a href="/settings">Settings</a></li>
                 <li><a href="/logout">Log Out</a></li>
               </ul>
             </li>
