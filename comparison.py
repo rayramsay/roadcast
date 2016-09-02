@@ -110,32 +110,19 @@ def get_alt_weather(coords_datetime, minutes_before, minutes_after, possibilitie
     return possibilities
 
 
-def make_x_weather(possibilities, quality):
+def make_best_weather(possibilities):
     """Biased toward initialRoute, then toward times closer to initialRoute."""
 
     weather = {}
     weather_attributes = ["precipProb", "maxIntensity"]
 
-    if quality == "best":
-        for attribute in weather_attributes:
-            best_attribute = 100
+    for attribute in weather_attributes:
+        best_attribute = 100
 
-            for key in ['initialRoute'] + sorted(possibilities.keys(), key=lambda i: i[-2:])[:-1]:
-                if possibilities[key]["weatherReport"][attribute] < best_attribute:
-                    best_attribute = possibilities[key]["weatherReport"][attribute]
-                    weather[attribute] = key
-
-    elif quality == "worst":
-        for attribute in weather_attributes:
-            worst_attribute = 0
-
-            for key in ['initialRoute'] + sorted(possibilities.keys(), key=lambda i: i[-2:])[:-1]:
-                if possibilities[key]["weatherReport"][attribute] > worst_attribute:
-                    worst_attribute = possibilities[key]["weatherReport"][attribute]
-                    weather[attribute] = key
-
-    else:
-        raise ValueError("Quality can only be best or worst.")
+        for key in ['initialRoute'] + sorted(possibilities.keys(), key=lambda i: i[-2:])[:-1]:
+            if possibilities[key]["weatherReport"][attribute] < best_attribute:
+                best_attribute = possibilities[key]["weatherReport"][attribute]
+                weather[attribute] = key
 
     return weather
 
@@ -150,10 +137,9 @@ def make_per_change(possibilities, best_route, weather_attr):
     print "new", new_value
 
     # Avoiding dividing by zero.
-    if old_value == 0 and weather_attr == "precipProb":
-        per_change = 10000
-    elif old_value == 0 and weather_attr == "maxIntensity":
-        per_change = 50000
+    if old_value == 0:
+        per_change = ((new_value - old_value)/(old_value + 1)) * 100
+
     else:
         per_change = ((new_value - old_value)/old_value) * 100
 

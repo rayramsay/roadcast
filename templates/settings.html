@@ -34,13 +34,13 @@
             <p>
                 Recommendation sensitivity:
 
-                {% if user.sensitivity == -1 %}
+                {% if user.sensitivity < 0 %}
 
                     <input type="radio" name="rec-sense" value="low" checked> Low&nbsp;
                     <input type="radio" name="rec-sense" value="medium"> Medium&nbsp;
                     <input type="radio" name="rec-sense" value="high"> High
 
-                {% elif user.sensitivity == 1 %}
+                {% elif user.sensitivity > 0 %}
 
                     <input type="radio" name="rec-sense" value="low"> Low&nbsp;
                     <input type="radio" name="rec-sense" value="medium"> Medium&nbsp;

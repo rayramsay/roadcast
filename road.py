@@ -1,10 +1,12 @@
 from routes import prep_directions, Route
 from weather import make_marker_info, make_weather_report
-from comparison import make_coords_datetime, get_alt_weather, make_x_weather, modal_route, make_per_change, make_abs_diff
+from comparison import make_coords_datetime, get_alt_weather, make_best_weather, modal_route, make_per_change, make_abs_diff
+from utils import normalize
 import logging
 
 # Suppress requests' warnings while on Vagrant.
 logging.captureWarnings(True)
+
 
 def make_result(directions_result, departure_time, departure_day):
     """Builds the initial result dictionary for jsonification."""
@@ -70,7 +72,7 @@ def make_recommendation(data, minutes_before, minutes_after, sensitivity=None):
     # Add alternate routes into possibilities dictionary.
     possibilities = get_alt_weather(coords_datetime, minutes_before, minutes_after, possibilities)
 
-    best_weather = make_x_weather(possibilities, "best")
+    best_weather = make_best_weather(possibilities)
 
     best_route = modal_route(best_weather)
 
@@ -89,23 +91,33 @@ def make_recommendation(data, minutes_before, minutes_after, sensitivity=None):
             absolutes[w_a] = make_abs_diff(possibilities, best_route, w_a)
             thresholds[w_a] = changes[w_a] * absolutes[w_a]
 
+            # These get way too compressed when normalized.
+            # if w_a == "precipProb":
+            #     thresholds[w_a] = normalize((changes[w_a] * absolutes[w_a]), -10000.0, -1)
+            # if w_a == "maxIntensity":
+            #     thresholds[w_a] = normalize((changes[w_a] * absolutes[w_a]), -50.0, -0.01)
+
         print "changes", changes
         print "absolutes", absolutes
         print "thresholds", thresholds
 
+        sensitivities = {"low": {"precipProb": -5000, "maxIntensity": -40},
+                         "medium": {"precipProb": -1000, "maxIntensity": -10},
+                         "high": {"precipProb": -1, "maxIntensity": 0}}
+
         if sensitivity:
-            if sensitivity < 0:  # Low sensitivity.
-                preferences = {"precipProb": -1000}
-            elif sensitivity > 0:  # High sensitivity.
-                preferences = {"precipProb": -100}
+            if sensitivity < 0:  # Low sensitivity; only wants to see big changes.
+                preferences = sensitivities["low"]
+            elif sensitivity > 0:  # High sensitivity; wants to see little changes.
+                preferences = sensitivities["high"]
             else:  # Medium/default sensitivity.
-                preferences = {"precipProb": -500}
+                preferences = sensitivities["medium"]
 
         else:
             # Set defaults.
-            preferences = {"precipProb": -500}
+            preferences = sensitivities["medium"]
 
-        if thresholds["precipProb"] > preferences["precipProb"]:
+        if thresholds["precipProb"] > preferences["precipProb"] and thresholds["maxIntensity"] > preferences["maxIntensity"]:
             # That's not a big enough change, don't tell the user.
             result["routeName"] = "initialRoute"
 

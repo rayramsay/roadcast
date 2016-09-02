@@ -80,14 +80,13 @@ function initForm(){
 
 function initMap(){
 
-    var directionsDisplay = new google.maps.DirectionsRenderer({suppressMarkers: true});
+    var directionsDisplay = new google.maps.DirectionsRenderer({suppressMarkers: true, suppressBicyclingLayer: true});
     var directionsService = new google.maps.DirectionsService();
 
     // Create a map object and specify the DOM element for display.
     map = new google.maps.Map(document.getElementById('map'), {
         center: {lat: 37.7886794, lng: -122.41153689999999},  // Hackbright
         zoom: 12,
-        mapTypeId: 'roadmap',
         mapTypeControl: false,
         streetViewControl: false,        
     });
