@@ -2,6 +2,10 @@
 
 {% block title %}RoadCast{% endblock %}
 
+{% block jQplugins %}
+    <script src="static/thirdparty/jquery.geocomplete.js"></script>
+{% endblock %}
+
 {% block css %}
 
     <style>
@@ -29,6 +33,12 @@
         #map {
             height: 92.67%;
         }
+
+        td {
+            vertical-align: bottom;
+            text-align: bottom;
+            padding-bottom: 5px;
+        }
     </style>
 
 {% endblock %}
@@ -47,12 +57,28 @@
             <!-- The "for" attribute of the <label> tag should be equal to the "id"
             attribute of the related element to bind them together. -->
             <!-- FIXME: Input text fields currently have default values for demo. -->
-            <label for="start">Start:</label> <input type="text" name="start" id="start" size="39" value="Berkeley, CA" placeholder="">
-            <input type="hidden" name="start-addr" id="start-addr"><br>
-
-            <label for="end">End:</label> <input type="text" name="end" id="end" size="39" value="Oakland, CA" placeholder="">
-            <input type="hidden" name="end-addr" id="end-addr"><br>
-
+            
+            <table>
+              <tr>
+                <td style="padding-right: 5px">
+                  <label for="start">Start</label>
+                </td>
+                <td>
+                  <input type="text" name="start" id="start" size="39" value="Berkeley, CA" placeholder="">
+                  <input type="hidden" name="start-addr" id="start-addr">
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <label for="end">End</label>
+                </td>
+                <td>
+                  <input type="text" name="end" id="end" size="39" value="Oakland, CA" placeholder="">
+                  <input type="hidden" name="end-addr" id="end-addr">
+                </td>
+              </tr>
+            </table>
+            
             <label for="departure-day">Departing</label> <select name="departure-day" id="departure-day">
                 <option value="today">Today</option>
                 <option value="tomorrow">Tomorrow</option>
@@ -60,13 +86,13 @@
 
             <label for="departure-time">at</label> <input type="time" name="departure-time" id="departure-time" value="17:00"><br>
 
-            <label>Flexibility </label>  <select name="before" id="before">
+            <label>Flexibility</label> <select name="before" id="before">
                 <option value="0">0 min</option>
                 <option value="30">30 min</option>
                 <option value="60">60 min</option>
-            </select> <label for="before"> before </label>
+            </select> <label for="before">before</label>
 
-            &nbsp;&nbsp;
+            &nbsp;
 
             <select name="after" id="after">
                 <option value="0">0 min</option>
@@ -75,7 +101,7 @@
             </select>
             <label for="after">after</label><br>
 
-            <label for="mode">Transportation mode:</label> <select name="mode" id="mode">
+            <label for="mode">Transportation mode</label> <select name="mode" id="mode">
                 <option value="DRIVING">Driving</option> <!-- JS API requires this value to be capitalized. -->
                 <option value="TRANSIT">Public Transit</option>
                 <option value="WALKING">Walking</option>
