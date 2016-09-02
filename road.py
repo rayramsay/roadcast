@@ -81,43 +81,49 @@ def make_recommendation(data, minutes_before, minutes_after, sensitivity=None):
 
     if result["routeName"] != "initialRoute":
 
-        # Calculate percentage changes, absolute differences, and thresholds between initialRoute and best route.
+        # Calculate percentage changes, absolute differences, and scores between initialRoute and best route.
         changes = {}
         absolutes = {}
-        thresholds = {}
+        scores = {}
 
         for w_a in weather_attributes:
             changes[w_a] = make_per_change(possibilities, best_route, w_a)
             absolutes[w_a] = make_abs_diff(possibilities, best_route, w_a)
-            thresholds[w_a] = changes[w_a] * absolutes[w_a]
+            scores[w_a] = changes[w_a] * absolutes[w_a]
 
-            # These get way too compressed when normalized.
-            # if w_a == "precipProb":
-            #     thresholds[w_a] = normalize((changes[w_a] * absolutes[w_a]), -10000.0, -1)
-            # if w_a == "maxIntensity":
-            #     thresholds[w_a] = normalize((changes[w_a] * absolutes[w_a]), -50.0, -0.01)
+            if w_a == "precipProb":
+                scores[w_a] = normalize((changes[w_a] * absolutes[w_a]), -10000.0, 0)
+            if w_a == "maxIntensity":
+                scores[w_a] = normalize((changes[w_a] * absolutes[w_a]), -50.0, 0)
 
         print "changes", changes
         print "absolutes", absolutes
-        print "thresholds", thresholds
+        print "scores", scores
 
-        sensitivities = {"low": {"precipProb": -5000, "maxIntensity": -40},
-                         "medium": {"precipProb": -1000, "maxIntensity": -10},
-                         "high": {"precipProb": -1, "maxIntensity": 0}}
+        # Original, non-normalized values.
+        # sensitivities = {"low": {"precipProb": -5000, "maxIntensity": -40},
+        #                  "medium": {"precipProb": -1000, "maxIntensity": -10},
+        #                  "high": {"precipProb": -1, "maxIntensity": 0}}
+
+        sensitivities = {"low": 0.5,
+                         "medium": 0.9,
+                         "high": 0.9999}
 
         if sensitivity:
             if sensitivity < 0:  # Low sensitivity; only wants to see big changes.
-                preferences = sensitivities["low"]
+                threshold = sensitivities["low"]
             elif sensitivity > 0:  # High sensitivity; wants to see little changes.
-                preferences = sensitivities["high"]
+                threshold = sensitivities["high"]
             else:  # Medium/default sensitivity.
-                preferences = sensitivities["medium"]
+                threshold = sensitivities["medium"]
 
         else:
             # Set defaults.
-            preferences = sensitivities["medium"]
+            threshold = sensitivities["medium"]
 
-        if thresholds["precipProb"] > preferences["precipProb"] and thresholds["maxIntensity"] > preferences["maxIntensity"]:
+        print threshold
+
+        if scores["precipProb"] > threshold and scores["maxIntensity"] > threshold:
             # That's not a big enough change, don't tell the user.
             result["routeName"] = "initialRoute"
 
