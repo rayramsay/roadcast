@@ -4,7 +4,6 @@
 
 {% block headerjs %}
     <script src="static/thirdparty/jquery.geocomplete.js"></script>
-    <script src="https://use.fontawesome.com/1db16e3309.js"></script>
 {% endblock %}
 
 {% block css %}
@@ -119,8 +118,8 @@
         </div><!-- close submission-form div -->
 
         <div id="weather-report">
-            <h4 style="display: inline">Weather Report</h4>
-            <p><i><a href="http://forecast.io/">Powered by Forecast</a></i></p>
+            <h4 style="display: inline; color: #b22412">Weather Report</h4>
+            <p><i><a href="http://forecast.io/" style="font-size: 90%">Powered by Forecast</a></i></p>
             <div id="wr-msg-top"></div>
 
             <p>On your trip, the weather will mostly be <b><span id="modal-weather"></span></b>.</p>
@@ -146,6 +145,9 @@
 
     <!-- Google Maps -->
     <script src="https://maps.googleapis.com/maps/api/js?key={{jskey}}&v=3&libraries=places"></script>
+
+    <!--Font Awesome-->
+    <script src="https://use.fontawesome.com/1db16e3309.js"></script>
 
     <!-- my JavaScript -->
     <script src="/static/map.js"></script>

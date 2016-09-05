@@ -6,10 +6,10 @@
 
 <div class="container">
 
-    <!-- first row needs to be moved down b/c fixed navbar -->
+    <!-- First row needs to be moved down b/c fixed navbar. -->
     <div class="row" style="margin-top: 51px">
 
-        <!-- If these haven't been set, they simply won't display -->
+        <!-- If these haven't been set, they simply won't display. -->
         <p>{{ user.fname }} {{ user.lname }}</p>
 
         <p>{{ user.email }}</p>
@@ -34,19 +34,19 @@
             <p>
                 Recommendation sensitivity:
 
-                {% if user.sensitivity < 0 %}
+                {% if user.sensitivity == -1 %}
 
                     <input type="radio" name="rec-sense" value="low" checked> Low&nbsp;
                     <input type="radio" name="rec-sense" value="medium"> Medium&nbsp;
                     <input type="radio" name="rec-sense" value="high"> High
 
-                {% elif user.sensitivity > 0 %}
+                {% elif user.sensitivity == 1 %}
 
                     <input type="radio" name="rec-sense" value="low"> Low&nbsp;
                     <input type="radio" name="rec-sense" value="medium"> Medium&nbsp;
                     <input type="radio" name="rec-sense" value="high" checked> High
 
-                {% else %}
+                {% else %}  <!-- both None and 0 end up here -->
 
                     <input type="radio" name="rec-sense" value="low"> Low&nbsp;
                     <input type="radio" name="rec-sense" value="medium" checked> Medium&nbsp;
