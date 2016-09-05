@@ -8,5 +8,3 @@ Logo available at https://mapicons.mapsmarker.com/wp-content/uploads/2011/03/mic
 Some icons are derived from the project SJJB Map Icons (http://www.sjjb.co.uk/mapicons/) by SJJB Management (http://www.sjjb.co.uk/), licensed under Creative Commons Public Domain Dedication (http://creativecommons.org/licenses/publicdomain/).
 
 Some icons are derived from the project User Interface Design Framework (http://www.webalys.com/design-interface-application-framework.php) by Webalys (http://www.webalys.com/).
-
-hex color: #b34545
