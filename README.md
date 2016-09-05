@@ -10,7 +10,7 @@ PostgreSQL, SQLAlchemy, Python, Flask, Jinja, JavaScript, jQuery, HTML/CSS, Boot
 
 Google Maps, Dark Sky Forecast
 
-####About the Developer
+###About the Developer
 
 Rachel Ramsay is a software engineer in Oakland, CA. Visit her on [LinkedIn](https://www.linkedin.com/in/rachelbuilds/).
 
