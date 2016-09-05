@@ -1,6 +1,6 @@
 # Roadcast
 
-RoadCast is a web app that shows users the weather forecast along their driving route. If they have a flexible departure time, summary weather statistics for alternative trips are calculated on the back end and used to make recommendations about what time they should leave in order to avoid adverse weather. In addition, users can register and store their recommendation preferences.
+RoadCast is a web app that shows users the weather forecast along their driving route. If users have a flexible departure time, summary weather statistics for alternative trips are calculated on the back end and used to make recommendations about what time they should leave in order to avoid adverse weather. In addition, users can register and store their recommendation preferences.
 
 ####Technologies
 
