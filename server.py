@@ -68,11 +68,8 @@ def handle_recs():
     user_id = session.get("user_id")
 
     if user_id:
-        # If they're logged in, pass in their preferences.
-        user = User.query.filter(User.user_id == user_id).first()
-
-        sensitivity = user.sensitivity
-
+        # If they're logged in, pass in their sensitivity rating.
+        sensitivity = User.get_sensitivity_by_id(user_id)
         result = make_recommendation(data, minutes_before, minutes_after, sensitivity)
 
     else:
@@ -99,8 +96,7 @@ def display_settings():
         return redirect("/")
 
     else:
-        user = User.query.filter(User.user_id == user_id).first()
-        print user
+        user = User.query_by_id(user_id)
 
         return render_template("settings.html", user=user)
 
@@ -118,33 +114,11 @@ def update_settings():
 
     else:
         # Get values from form.
-        temp_pref = request.form.get("temp-pref")
-        rec_sense = request.form.get("rec-sense")
+        temperature = request.form.get("temp-pref")
+        sensitivity = request.form.get("rec-sense")
 
-        # Convert these values into those usable by database.
-        # Temperature preference is a boolean (T/F) re: Celsius.
-        if temp_pref == "cel":
-            temp_pref = True
-        else:
-            temp_pref = False
-
-        # Sensitivity is an integer.
-        if rec_sense == "low":
-            rec_sense = -1
-
-        elif rec_sense == "high":
-            rec_sense = 1
-
-        else:
-            rec_sense = 0
-
-        # Fetch and update user's record.
-        user = User.query.filter(User.user_id == user_id).first()
-
-        user.celsius = temp_pref
-        user.sensitivity = rec_sense
-
-        db.session.commit()
+        User.set_temperature_by_id(user_id, temperature)
+        User.set_sensitivity_by_id(user_id, sensitivity)
 
         return redirect("/settings")
 

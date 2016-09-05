@@ -32,6 +32,53 @@ class User(db.Model):
         return "<User user_id=%s email=%s password=%s fname=%s lname=%s celsius=%s sensitivity=%s>" % \
             (self.user_id, self.email, self.password, self.fname, self.lname, self.celsius, self.sensitivity)
 
+    @classmethod
+    def query_by_id(cls, user_id):
+        user = cls.query.filter(cls.user_id == user_id).first()
+        return user
+
+    @classmethod
+    def get_sensitivity_by_id(cls, user_id):
+        """Given user's id, returns their sensitivity rating."""
+
+        user = cls.query_by_id(user_id)
+
+        return user.sensitivity
+
+    @classmethod
+    def set_temperature_by_id(cls, user_id, temperature):
+        """Given a form response, set user's temperature preference in database."""
+
+        user = cls.query_by_id(user_id)
+
+        # Form value is ``cel`` or ``farh`` but temperature preference is stored
+        # as a boolean (T/F) re: Celsius.
+
+        if temperature == "cel":
+            user.celsius = True
+        else:
+            user.celsius = False
+
+        db.session.commit()
+
+    @classmethod
+    def set_sensitivity_by_id(cls, user_id, sensitivity):
+        """Given a form response, set user's sensitivity preference in database."""
+
+        user = cls.query_by_id(user_id)
+
+        # Sensitivity is stored as an integer.
+        if sensitivity == "low":
+            user.sensitivity = -1
+
+        elif sensitivity == "high":
+            user.sensitivity = 1
+
+        else:
+            user.sensitivity = 0
+
+        db.session.commit()
+
 
 class Addr(db.Model):
     """Address object for RoadCast website."""
