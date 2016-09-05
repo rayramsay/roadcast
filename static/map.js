@@ -91,15 +91,16 @@ function initMap(){
         streetViewControl: false,        
     });
 
+    // FIXME Geolocation turned off for demoing.
     // Try HTML5 geolocation; if successful, center map on user location.
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(function (position) {
-            var initialLocation = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-            console.log(initialLocation.lat(), initialLocation.lng());
-            map.setCenter(initialLocation);
-            console.log("Geolocation and recentering successful.");
-        });
-    }
+    // if (navigator.geolocation) {
+    //     navigator.geolocation.getCurrentPosition(function (position) {
+    //         var initialLocation = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+    //         console.log(initialLocation.lat(), initialLocation.lng());
+    //         map.setCenter(initialLocation);
+    //         console.log("Geolocation and recentering successful.");
+    //     });
+    // }
 
     // This event handler is inside initMap so that it has access to
     // directionsService and directionsDisplay.
@@ -162,7 +163,7 @@ function calculateAndDisplayRoute(directionsService, directionsDisplay) {
         $("#wr-msg-top").html("");
         $("#wr-msg-pp").html("");
 
-        $("#submit-button").val("Loading...");
+        $("#submit-button").html("<i class='fa fa-spinner fa-pulse fa-fw'></i> Loading...");
 
         var formInputs = {
             "departure-day": $("#departure-day").val(),
@@ -187,14 +188,15 @@ function makeMarkersAndReport(data) {
     makeAndSetMarkers(markerInfo);
     var weatherReport = data.weatherReport;
     displayWeatherReport(weatherReport);
-    $("#submit-button").val("Submit");
+    $("#submit-button").html("Submit");
+    $("#submit-button").blur();
 
     if (data.routeName === null) {
         var before = $("#before").val();
         var after = $("#after").val();
 
         if (before > 0 || after > 0) {
-            $("#wr-msg-bottom").html("<p><i>Loading recommended time to leave...</i></p>");
+            $("#wr-msg-bottom").html("<p><i class='fa fa-spinner fa-pulse fa-fw'></i> <i>Loading recommendation...</i></p>");
 
             var formInputs = {
                 "before": before,

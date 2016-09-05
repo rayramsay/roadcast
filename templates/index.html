@@ -2,8 +2,9 @@
 
 {% block title %}RoadCast{% endblock %}
 
-{% block jQplugins %}
+{% block headerjs %}
     <script src="static/thirdparty/jquery.geocomplete.js"></script>
+    <script src="https://use.fontawesome.com/1db16e3309.js"></script>
 {% endblock %}
 
 {% block css %}
@@ -22,12 +23,13 @@
         }
 
         #submission-form {
-            padding: 10px;
+            /*border: 1px #9c1f10 solid;*/
+            padding: 20px 10px 20px 10px;
         }
 
         #weather-report {
-            border: 1px black solid;
-            padding: 10px;
+            border: 1px #9c1f10 solid;
+            padding: 10px 10px 5px 10px;
         }
 
         #map {
@@ -64,7 +66,7 @@
                   <label for="start">Start</label>
                 </td>
                 <td>
-                  <input type="text" name="start" id="start" size="39" value="Berkeley, CA" placeholder="">
+                  <input type="text" name="start" id="start" size="40" value="Berkeley, CA" placeholder="">
                   <input type="hidden" name="start-addr" id="start-addr">
                 </td>
               </tr>
@@ -73,7 +75,7 @@
                   <label for="end">End</label>
                 </td>
                 <td>
-                  <input type="text" name="end" id="end" size="39" value="Oakland, CA" placeholder="">
+                  <input type="text" name="end" id="end" size="40" value="Oakland, CA" placeholder="">
                   <input type="hidden" name="end-addr" id="end-addr">
                 </td>
               </tr>
@@ -108,7 +110,11 @@
                 <option value="BICYCLING" selected>Bicycling</option>
             </select><br>
 
-            <input type="submit" id="submit-button" value="Submit">
+            <div style="text-align: right;">
+                <button type="submit" class="btn btn-default" id="submit-button" form="directions-request">
+                  Submit
+                </button>
+            </div>
           </form>
         </div><!-- close submission-form div -->
 

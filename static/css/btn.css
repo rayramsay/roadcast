@@ -1,0 +1,9 @@
+.btn-default {
+    background: #ffffff;
+    color: #9c1f10;
+}
+ 
+.btn-default:hover, .btn-default:focus, .btn-default.active {
+    background: #9c1f10;
+    color: #ffffff;
+}
