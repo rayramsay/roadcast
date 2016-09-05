@@ -1,4 +1,5 @@
 import os
+import time
 
 from jinja2 import StrictUndefined
 from flask import Flask, render_template, redirect, request, flash, session, jsonify
@@ -8,11 +9,10 @@ from utils import dictify
 from road import make_result, make_recommendation
 from model import User, connect_to_db, db
 
-import time
-
 app = Flask(__name__)
 
 # Remember to ``source secrets.sh``!
+
 # Required to use Flask sessions and the debug toolbar.
 app.secret_key = os.environ['FLASK_SECRET_KEY']
 
@@ -23,6 +23,10 @@ jskey = os.environ['GOOGLE_API_JAVASCRIPT_KEY']
 # undefined variable.
 app.jinja_env.undefined = StrictUndefined
 
+
+####################################################
+# HOMEPAGE
+####################################################
 
 @app.route('/')
 def index():
@@ -84,6 +88,7 @@ def handle_recs():
 ####################################################
 # User profile routes
 ####################################################
+
 @app.route('/settings', methods=['GET'])
 def display_settings():
     """Show a user's profile page."""
@@ -97,7 +102,7 @@ def display_settings():
 
     else:
         user = User.query_by_id(user_id)
-
+        print user
         return render_template("settings.html", user=user)
 
 
@@ -143,20 +148,15 @@ def handle_register():
     fname = request.form.get("first-name")
     lname = request.form.get("last-name")
 
-    # Python's built-in hash function is not cryptographically secure; we're
-    # just using it for convenience.
-    password = hash(password)
-
-    user = User.query.filter(User.email == email).first()
+    user = User.query_by_email(email)
 
     if user:
         flash("That email has already been registered.")
         return redirect("/register")
+
     else:
         # If the user doesn't exist, create one.
-        user = User(email=email, password=password, fname=fname, lname=lname)
-        db.session.add(user)
-        db.session.commit()
+        User.create_user(email, password, fname, lname)
 
         #Code 307 preserves the POST request, including form data.
         return redirect("/login", code=307)
@@ -181,17 +181,19 @@ def handle_login():
 
     password = unicode(hash(password))
 
-    user = User.query.filter(User.email == email).first()
+    # Retrieve user record.
+    user = User.query_by_email(email)
 
     if user:
         if password != user.password:
             return redirect("/")
+
         else:
             # Add their user_id and first name to session.
             session["user_id"] = user.user_id
             session["fname"] = user.fname
 
-            print "Session:", session
+            print session
 
             return redirect("/")
 
@@ -206,7 +208,7 @@ def logout():
         del session["user_id"]
         del session["fname"]
 
-    print "Session", session
+    print session
 
     return redirect("/")
 

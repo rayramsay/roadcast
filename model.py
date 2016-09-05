@@ -30,12 +30,43 @@ class User(db.Model):
         """Provide a human-readable representation of an instance of a user."""
 
         return "<User user_id=%s email=%s password=%s fname=%s lname=%s celsius=%s sensitivity=%s>" % \
-            (self.user_id, self.email, self.password, self.fname, self.lname, self.celsius, self.sensitivity)
+            (self.user_id,
+             self.email,
+             self.password,
+             self.fname,
+             self.lname,
+             self.celsius,
+             self.sensitivity)
 
     @classmethod
     def query_by_id(cls, user_id):
+        """Given user id, queries database for record and returns user object if
+        available."""
+
         user = cls.query.filter(cls.user_id == user_id).first()
         return user
+
+    @classmethod
+    def query_by_email(cls, email):
+        """Given email, queries database for record and returns user object if
+        available."""
+
+        user = cls.query.filter(cls.email == email).first()
+        return user
+
+    @classmethod
+    def create_user(cls, email, password, fname, lname):
+        """Given email, password, first name, and last name, adds new user to
+        database."""
+
+        # Python's built-in hash function is not cryptographically secure; we're
+        # just using it for convenience.
+
+        password = hash(password)
+
+        user = cls(email=email, password=password, fname=fname, lname=lname)
+        db.session.add(user)
+        db.session.commit()
 
     @classmethod
     def get_sensitivity_by_id(cls, user_id):
@@ -44,22 +75,6 @@ class User(db.Model):
         user = cls.query_by_id(user_id)
 
         return user.sensitivity
-
-    @classmethod
-    def set_temperature_by_id(cls, user_id, temperature):
-        """Given a form response, set user's temperature preference in database."""
-
-        user = cls.query_by_id(user_id)
-
-        # Form value is ``cel`` or ``farh`` but temperature preference is stored
-        # as a boolean (T/F) re: Celsius.
-
-        if temperature == "cel":
-            user.celsius = True
-        else:
-            user.celsius = False
-
-        db.session.commit()
 
     @classmethod
     def set_sensitivity_by_id(cls, user_id, sensitivity):
@@ -76,6 +91,22 @@ class User(db.Model):
 
         else:
             user.sensitivity = 0
+
+        db.session.commit()
+
+    @classmethod
+    def set_temperature_by_id(cls, user_id, temperature):
+        """Given a form response, set user's temperature preference in database."""
+
+        user = cls.query_by_id(user_id)
+
+        # Form value is ``cel`` or ``farh`` but temperature preference is stored
+        # as a boolean (T/F) re: Celsius.
+
+        if temperature == "cel":
+            user.celsius = True
+        else:
+            user.celsius = False
 
         db.session.commit()
 
