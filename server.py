@@ -25,7 +25,7 @@ app.jinja_env.undefined = StrictUndefined
 
 
 ####################################################
-# HOMEPAGE
+# HTML routes
 ####################################################
 
 @app.route('/')
@@ -34,6 +34,20 @@ def index():
 
     return render_template("index.html",
                            jskey=jskey)
+
+
+@app.route('/diagram')
+def diagram():
+    """Display directions result diagram."""
+
+    return render_template("diagram.html")
+
+
+@app.route('/tos')
+def terms_of_service():
+    """Display TOS page."""
+
+    return render_template("tos.html")
 
 
 ####################################################
