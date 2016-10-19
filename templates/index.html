@@ -56,16 +56,14 @@
         <div id="submission-form">
           <form action="/request" method="POST" id="directions-request">
             <!-- The "for" attribute of the <label> tag should be equal to the "id"
-            attribute of the related element to bind them together. -->
-            <!-- FIXME: Input text fields currently have default values for demo. -->
-            
+            attribute of the related element to bind them together. -->            
             <table>
               <tr>
                 <td style="padding-right: 5px">
                   <label for="start">Start</label>
                 </td>
                 <td>
-                  <input type="text" name="start" id="start" size="40" value="Berkeley, CA" placeholder="">
+                  <input type="text" name="start" id="start" size="40" placeholder="">
                   <input type="hidden" name="start-addr" id="start-addr">
                 </td>
               </tr>
@@ -74,7 +72,7 @@
                   <label for="end">End</label>
                 </td>
                 <td>
-                  <input type="text" name="end" id="end" size="40" value="Oakland, CA" placeholder="">
+                  <input type="text" name="end" id="end" size="40" placeholder="">
                   <input type="hidden" name="end-addr" id="end-addr">
                 </td>
               </tr>
@@ -85,7 +83,7 @@
                 <option value="tomorrow">Tomorrow</option>
             </select>
 
-            <label for="departure-time">at</label> <input type="time" name="departure-time" id="departure-time" value="17:00"><br>
+            <label for="departure-time">at</label> <input type="time" name="departure-time" id="departure-time"><br>
 
             <label>Flexibility</label> <select name="before" id="before">
                 <option value="0">0 min</option>
@@ -103,10 +101,10 @@
             <label for="after">after</label><br>
 
             <label for="mode">Transportation mode</label> <select name="mode" id="mode">
-                <option value="DRIVING">Driving</option> <!-- JS API requires this value to be capitalized. -->
+                <option value="DRIVING" selected>Driving</option> <!-- JS API requires this value to be capitalized. -->
                 <option value="TRANSIT">Public Transit</option>
                 <option value="WALKING">Walking</option>
-                <option value="BICYCLING" selected>Bicycling</option>
+                <option value="BICYCLING">Bicycling</option>
             </select><br>
 
             <div style="text-align: right;">

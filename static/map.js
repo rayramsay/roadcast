@@ -58,9 +58,7 @@ function initForm(){
 
     var hours = addZero(now.getHours());
     var minutes = addZero(now.getMinutes());
-    // FIXME: Currently suppressed so as not to overwrite the departure time set
-    // for the demo.
-    // $("#departure-time").val(hours + ":" + minutes);
+    $("#departure-time").val(hours + ":" + minutes);
 
     var onLoginHandler = function(evt) {
         evt.preventDefault();
@@ -91,16 +89,15 @@ function initMap(){
         streetViewControl: false,        
     });
 
-    // FIXME Geolocation turned off for demoing.
     // Try HTML5 geolocation; if successful, center map on user location.
-    // if (navigator.geolocation) {
-    //     navigator.geolocation.getCurrentPosition(function (position) {
-    //         var initialLocation = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-    //         console.log(initialLocation.lat(), initialLocation.lng());
-    //         map.setCenter(initialLocation);
-    //         console.log("Geolocation and recentering successful.");
-    //     });
-    // }
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function (position) {
+            var initialLocation = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+            console.log(initialLocation.lat(), initialLocation.lng());
+            map.setCenter(initialLocation);
+            console.log("Geolocation and recentering successful.");
+        });
+    }
 
     // This event handler is inside initMap so that it has access to
     // directionsService and directionsDisplay.

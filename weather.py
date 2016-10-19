@@ -89,7 +89,7 @@ def get_forecast(coords, time):
     # Convert datetime object to ISO 8601 string.
     time = time.to_iso8601_string()
 
-    url = 'https://api.forecast.io/forecast/%s/%s,%s,%s' \
+    url = 'https://api.darksky.net/forecast/%s/%s,%s,%s' \
         % (FIO_KEY, lat, lng, time)
 
     return forecastio.manual(url)

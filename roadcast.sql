@@ -192,7 +192,7 @@ SELECT pg_catalog.setval('labels_label_id_seq', 1, false);
 --
 
 COPY users (user_id, email, password, fname, lname, celsius, sensitivity) FROM stdin;
-1	rachel@roadcast.com	4690694929657687455	Rachel		f	0
+1	rachel@roadcast.com	4690694929657687455	Rachel		f	1
 \.
 
 
