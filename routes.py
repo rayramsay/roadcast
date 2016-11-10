@@ -2,13 +2,15 @@ import os
 import googlemaps
 import pendulum
 
-############# GLOBALS ##############
+#TODO: Rewrite so as to be fully object-oriented: Trips have Routes; Routes have
+# Checkpoints and Summaries; Checkpoints have Forecasts; Summaries are aggregated
+# from Forecasts.
 
+############# GLOBALS ##############
 # Remember to ``source secrets.sh``!
 GMAPS = googlemaps.Client(key=os.environ['GOOGLE_API_SERVER_KEY'])
+####################################
 
-
-###### API TRANSLATION LAYER #######
 
 def prep_directions(directions_result):
     """Given a directions_result dictionary from an API, translate it into a

@@ -1,5 +1,4 @@
 import os
-import time
 
 from jinja2 import StrictUndefined
 from flask import Flask, render_template, redirect, request, flash, session, jsonify
@@ -7,7 +6,7 @@ from flask import Flask, render_template, redirect, request, flash, session, jso
 
 from utils import dictify
 from road import make_result, make_recommendation
-from model import User, connect_to_db, db
+from model import User, connect_to_db
 
 app = Flask(__name__)
 
@@ -112,7 +111,6 @@ def display_settings():
 
     else:
         user = User.query_by_id(user_id)
-        print user
         return render_template("settings.html", user=user)
 
 
@@ -227,7 +225,7 @@ def logout():
 if __name__ == "__main__":
 
     # Set debug = True in order to invoke the DebugToolbarExtension.
-    app.debug = True
+    # app.debug = True
 
     # Use the DebugToolbarExtension.
     # DebugToolbarExtension(app)

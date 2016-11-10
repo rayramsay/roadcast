@@ -1,18 +1,16 @@
 import os
 import forecastio
-#import googlemaps
-#import pendulum
 
 from collections import Counter
 
 ############# GLOBALS ##############
-
 # Remember to ``source secrets.sh``!
-
-#GMAPS = googlemaps.Client(key=os.environ['GOOGLE_API_SERVER_KEY'])
 FIO_KEY = os.environ['FORECAST_API_KEY']
-
 ####################################
+
+#TODO: Can we start storing results in database in order to limit API calls?
+# What about getting 24 hr forecast for location and interpolating more specific
+# times?
 
 
 def make_marker_info(coords_time):
