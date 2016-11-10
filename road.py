@@ -7,6 +7,10 @@ import logging
 # Suppress requests' warnings while on Vagrant.
 logging.captureWarnings(True)
 
+#TODO: Rewrite so as to be fully object-oriented: Trips have Routes; Routes have
+# Checkpoints and Summaries; Checkpoints have Forecasts; Summaries are aggregated
+# from Forecasts.
+
 
 def make_result(directions_result, departure_time, departure_day):
     """Builds the initial result dictionary for jsonification."""
